@@ -2,7 +2,7 @@
    Rev. 1 - 04/07/24 Original by JAWS */
 //================================ 
 /* This module is the implementation of the Product class. 
-   User class contains all the data about user and functions to access them. */
+   Product class contains all the data about product and functions to access them. */
 //================================ 
 #ifndef PRODUCT_H
 #define PRODUCT_H
