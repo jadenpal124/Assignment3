@@ -3,9 +3,10 @@
 
 #include <iostream>
 #include <cstring>
-#include "user.h"
-#include "product.h"
+#include "User.h"
+#include "Product.h"
 #include "changeItem.h"
+#include "Release.h"
 
 using namespace std;
 
@@ -13,27 +14,29 @@ class changeRequest {
 public:
     // Constructors
     changeRequest();
-    changeRequest(const char* changeRequestID, const changeItem& changeItem, const User& user); 
+    changeRequest(const changeItem& changeItem, const User& user, const Release* associatedRelease);
 
     // Getter methods
-    const char* getChangeRequestID() const;
     const Product& getProduct() const;
     const User& getUser() const;
     const changeItem& getChangeItem() const;
+    const Release* getAssociatedRelease() const;
 
     // Setter methods
-    void setUser(const User& user);
     void setProduct(const Product& product);
-    void setChangeItem(const changeItem& ChangeItem);
+    void setUser(const User& user);
+    void setChangeItem(const changeItem& changeItem);
+    void setAssociatedRelease(const Release* associatedRelease);
 
     // Utility methods
     bool addChangeRequest(const char* fileName);
 
-    private:
-    char changeRequestID[8];
-    User user;
-    Product product;
-    changeItem ChangeItem;
+private:
+    User user; //*
+    Product product; 
+    changeItem ChangeItem; //*
+    const Release* associatedRelease;
+    char dateRequested[11];
 };
 
 #endif // CHANGEREQUEST_H
