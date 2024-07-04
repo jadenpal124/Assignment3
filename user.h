@@ -15,28 +15,66 @@ class User {
 public:
     // Constructors
     User(); // Default constructor
+
+
     User(const char* userID, const char* name, const char* phone, const char* email); // Parameterized constructor
+    // Parameterized constructor initializing usertID ,name ,phone and email with provided values.
+    // Parameters:
+    //   - userID: Pointer to a character array containing the user ID (input)
+    //   - name: Pointer to a character array containing the user name (input)
+    //   - phone: Pointer to a character array containing the user phone (input)
+    //   - email: Pointer to a character array containing the email (input)
 
     // Getter methods
-    const char* getUserID() const;
-    const char* getName() const;
-    const char* getPhone() const;
-    const char* getEmail() const;
+    //----------------------
+    const char* getUserID() const;   
+    // Getter for retrieving user ID
+
+    //----------------------
+    const char* getName() const;     
+    // Getter for retrieving user name
+
+    //----------------------
+    const char* getPhone() const;    
+    // Getter for retrieving user phone number
+
+    //----------------------
+    const char* getEmail() const;    
+    // Getter for retrieving user email address
 
     // Setter methods
-    void setUserID(const char* userID);
-    void setName(const char* name);
-    void setPhone(const char* phone);
-    void setEmail(const char* email);
+    //----------------------
+    void setUserID(const char* userID); 
+    // Setter for setting user ID
+    // Parameters:
+    //   - userID: Pointer to a character array containing the user ID (input)
+
+    //----------------------
+    void setName(const char* name);     
+    // Setter for setting user name
+    // Parameters:
+    //   - name: Pointer to a character array containing the user name (input)
+
+    //----------------------
+    void setPhone(const char* phone);   
+    // Setter for setting user phone number
+    // Parameters:
+    //   - phone: Pointer to a character array containing the user phone (input)
+
+    //----------------------
+    void setEmail(const char* email);   
+    // Setter for setting user email address
+    // Parameters:
+    //   - email: Pointer to a character array containing the email (input)
 
     // Utility methods (if any)
-    void displayUserInfo() const; // Example utility method to display user information
+    void displayUserInfo() const; // Example utility method to display user information, 
 
-    private:
-    char userID[8];
-    char name[30];
-    char phone[12];
-    char email[24];
+private:
+    char userID[8]; // Member variable for storing user ID (max length: 8 characters)
+    char name[30];  // Member variable for storing user name (max length: 30 characters)
+    char phone[12]; // Member variable for storing user phone number (max length: 30 characters)
+    char email[24]; // Member variable for storing user email address (max length: 30 characters)
 };
 
 #endif // USER_H
