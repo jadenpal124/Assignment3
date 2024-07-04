@@ -1,8 +1,6 @@
 #include <iostream>
 using namespace std;
 
-
-
 class UIModule {
 public:
     void run() {
@@ -19,10 +17,10 @@ public:
                     displayAddMenu();
                     break;
                 case 2:
-                    handleUpdates(); // Placeholder for Updates functionality
+                    displayUpdatesMenu();
                     break;
                 case 3:
-                    handleDisplay(); // Placeholder for Display functionality
+                    displayDisplayMenu();
                     break;
                 case 0:
                     cout << "Thank you for using the JAWS Issue Tracker program." << endl;
@@ -67,7 +65,69 @@ private:
                     handleAddChangeRequest();
                     break;
                 case 0:
-                    cout << "Returning to Main Menu..." << endl;
+                    cout << "Returning to Main Menu...\n" << endl;
+                    break;
+                default:
+                    cout << "Invalid selection. Please enter a valid option." << endl;
+                    break;
+            }
+            
+        } while (choice != 0);
+    }
+
+    void displayUpdatesMenu() {
+        int choice;
+
+        do {
+            cout << "\nUpdates Menu:" << endl;
+            cout << "1) Update User" << endl;
+            cout << "2) Update Single Issue" << endl;
+            cout << "0) Return to Main Menu" << endl;
+            cout << "Enter Selection: ";
+            cin >> choice;
+
+            switch (choice) {
+                case 1:
+                    handleUpdateUser();
+                    break;
+                case 2:
+                    handleUpdateSingleIssue();
+                    break;
+                case 0:
+                    cout << "Returning to Main Menu...\n" << endl;
+                    break;
+                default:
+                    cout << "Invalid selection. Please enter a valid option." << endl;
+                    break;
+            }
+            
+        } while (choice != 0);
+    }
+
+    void displayDisplayMenu() {
+        int choice;
+
+        do {
+            cout << "\nDisplay Menu:" << endl;
+            cout << "1) Remaining Items to be Implemented Report" << endl;
+            cout << "2) Users to be Notified Report" << endl;
+            cout << "3) Status of Change Items" << endl;
+            cout << "0) Return to Main Menu" << endl;
+            cout << "Enter Selection: ";
+            cin >> choice;
+
+            switch (choice) {
+                case 1:
+                    handleRemainingItemsReport();
+                    break;
+                case 2:
+                    handleUsersToBeNotifiedReport();
+                    break;
+                case 3:
+                    handleStatusOfChangeItems();
+                    break;
+                case 0:
+                    cout << "Returning to Main Menu...\n" << endl;
                     break;
                 default:
                     cout << "Invalid selection. Please enter a valid option." << endl;
@@ -92,13 +152,28 @@ private:
         // Add your code for 'Add Change Request' operation here
     }
 
-    void handleUpdates() {
-        cout << "Executing 'Updates' operation..." << endl;
-        // Placeholder for Updates functionality
+    void handleUpdateUser() {
+        cout << "Executing 'Update User' operation..." << endl;
+        // Add your code for 'Update User' operation here
     }
 
-    void handleDisplay() {
-        cout << "Executing 'Display' operation..." << endl;
-        // Placeholder for Display functionality
+    void handleUpdateSingleIssue() {
+        cout << "Executing 'Update Single Issue' operation..." << endl;
+        // Add your code for 'Update Single Issue' operation here
+    }
+
+    void handleRemainingItemsReport() {
+        cout << "Executing 'Remaining Items to be Implemented Report' operation..." << endl;
+        // Add your code for 'Remaining Items Report' operation here
+    }
+
+    void handleUsersToBeNotifiedReport() {
+        cout << "Executing 'Users to be Notified Report' operation..." << endl;
+        // Add your code for 'Users to be Notified Report' operation here
+    }
+
+    void handleStatusOfChangeItems() {
+        cout << "Executing 'Status of Change Items' operation..." << endl;
+        // Add your code for 'Status of Change Items' operation here
     }
 };
