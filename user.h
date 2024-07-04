@@ -1,10 +1,16 @@
+/* Revision History: 
+   Rev. 1 - 04/07/24 Original by JAWS */
+//================================ 
+/* This module is the implementation of the User class. 
+   User class contains all the data about user and functions to access them. */
+//================================ 
 #ifndef USER_H
 #define USER_H
 
 #include <iostream>
 #include <cstring> // For string manipulation functions
 using namespace std;
-
+//================================ 
 class User {
 public:
     // Constructors
