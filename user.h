@@ -32,7 +32,7 @@ public:
     // Utility methods (if any)
     void displayUserInfo() const; // Example utility method to display user information
 
-    private:
+private:
     char userID[8];
     char name[30];
     char phone[12];
