@@ -4,7 +4,7 @@
 // Description: This module is the main.cpp and initializes and runs the UI module.
 //==================================================
 #include <iostream>
-#include "ui.cpp" // Include the UI module source file
+#include "UI.cpp" // Include the UI module source file
 
 using namespace std;
 //==================================================
