@@ -8,6 +8,8 @@
 
 using namespace std;
 //==================================================
+
+//----------------------
 void main() {
     UIModule uiModule; // Create an instance of UIModule
     uiModule.run();    // Call the run() method to start the UI module
@@ -27,6 +29,9 @@ Rev. 1 - 04/07/24 Original by JAWS
 Description: Here write a couple sentences on what this module is for 
 //==================================================
 Any include statements will go here
+//==================================================
+Any static, exported, global, etc variables, functions
+will go here
 //==================================================
 Any class definitions will go here in the following order
 Classes:
