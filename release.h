@@ -26,45 +26,55 @@ using namespace std;
 class Release {
 
 public:
-    const char* getReleaseID () const;
-    // Parameters: None (no parameters)
-    // Returns:
-    //   Pointer to a constant character array containing the release ID.
-    // Description:
-    //   Returns the release ID of the Release object.
+    // Constructors
+    //----------------------
+    Release (); // Default constructor
 
-    const Product& getProduct () const;
-    // Parameters: None (no parameters)
-    // Returns:
-    //   Reference to a constant Product object representing the associated product.
-    // Description:
-    //   Returns the associated Product object of the Release.
-
-    const char* getReleaseDate () const;
-    // Parameters: None (no parameters)
-    // Returns:
-    //   Pointer to a constant character array containing the release date.
-    // Description:
-    //   Returns the release date of the Release object.
-
-    void setReleaseID (const char* releaseID);
+    //----------------------
+    Release (const char* releaseID, const Product& product, const char* releaseDate); // Parameterized constructor
+    // Parameterized constructor initializing releaseID, product, and releaseDate with provided values.
     // Parameters:
     //   - releaseID: Pointer to a character array containing the release ID (input)
-    // Description:
-    //   Sets the release ID of the Release object to the provided value.
+    //   - product: Reference to a Product object representing the associated product (input)
+    //   - releaseDate: Pointer to a character array containing the release date (input)
 
+    // Getter methods
+    //----------------------
+    const char* getReleaseID () const;
+    // Retrieves the release ID.
+    // Parameters: None (no parameters)
+
+    //----------------------
+    const Product& getProduct () const;
+    // Retrieves the associated product.
+    // Parameters: None (no parameters)
+
+    //----------------------
+    const char* getReleaseDate () const;
+    // Retrieves the release date.
+    // Parameters: None (no parameters)
+
+    // Setter methods
+    //----------------------
+    void setReleaseID (const char* releaseID);
+    // Sets the release ID.
+    // Parameters:
+    //   - releaseID: Pointer to a character array containing the release ID (input)
+
+    //----------------------
     void setProduct (const Product& product);
+    // Sets the associated product.
     // Parameters:
     //   - product: Reference to a Product object representing the associated product (input)
-    // Description:
-    //   Sets the associated Product object of the Release.
 
+    //----------------------
     void setReleaseDate (const char* releaseDate);
+    // Sets the release date.
     // Parameters:
     //   - releaseDate: Pointer to a character array containing the release date (input)
-    // Description:
-    //   Sets the release date of the Release object to the provided value.
-   
+
+    // Utility methods
+    //----------------------
     bool addRelease (const char* fileName);
     // Description:
     //   Adds the details of the Release object to the file identified by fileName.
@@ -75,7 +85,8 @@ public:
     // Exceptions:
     //   May throw an exception if the file specified by fileName does not exist or cannot be accessed.
 
-    bool checkRelease(const char* fileName, const char* releaseIDToFind);
+    //----------------------
+    bool checkRelease (const char* fileName, const char* releaseIDToFind);
     // Description:
     //   Checks if a release with the specified release ID exists in the file identified by fileName.
     // Parameters:
@@ -87,9 +98,10 @@ public:
     //   May throw an exception if the file specified by fileName does not exist or cannot be accessed.
 
 private:
-    char releaseID[8];
-    Product product; // Product object to reference Product class
-    char releaseDate[11]; // Assuming release date format YYYY-MM-DD
+    char releaseID[8]; // Member variable for storing release ID (max length: 8 characters)
+    Product product; // Product object representing the associated product
+    char releaseDate[11]; // Member variable for storing release date (format: YYYY-MM-DD)
 };
 
 #endif // RELEASE_H
+//==================================================
