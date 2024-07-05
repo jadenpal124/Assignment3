@@ -83,17 +83,15 @@ public:
     // Exceptions:
     //   May throw an exception if the file specified by fileName does not exist or cannot be accessed.
 
+    // Session management methods
     //----------------------
-    void initChReq (const changeItem& changeItem, const User& user, const Release* associatedRelease);
-    // Description: Initializes the change request with the provided values.
-    // Parameters:
-    //   - changeItem: Reference to a constant changeItem object representing the change item. (input)
-    //   - user: Reference to a constant User object representing the user. (input)
-    //   - associatedRelease: Pointer to a Release object representing the associated release. (input)
+    void initChReq ();
+    // Description: Initializes the change request by calling the default constructor
+    //              and allocated any memeory on heap.
 
     //----------------------
     void closeChReq ();
-    // Description: Closes the change request by setting its status to Done.
+    // Description: Delete the Object and frees any memory allocated on the heap.
 
 private:
     User user; // User object to reference User class
