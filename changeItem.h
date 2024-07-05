@@ -127,17 +127,6 @@ public:
     // Returns: Position of the change item ID in the file, or -1 if not found.
     // Exceptions: May throw an exception if the file specified by fileName does not exist or cannot be accessed.
 
-    void initChItem (int changeItemID, const char* description, const Product* product, const Release* releasePtr);
-    // Description: Initializes the change item with the provided values.
-    // Parameters:
-    //     - changeItemID: Integer ID of the change item (input)
-    //     - description: Pointer to a character array containing the description (input)
-    //     - product: Pointer to the associated Product object (input)
-    //     - releasePtr: Pointer to the anticipated Release object (input)
-
-    void closeChItem ();
-    // Description: save the change item and free the memory.
-
     //----------------------
     void displayRemainingReports (const char* fileName) const;    
     // Description: Displays change items that still need to be implemented or are in progress.
@@ -150,6 +139,15 @@ public:
     // Parameters:
     //     - fileName: Pointer to a character array containing the file name (input)
     // Exceptions: May throw an exception if the file specified by fileName does not exist or cannot be accessed.
+
+    // Session management methods
+    //----------------------
+    void initChItem ();
+    // Description: Initializes the obj with default constructor
+
+    //----------------------
+    void closeChItem ();
+    // Description: Delete the Object and frees any memory allocated on the heap.
 
 private:
     int changeItemID;    // Member variable for storing change item ID (integer from [0, 999999])
