@@ -1,7 +1,7 @@
 // mainTest.cpp
 
 #include <iostream>
-#include "user.h" // Include the header file for User class
+#include "User.h" // Include the header file for User class
 
 using namespace std;
 
