@@ -1,10 +1,17 @@
 /* Revision History: 
    Rev. 1 - 04/07/24 Original by JAWS */
 //==================================================
-/* This module is the implementation of the Release class. 
-   User class contains all the data about user and functions to access them. */
+/* This module implements the Release class, which manages data related to software releases.
+
+   The Release class encapsulates attributes such as releaseID, product, and releaseDate, each
+   managed with specific getter and setter methods for accessing and modifying release information.
+   Additionally, utility methods are provided for checking release existence, adding new releases,
+   and searching for releases within specified files.
+
+   The procedures exhibit functional cohesion by collectively managing operations related to release
+   data, ensuring encapsulation and promoting reusability across modules. */
 //==================================================
-/* INCLUDE STATEMENTS */
+
 #ifndef RELEASE_H
 #define RELEASE_H
 
@@ -16,13 +23,11 @@ using namespace std;
 
 //==================================================
 
-
-
 class Release {
 
 public:
     //----------------------
-    const char* getReleaseID() const;
+    const char* getReleaseID () const;
     // Parameters: None (no parameters)
     // Returns:
     //   Pointer to a constant character array containing the release ID.
@@ -30,7 +35,7 @@ public:
     //   Returns the release ID of the Release object.
 
     //----------------------
-    const Product& getProduct() const;
+    const Product& getProduct () const;
     // Parameters: None (no parameters)
     // Returns:
     //   Reference to a constant Product object representing the associated product.
@@ -38,7 +43,7 @@ public:
     //   Returns the associated Product object of the Release.
 
     //----------------------
-    const char* getReleaseDate() const;
+    const char* getReleaseDate () const;
     // Parameters: None (no parameters)
     // Returns:
     //   Pointer to a constant character array containing the release date.
@@ -46,54 +51,48 @@ public:
     //   Returns the release date of the Release object.
 
     //----------------------
-    void setReleaseID(const char* releaseID);
+    void setReleaseID (const char* releaseID);
     // Parameters:
     //   - releaseID: Pointer to a character array containing the release ID (input)
     // Description:
     //   Sets the release ID of the Release object to the provided value.
 
     //----------------------
-    void setProduct(const Product& product);
+    void setProduct (const Product& product);
     // Parameters:
     //   - product: Reference to a Product object representing the associated product (input)
     // Description:
     //   Sets the associated Product object of the Release.
 
     //----------------------
-    void setReleaseDate(const char* releaseDate);
+    void setReleaseDate (const char* releaseDate);
     // Parameters:
     //   - releaseDate: Pointer to a character array containing the release date (input)
     // Description:
     //   Sets the release date of the Release object to the provided value.
-
+   
     //----------------------
-    bool checkReleaseExists(const char* fileName, const char* releaseIDToFind);
-    // Parameters:
-    //   - fileName: Pointer to a character array containing the file name (input)
-    //   - releaseIDToFind: Pointer to a character array containing the release ID to search for (input)
-    // Returns:
-    //   true if the release with the given ID exists in the file, false otherwise.
+    bool addRelease (const char* fileName);
     // Description:
-    //   Checks if a release with the specified release ID exists in the file identified by fileName.
-
-    //----------------------
-    bool addRelease(const char* fileName);
+    //   Adds the details of the Release object to the file identified by fileName.
     // Parameters:
     //   - fileName: Pointer to a character array containing the file name (input)
     // Returns:
     //   true if the release details were successfully added to the file, false otherwise.
-    // Description:
-    //   Adds the details of the Release object to the file identified by fileName.
+    // Exceptions:
+    //   May throw an exception if the file specified by fileName does not exist or cannot be accessed.
 
     //----------------------
-    const char* searchRelease(const char* fileName, const char* releaseIDToFind);
-    // Parameters:
-    //   - fileName: Pointer to a character array containing the file name (input)
-    //   - releaseIDToFind: Pointer to a character array containing the release ID to search for (input)
-    // Returns:
-    //   Pointer to a character array containing the details of the release if found, nullptr otherwise.
+    bool checkRelease(const char* fileName, const char* releaseIDToFind);
     // Description:
-    //   Searches for a release with the specified release ID in the file identified by fileName and returns its details.
+    //   Checks if a release with the specified release ID exists in the file identified by fileName.
+    // Parameters:
+    //   - fileName: Pointer to a character array containing the file name (input).
+    //   - releaseIDToFind: Pointer to a character array containing the release ID to search for (input).
+    // Returns:
+    //   true if the release with the given ID exists in the file, false otherwise.
+    // Exceptions:
+    //   May throw an exception if the file specified by fileName does not exist or cannot be accessed.
 
 private:
     char releaseID[8];
