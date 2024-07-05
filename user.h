@@ -20,9 +20,9 @@ using namespace std;
 class User {
 public:
     // Constructors
-    User(); // Default constructor
+    User (); // Default constructor
 
-    User(const char* userID, const char* name, const char* phone, const char* email); 
+    User (const char* userID, const char* name, const char* phone, const char* email); 
     // Description: Parameterized constructor initializing userID, name, phone, and email with provided values.
     // Parameters:
     //   - userID: Pointer to a character array containing the user ID (input)
@@ -32,57 +32,57 @@ public:
 
     // Getter methods
     //----------------------
-    const char* getUserID() const;   
+    const char* getUserID () const;   
     // Description: Getter for retrieving user ID
     // Parameters: None
     // Returns: Pointer to a constant character array containing the user ID
 
     //----------------------
-    const char* getName() const;     
+    const char* getName () const;     
     // Description: Getter for retrieving user name
     // Parameters: None
     // Returns: Pointer to a constant character array containing the user name
 
     //----------------------
-    const char* getPhone() const;    
+    const char* getPhone () const;    
     // Description: Getter for retrieving user phone number
     // Parameters: None
     // Returns: Pointer to a constant character array containing the user phone number
 
     //----------------------
-    const char* getEmail() const;    
+    const char* getEmail () const;    
     // Description: Getter for retrieving user email address
     // Parameters: None
     // Returns: Pointer to a constant character array containing the user email address
 
     // Setter methods
     //----------------------
-    void setUserID(const char* userID); 
+    void setUserID (const char* userID); 
     // Description: Setter for setting user ID
     // Parameters:
     //   - userID: Pointer to a character array containing the user ID (input)
 
     //----------------------
-    void setName(const char* name);     
+    void setName (const char* name);     
     // Description: Setter for setting user name
     // Parameters:
     //   - name: Pointer to a character array containing the user name (input)
 
     //----------------------
-    void setPhone(const char* phone);   
+    void setPhone (const char* phone);   
     // Description: Setter for setting user phone number
     // Parameters:
     //   - phone: Pointer to a character array containing the user phone (input)
 
     //----------------------
-    void setEmail(const char* email);   
+    void setEmail (const char* email);   
     // Description: Setter for setting user email address
     // Parameters:
     //   - email: Pointer to a character array containing the email (input)
 
     // Utility methods
     //----------------------
-    void displayUserInfo(const char* fileName) const;
+    void displayUserInfo (const char* fileName) const;
     // Description: Displays user information from the specified file.
     // Parameters: 
     //   - fileName: Pointer to a character array containing the file name where user information is stored (input).
@@ -90,7 +90,7 @@ public:
     //   May throw an exception if the specified file (fileName) does not exist or cannot be accessed.
 
     //----------------------
-    bool changeUserInfo(const char* fileName);
+    bool changeUserInfo (const char* fileName);
     // Description: Updates the user's information such as name, phone, email, and department in the specified file.
     // Parameters:
     //   - fileName: Pointer to a character array containing the file name where user information is stored (input).
@@ -100,7 +100,7 @@ public:
     //   May throw an exception if the specified file (fileName) does not exist or cannot be accessed.
 
     //----------------------
-    User& checkUser(const char* fileName, const char* userID);
+    User& checkUser (const char* fileName, const char* userID);
     // Description: Searches the specified file for a user based on the provided userID 
     //              and returns a reference to the found User object if the user exists.
     // Parameters:
@@ -112,7 +112,7 @@ public:
     //   May throw an exception if the file specified by fileName does not exist.
 
     //----------------------
-    bool addUser(const char* fileName);
+    bool addUser (const char* fileName);
     // Description: Adds the user's details to the specified file.
     // Parameters:
     //   - fileName: Pointer to a character array containing the file name (input).
@@ -120,6 +120,17 @@ public:
     //   true if the user details were successfully added to the file; false otherwise.
     // Exceptions:
     //   May throw an exception if the file specified by fileName does not exist.
+
+
+    // Session management methods
+    //----------------------
+    void initUser ();
+    // Description: this will initialize a obj upon startup.
+
+    //----------------------
+    void closeUser ();
+    // Description: Delete the Object and frees any memory allocated on the heap.
+
 
 private:
     char userID[8];   // Member variable for storing user ID (max length: 8 characters)
