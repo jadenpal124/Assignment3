@@ -97,6 +97,15 @@ public:
     // Exceptions:
     //   May throw an exception if the file specified by fileName does not exist or cannot be accessed.
 
+    // Session management methods
+    //----------------------
+    void initRelease ();
+    // Description: Initializes the obj with default constructor
+
+    //----------------------
+    void closeRelase ();
+    // Description: Delete the Object and frees any memory allocated on the heap.
+
 private:
     char releaseID[8]; // Member variable for storing release ID (max length: 8 characters)
     Product product; // Product object representing the associated product
