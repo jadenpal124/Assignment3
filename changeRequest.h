@@ -1,9 +1,12 @@
-//Revision History: 
-//Rev. 1 - 04/07/24 Original by JAWS */
+// Revision History:
+// Rev. 1 - 04/07/24 Original by Soroush
 //==================================================
-//This module is the implementation of the changeRequest class. 
-//changeRequest class contains all the data about change request and functions to access them.
+// This module implements the changeRequest class, which encapsulates data related to change requests
+// and provides methods to access and manipulate them. The class integrates data about users, products,
+// change items, and associated releases, fostering high cohesion by managing cohesive operations within
+// the context of change requests.
 //==================================================
+
 #ifndef CHANGEREQUEST_H
 #define CHANGEREQUEST_H
 
@@ -15,6 +18,7 @@
 #include "Release.h"
 
 using namespace std;
+
 //==================================================
 class changeRequest {
 public:
@@ -26,32 +30,23 @@ public:
     // Parameters:
     //   - productID: Pointer to a character array containing the product ID (input)
     //   - name: Pointer to a character array containing the product name (input)
-    // Exceptions: None.
 
     // Getter methods
     //----------------------
     const Product& getProduct() const;
     // Description: Returns the associated Product object of the change request.
-    // Parameters: None (no parameters)
-    // Exceptions: None.
 
     //----------------------
     const User& getUser() const;
     // Description: Returns the associated User object of the change request.
-    // Parameters: None (no parameters)
-    // Exceptions: None.
 
     //----------------------
     const changeItem& getChangeItem() const;
     // Description: Returns the associated changeItem object of the change request.
-    // Parameters: None (no parameters)
-    // Exceptions: None.
 
     //----------------------
     const Release& getAssociatedRelease() const;
     // Description: Returns the associated Release object of the change request.
-    // Parameters: None (no parameters)
-    // Exceptions: None.
 
     // Setter methods
     //----------------------
@@ -59,51 +54,46 @@ public:
     // Description: Sets the product of the changeRequest object to the provided value.
     // Parameters:
     //   - product: Reference to a constant Product object representing the associated change request. (input)
-    // Exceptions: None.
 
     //----------------------
     void setUser(const User& user);
     // Description: Sets the product of the changeRequest object to the provided value.
     // Parameters:
     //   - user: Reference to a constant Product object representing the associated change request. (input)
-    // Exceptions: None.
 
     //----------------------
     void setChangeItem(const changeItem& changeItem);
     // Description: Sets the change item of the changeRequest object to the provided value.
     // Parameters:
     //   - changeItem: Reference to a constant changeItem object representing the associated change request. (input)
-    // Exceptions: None.
 
     //----------------------
     void setAssociatedRelease(const Release& associatedRelease);
     // Description: Sets the associatedRelease of the changeRequest object to the provided value.
     // Parameters:
     //   - associatedRelease: Reference to a constant Product object representing the associated change request. (input)
-    // Exceptions: None.
 
     //----------------------
-    // Utility methods
-    bool addChangeRequest(const char* fileName);
-    // Description: Adds the changeRequest object to the file identified by fileName.
+
+    // ****Utility Methods****
+    //----------------------
+    bool addChangeRequest (const char* fileName);
+    // Description: Creates and adds the changeRequest object to the file identified by fileName.
     // Parameters:
     //   - fileName: Pointer to a character array containing the file name (input)
-    // Exceptions: None.
+    // Returns: true if the change request was successfully added, false otherwise.
 
     //----------------------
-    void initChReq(const changeItem& changeItem, const User& user, const Release* associatedRelease);
+    void initChReq (const changeItem& changeItem, const User& user, const Release* associatedRelease);
     // Description: Initializes the change request with the provided values.
     // Parameters:
     //   - changeItem: Reference to a constant changeItem object representing the change item. (input)
     //   - user: Reference to a constant User object representing the user. (input)
     //   - associatedRelease: Pointer to a Release object representing the associated release. (input)
-    // Exceptions: None.
 
     //----------------------
     void closeChReq();
     // Description: Closes the change request by setting its status to Done.
-    // Parameters: None (no parameters)
-    // Exceptions: None.
 
 private:
     User user; // User object to reference User class
@@ -112,6 +102,5 @@ private:
     Release associatedRelease; // Release object to reference Release class
     char dateRequested[11]; // Assuming release date format YYYY-MM-DD
 };
-//==================================================
 
 #endif // CHANGEREQUEST_H
