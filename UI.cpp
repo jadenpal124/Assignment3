@@ -4,7 +4,6 @@ using namespace std;
 
 class UIModule {
 public:
-    ControlModule control;
 
     void run() {
         int choice;
@@ -15,13 +14,13 @@ public:
 
             switch (choice) {
                 case 1:
-                    displayAddMenu();
+                     // displayAddMenu();
                     break;
                 case 2:
-                    displayUpdatesMenu();
+                     // displayUpdatesMenu();
                     break;
                 case 3:
-                    displayDisplayMenu();
+                     // displayDisplayMenu();
                     break;
                 case 0:
                     cout << "Thank you for using the JAWS Issue Tracker program." << endl;
@@ -57,13 +56,13 @@ private:
 
             switch (choice) {
                 case 1:
-                    addProductControl();
+                     // addProductControl();
                     break;
                 case 2:
-                    addReleaseControl();
+                     // addReleaseControl();
                     break;
                 case 3:
-                    addChangeRequestControl();
+                     // addChangeRequestControl();
                     break;
                 case 0:
                     cout << "Returning to Main Menu...\n" << endl;
@@ -89,10 +88,10 @@ private:
 
             switch (choice) {
                 case 1:
-                    updateUserControl();
+                     // updateUserControl();
                     break;
                 case 2:
-                    updateChangeItemControl();
+                     // updateChangeItemControl();
                     break;
                 case 0:
                     cout << "Returning to Main Menu...\n" << endl;
@@ -119,68 +118,68 @@ private:
 
             switch (choice) {
                 case 1:
-                    displayRemainingReportControl();
+                     // displayRemReportControl();
                     break;
                 case 2:
-                    displayNotifyReportControl();
+                     // displayNotifyReportControl();
                     break;
                 case 3:
                     getStatusControl();
                     break;
                 case 0:
-                    cout << "Returning to Main Menu...\n" << endl;
+                     // cout << "Returning to Main Menu...\n" << endl;
                     break;
                 default:
-                    cout << "Invalid selection. Please enter a valid option." << endl;
+                     // cout << "Invalid selection. Please enter a valid option." << endl;
                     break;
             }
             
         } while (choice != 0);
     }
 
-    void addProductControl() {
-        const char* productID = "1234";
-        const char* productName = "New Product";
-        control.addProduct(productID, productName);
-    }
+    // void addProductControl() {
+    //     const char* productID = "1234";
+    //     const char* productName = "New Product";
+    //     addProductControl(productID, productName);
+    // }
 
-    void addUserControl() {
-        const char* userID = "user123";
-        const char* userName = "John Doe";
-        const char* userPhone = "1234567890";
-        const char* userEmail = "johndoe@example.com";
-        control.addUser(userID, userName, userPhone, userEmail);
-    }
+    // void addUserControl() {
+    //     const char* userID = "user123";
+    //     const char* userName = "John Doe";
+    //     const char* userPhone = "1234567890";
+    //     const char* userEmail = "johndoe@example.com";
+    //     addUserControl(userID, userName, userPhone, userEmail);
+    // }
 
-     void addChangeRequestControl() {
-        ChangeItem changeItem(1, "New Feature", nullptr, nullptr);
-        User user("U001", "John Doe", "1234567890", "email@example.com");
-        Release release;
-        control.addChangeRequest(changeItem, user, release);
-    }
+    //  void addChangeRequestControl() {
+    //     changeItem changeItem(1, "New Feature", nullptr, nullptr);
+    //     User user("U001", "John Doe", "1234567890", "email@example.com");
+    //     Release release;
+    //     addChangeRequestControl(changeItem, user, release);
+    // }
 
-    // Handlers for Updates Menu
-    void updateUserControl() {
-        const char* userID = "U001";
-        const char* newPhone = "9876543210";
-        const char* newEmail = "newemail@example.com";
-        control.updateUser(userID, newPhone, newEmail);
-    }
+    // // Handlers for Updates Menu
+    // void updateUserControl() {
+    //     const char* userID = "U001";
+    //     const char* newPhone = "9876543210";
+    //     const char* newEmail = "newemail@example.com";
+    //     control.updateUser(userID, newPhone, newEmail);
+    // }
 
-    void updateChangeItemControl() {
-        cout << "Update single issue handled." << endl;
-    }
+    // void updateChangeItemControl() {
+    //     cout << "Update single issue handled." << endl;
+    // }
 
-    // Handlers for Display Menu
-    void displayRemainingReportControl() {
-        cout << "Generating Remaining Items Report..." << endl;
-    }
+    // // Handlers for Display Menu
+    // void displayRemainingReportControl() {
+    //     cout << "Generating Remaining Items Report..." << endl;
+    // }
 
-    void displayNotifyReportControl() {
-        cout << "Generating Users to Be Notified Report..." << endl;
-    }
+    // void displayNotifyReportControl() {
+    //     cout << "Generating Users to Be Notified Report..." << endl;
+    // }
 
-    void getStatusControl() {
-        cout << "Generating Status of Change Items Report..." << endl;
-    }
+    // void getStatusControl() {
+    //     cout << "Generating Status of Change Items Report..." << endl;
+    // }
 };
