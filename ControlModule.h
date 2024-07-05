@@ -9,11 +9,11 @@
 #define CONTROL_MODULE_H
 
 #include <iostream>
-#include "product.h"
-#include "user.h"
-#include "changeRequest.h"
-#include "release.h"
-#include "changeItem.h"
+#include "Product.h"
+#include "User.h"
+#include "ChangeRequest.h"
+#include "Release.h"
+#include "ChangeItem.h"
 
 using namespace std;
 
