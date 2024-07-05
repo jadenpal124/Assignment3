@@ -1,5 +1,5 @@
 #include <iostream>
-#include "controlModule.cpp"
+#include "controlModule.h"
 using namespace std;
 
 class UIModule {
