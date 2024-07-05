@@ -1,8 +1,8 @@
 //Revision History: 
-//Rev. 1 - 04/07/24 Original by JAWS */
+//Rev. 1 - 04/07/24 Original by JAWS
 //==================================================
 //This module is the implementation of the changeItem class.
-//changeItem class contains all the data about a change item and functions to access and modify them. */
+//changeItem class contains all the data about a change item and functions to access and modify them.
 //==================================================
 #ifndef CHANGEITEM_H
 #define CHANGEITEM_H
@@ -137,6 +137,20 @@ public:
     //   - changeItemIDToFind: Integer ID of the change item to find (input)
     // Exceptions: None.
 
+    void initChItem(int changeItemID, const char* description, const Product* product, const Release* releasePtr);
+    // Description: Initializes the change item with the provided values.
+    // Parameters:
+    //   - changeItemID: Integer ID of the change item (input)
+    //   - description: Pointer to a character array containing the description (input)
+    //   - product: Pointer to the associated Product object (input)
+    //   - releasePtr: Pointer to the anticipated Release object (input)
+    // Exceptions: None.
+
+    void closeChItem();
+    // Description: save the change item and free the memory.
+    // Parameters: None (no parameters)
+    // Exceptions: None.
+
 private:
     int changeItemID; // Member variable for storing change item ID (integer from [0, 999999])
     char description[100]; // Member variable for storing change item description (maximum length: 100 characters)
@@ -144,5 +158,6 @@ private:
     const Release* getAnticipatedRelease; // Pointer to associated Release object
     const Product* associatedProduct; // Pointer to associated Product object
 };
+//==================================================
 
 #endif // CHANGEITEM_H
