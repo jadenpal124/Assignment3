@@ -1,7 +1,7 @@
 /* Revision History: 
    Rev. 1 - 04/07/24 Original by JAWS */
 //==================================================
-/* This module defines functions for handling various operations related to product management,
+/* This module defines functions for handling various operations related to adding products, release's, and change requests,
    user updates, change requests, and reports within the system. */
 //==================================================
 /* Include Statements */
