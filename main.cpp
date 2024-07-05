@@ -46,7 +46,7 @@ void funcName(parameters) { // Brace on same line as name.
     int i = 3;
 }
 The following comments must follow each main function.
-//Description: A paragrapgh describing the function on what it does
+//Description: A paragraph describing the function on what it does
                what it will do with its parameters if any, and what 
                it will return
 //Parameters: List each parameter and describe its purpose, along with
@@ -65,6 +65,13 @@ NOTE:
     proceeding words will be Capitalized. e.g. 
 
         thisIsAnExample
+
+    There will be a space following each word and after any symbols e.g.
+
+        void setReleaseDate (const char* releaseDate) {};
+
+        there is a space between setReleaseDate and (const char* releaseDate);
+        also there is a space between () {}.
 
 */
 
