@@ -57,7 +57,7 @@ The following comments must follow each main function.
 //Exceptions: If any exceptions may be caused describe them here.
 
 NOTE: 
-    All general comments will be to the write of line statements. e.g.
+    All general comments will be to the right of line statements. e.g.
 
         Product product; // Product object to reference Product class
 
