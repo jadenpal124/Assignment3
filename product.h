@@ -59,7 +59,7 @@ public:
     // Utility methods
     //----------------------
 
-    User& checkUserExists (const char* fileName, const char* productIDToFind); 
+    Product& checkUserExists (const char* fileName, const char* productIDToFind); 
     // Description: Checks if a user with the given ID exists in a file.
     // Parameters:
     //   - fileName: Pointer to a character array containing the file name (input)
