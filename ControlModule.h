@@ -21,59 +21,43 @@ using namespace std;
 
 // Function prototypes for operations handled by the control module
 
-void AddProduct();
-// Parameters: None
-// Returns: void
+void AddProductControl ();
 // Description:
 //   Executes 'Add Product' operation.
 
 //--------------------
-void AddRelease();
-// Parameters: None
-// Returns: void
+void AddReleaseControl ();
 // Description:
 //   Executes 'Add Release' operation.
 
 //--------------------
-void AddChangeRequest();
-// Parameters: None
-// Returns: void
+void AddChangeRequestControl ();
 // Description:
 //   Executes 'Add Change Request' operation.
 
 //--------------------
-void updateUser();
-// Parameters: None
-// Returns: void
+void updateUserControl ();
 // Description:
 //   Executes 'Update User' operation.
 
 //--------------------
-void  updateChangeItem();
-// Parameters: None
-// Returns: void
+void  updateChangeItemControl ();
 // Description:
 //   Executes 'Update Single Issue' operation.
 
 //--------------------
-void displayRemReport();
-// Parameters: None
-// Returns: void
+void displayRemReportControl ();
 // Description:
-//   Executes 'Remaining Items Report' operation.
+//   Executes ' Displays list Remaining Items Report' operation.
 
 //--------------------
-void displayNotifyReport();
-// Parameters: None
-// Returns: void
+void displayNotifyReportControl ();
 // Description:
-//   Executes 'Users to be Notified Report' operation.
+//   Executes ' Displays Users to be Notified Report' operation.
 
 //--------------------
-void getStatus();
-// Parameters: None
-// Returns: void
+void getStatusControl ();
 // Description:
-//   Executes 'Status of Change Items' operation.
+//   Executes ' Displays list of Status of Change Items' operation.
 
 #endif // CONTROL_MODULE_H
