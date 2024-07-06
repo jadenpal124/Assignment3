@@ -11,9 +11,9 @@
 #include <iostream>
 #include "Product.h"
 #include "User.h"
-#include "ChangeRequest.h"
+#include "changeRequest.h"
 #include "Release.h"
-#include "ChangeItem.h"
+#include "changeItem.h"
 
 using namespace std;
 
@@ -21,17 +21,17 @@ using namespace std;
 
 // Function prototypes for operations handled by the control module
 
-void AddProductControl ();
+void addProductControl ();
 // Description:
 //   Executes 'Add Product' operation.
 
 //--------------------
-void AddReleaseControl ();
+void addReleaseControl ();
 // Description:
 //   Executes 'Add Release' operation.
 
 //--------------------
-void AddChangeRequestControl ();
+void addChangeRequestControl ();
 // Description:
 //   Executes 'Add Change Request' operation.
 
