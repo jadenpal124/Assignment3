@@ -85,12 +85,12 @@ public:
 
     // Session management methods
     //----------------------
-    void initChReq ();
+    void initChangeRequest ();
     // Description: Initializes the change request by calling the default constructor
     //              and allocated any memeory on heap.
 
     //----------------------
-    void closeChReq ();
+    void closeChangeRequest ();
     // Description: Delete the Object and frees any memory allocated on the heap.
 
 private:
