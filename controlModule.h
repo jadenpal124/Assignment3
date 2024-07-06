@@ -21,17 +21,17 @@ using namespace std;
 
 // Function prototypes for operations handled by the control module
 
-void AddProductControl ();
+void addProductControl ();
 // Description:
 //   Executes 'Add Product' operation.
 
 //--------------------
-void AddReleaseControl ();
+void addReleaseControl ();
 // Description:
 //   Executes 'Add Release' operation.
 
 //--------------------
-void AddChangeRequestControl ();
+void addChangeRequestControl ();
 // Description:
 //   Executes 'Add Change Request' operation.
 
@@ -41,12 +41,12 @@ void updateUserControl ();
 //   Executes 'Update User' operation.
 
 //--------------------
-void  updateChangeItemControl ();
+void updateChangeItemControl ();
 // Description:
 //   Executes 'Update Single Issue' operation.
 
 //--------------------
-void displayRemReportControl ();
+void displayRemainingReportControl ();
 // Description:
 //   Executes ' Displays list Remaining Items Report' operation.
 
