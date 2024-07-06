@@ -1,5 +1,5 @@
 #include <iostream>
-#include "ControlModule.h"
+#include "controlModule.h"
 using namespace std;
 
 class UIModule {
@@ -82,7 +82,7 @@ private:
             cout << "\nUpdates Menu:" << endl;
             cout << "1) Update User" << endl;
             cout << "2) Update Single Issue" << endl;
-            cout << "0) Return to Main Menu" << endl;
+            cout << "0) Quit" << endl;
             cout << "Enter Selection: ";
             cin >> choice;
 
@@ -112,13 +112,13 @@ private:
             cout << "1) Remaining Items to be Implemented Report" << endl;
             cout << "2) Users to be Notified Report" << endl;
             cout << "3) Status of Change Items" << endl;
-            cout << "0) Return to Main Menu" << endl;
+            cout << "0) Quit" << endl;
             cout << "Enter Selection: ";
             cin >> choice;
 
             switch (choice) {
                 case 1:
-                     // displayRemReportControl();
+                     // displayRemaingingReportControl();
                     break;
                 case 2:
                      // displayNotifyReportControl();
