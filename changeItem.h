@@ -21,10 +21,10 @@ public:
     // Enum for status
     enum Status {
         Cancelled,
-        NewRequest,
-        ReviewRequest,
-        InProgress,
-        Done
+        Testing,
+        To-Do,
+        In-Progress,
+        Completed
     };
 
     // Constructors
@@ -142,11 +142,11 @@ public:
 
     // Session management methods
     //----------------------
-    void initChItem ();
+    void initChangeItem ();
     // Description: Initializes the obj with default constructor
 
     //----------------------
-    void closeChItem ();
+    void closeChangeItem ();
     // Description: Delete the Object and frees any memory allocated on the heap.
 
 private:
