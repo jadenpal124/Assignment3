@@ -151,7 +151,7 @@ public:
 
 private:
     int changeItemID;    // Member variable for storing change item ID (integer from [0, 999999])
-    char description[100];    // Member variable for storing change item description (maximum length: 100 characters)
+    char description[30];    // Member variable for storing change item description (maximum length: 30 characters)
     Status status;    // Member variable for storing status attribute
     const Release* getAnticipatedRelease;    // Pointer to associated Release object
     const Product* associatedProduct;    // Pointer to associated Product object
