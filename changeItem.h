@@ -142,11 +142,11 @@ public:
 
     // Session management methods
     //----------------------
-    void initChItem ();
+    void initChangeItem ();
     // Description: Initializes the obj with default constructor
 
     //----------------------
-    void closeChItem ();
+    void closeChangeItem ();
     // Description: Delete the Object and frees any memory allocated on the heap.
 
 private:
