@@ -36,6 +36,26 @@ void Product::setName (const char* name) {
     this->productID[sizeof(this->name) - 1] = '\0';
 }
 
+
+
+// Utility methods
+
+void Product::displayProductInfo(const char* fileName) const {
+    ifstream inFile(fileName, ios::binary);
+    if (!inFile) {
+        cerr << "Error: Could not open file " << fileName << endl;
+        throw exception(); // Throwing exception if file cannot be opened
+    }
+
+    // Read product info from file
+    while (inFile.read(reinterpret_cast<char*>(const_cast<Product*>(this)), sizeof(Product))) {
+        cout << "Product ID: " << productID << endl;
+        cout << "Name: " << name << endl;
+    }
+
+    inFile.close();
+}
+
 bool Product::addProduct(const char* fileName) {
     ofstream outFile(fileName, ios::binary | ios::app);
     if (!outFile) {
@@ -49,7 +69,6 @@ bool Product::addProduct(const char* fileName) {
     return true;
 }
 
-// Utility methods
 Product& Product::checkProduct(const char* fileName, const char* productIDToFind) {
     ifstream inFile(fileName, ios::binary);
     if (!inFile) {
