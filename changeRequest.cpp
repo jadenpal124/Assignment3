@@ -1,32 +1,33 @@
+
 #include "changeRequest.h" 
 
 changeRequest::changeRequest () {
     initChangeRequest ();
 }
 
-changeRequest::changeRequest (const changeItem& changeItem, const User& user, const Product& product, const Release* associatedRelease) {
+changeRequest::changeRequest (const changeItem& changeItem, const User& user, const Product& product, const Release& associatedRelease) {
     setChangeItem (changeItem);
     setUser (user);
     setProduct (product);
     setAssociatedRelease (associatedRelease);
 }
 
-const changeRequest::getProduct () const {
+const Product &changeRequest::getProduct () const {
     return product;
 }
 
 
-const changeRequest::getUser () const {
+const User &changeRequest::getUser () const {
     return user;
 }
 
 
-const changeRequest::getChangeItem () const {
+const changeItem &changeRequest::getChangeItem () const {
     return ChangeItem ;
 }
 
 
-const changeRequest::getAssociatedRelease () const {
+const Release &changeRequest::getAssociatedRelease () const {
     return associatedRelease;
 }
 
@@ -62,12 +63,11 @@ bool changeRequest::addChangeRequest (const char* fileName) {
 }
 
 void changeRequest::initChangeRequest () {
-    memset(user, null, sizeof(user));
-    memset(product, null, sizeof(product));
-    memset(changeItem, null, sizeof(changeItem));
-    memset(associatedRelease, null, sizeof(associatedRelease));
+    memset(user, 0, sizeof(user));
+    memset(product, 0, sizeof(product));
+    memset(ChangeItem, 0, sizeof(changeItem));
+    memset(associatedRelease, 0, sizeof(associatedRelease));
 
 }
 
 void changeRequest::closeChangeRequest () {};
-
