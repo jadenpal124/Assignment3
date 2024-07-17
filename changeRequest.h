@@ -25,11 +25,13 @@ public:
     // Constructors
     changeRequest (); // Default constructor initializing changeRequest and name to empty strings.
 
-    changeRequest (const changeItem& changeItem, const User& user, const Release* associatedRelease);
+    changeRequest (const changeItem& changeItem, const User& user,const Product& product, const Release* associatedRelease);
     // Description: Parameterized constructor initializing productID and name with provided values.
     // Parameters:
-    //   - productID: Pointer to a character array containing the product ID (input)
-    //   - name: Pointer to a character array containing the product name (input)
+    //     - changeItem: Reference to a changeItem object representing the associated changeItem (input)
+    //     - user: Reference to a User object representing the associated user (input)
+    //     - product: Reference to a Product object representing the associated product (input)
+    //     - associatedRelease: Reference to a Release object representing the associated Release (input)
 
     // Getter methods
     //----------------------
