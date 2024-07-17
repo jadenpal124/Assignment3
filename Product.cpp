@@ -81,7 +81,7 @@ Product& Product::checkProduct(const char* fileName, const char* productIDToFind
 
     // Search for the product by productID
     while (inFile.read(reinterpret_cast<char*>(&product), sizeof(Product))) {
-        if (strcmp(product.productID, productID) == 0) {
+        if (strcmp(product.productID, productIDToFind) == 0) {
             found = true;
             break;
         }
