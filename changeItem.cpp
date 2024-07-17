@@ -1,5 +1,9 @@
 #include "changeItem.h"
 #include <iomanip>
+#include <vector>
+
+
+
 
 changeItem::changeItem () {
     initChangeItem();
@@ -186,13 +190,101 @@ void changeItem::displayRemainingReports (const char* fileName) const {
 
 }   
 
+changeItem changeItem::displayAndReturnChangeItem(const char* fileName, const Product* productToFind) {
+    ifstream readFile(fileName, ios::binary);
+    if (!readFile) {
+        cerr << "Error: Could not open file " << fileName << endl;
+        throw exception(); // Throwing exception if file cannot be opened
+    }
+
+    Product tempProduct = *productToFind;
+    static changeItem changeItemTemp;
+    int itemTotal = 0;          //total number of items with the specific productID
+    int pageTotal = 0;          //total pages to show the data, it is totalItem divided by 5
+    int pageCount= 0;           //just for counting how many pages we have shown so far
+    int itemCount = 0;          //just for counting how many items we have shown so far
+    int d;
+    char userinput ;
+    vector<changeItem> changeItemVector;
+
+    while (readFile.read(reinterpret_cast<char*>(&changeItemTemp), sizeof(changeItem))) {
+        if (changeItemTemp.getAssociatedProduct() == productToFind) {
+        ++itemTotal;
+        changeItemVector.push_back(changeItemTemp);  //making a vector of changeItem objects so later we can return the object we are looking for
+        }
+    }
+    readFile.close();
+    
+    pageTotal = itemTotal / 5;
+    
+    for (int i = 1 ; i < pageCount ; i++ ) {
+    cout << "Change Item of Product(Page " << i << "/" << pageCount+1 <<")" << endl;
+        std::cout << std::setw(2) << "#" << " "
+            << std::setw(10) << "ProductID" << " "
+            << std::setw(10) << "changeID" << " "
+            << std::setw(10) << "ReleaseID" << " "
+            << std::setw(10) << "Status" << " "
+            << std::setw(20) << "Description" << std::endl;
+        std::cout << std::setw(10) << "--"
+            << std::setw(10) << "---------"
+            << std::setw(10) << "---------"
+            << std::setw(10) << "---------"
+            << std::setw(10) << "---------"
+            << std::setw(20) << "--------------------" << std::endl;
+
+    for (int q= 0; q<5; q++ ) {    
+        //if (changeItemTemp.getAssociatedProduct() == productToFind) {
+            if (itemCount >= itemTotal) {
+                break;
+            }
+            std::cout << std::setw(2) << itemCount+1 << " "
+            << std::setw(10) << tempProduct.getProductID() << " "  // can be changed to a var
+            << std::setw(10) << changeItemVector[itemCount].getChangeItemID() << " "
+            << std::setw(10) << changeItemVector[itemCount].getAnticipatedReleaseID() << " "
+            << std::setw(10) << changeItemVector[itemCount].getStatus() << " "
+            << std::setw(20) << changeItemVector[itemCount].getDescription() << std::endl;  
+        //}
+        ++itemCount;
+    }
+    
+    cout << "Press <enter> to display the next 5 rows, or “q” to go back." << endl;
+    cout << "If the change ID is known enter “s”." << endl;
+    cout << "Type number # to select a change item." << endl;
+    cout << "To return to menu type “0”:" << endl;
+    cin >> userinput ;
+
+    switch (userinput)
+    {
+    case '/0':
+        ++pageCount;
+        break;
+
+    case 'q':
+        itemCount = pageCount*5;
+        break;
+
+    case 's':
+
+    default:    //not checking for invalid input yet
+    int x = userinput - '0';
+    return changeItemVector[x];
+    break;
+    }
+    }
+
+}
+
 void changeItem::displayNotifyReport (const char* fileName) const {
 
 }    
 
 
-void changeItem::initChangeItem ();
+void changeItem::initChangeItem () {
 
-void changeItem::closeChangeItem ();
+}
+
+void changeItem::closeChangeItem () {
+    
+}
 
 
