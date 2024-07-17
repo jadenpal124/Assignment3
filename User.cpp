@@ -1,5 +1,3 @@
-// user.cpp
-
 #include "User.h"
 #include <iostream>
 #include <fstream>
@@ -199,7 +197,7 @@ void User::displayUsersFromFile(const char* fileName) const {
         }
 
         if (userCount % 5 == 0) {
-            cout << "Press Enter to view next user or 'q' to stop: " << endl;
+            cout << "Press Enter to view next user or 'q' to stop: ";
             cin.get(choice);
             if (choice == 'q') {
                 break; // Exit loop if user chooses to stop
