@@ -58,16 +58,23 @@ public:
 
     // Utility methods
     //----------------------
-
-    Product& checkUserExists (const char* fileName, const char* productIDToFind); 
-    // Description: Checks if a user with the given ID exists in a file.
+    Product& checkProductExists (const char* fileName, const char* productIDToFind); 
+    // Description: Checks if a product with the given Product ID exists in a file.
     // Parameters:
     //   - fileName: Pointer to a character array containing the file name (input)
-    //   - productIDToFind: Pointer to a character array containing the user ID to search for (input)
+    //   - productIDToFind: Pointer to a character array containing the Product ID to search for (input)
     // Returns:
-    //   - Reference to the User object if the user with the given ID exists in the file.
+    //   - Reference to the Product object if the product with the given Product ID exists in the file.
     // Exceptions: May throw an exception if the file specified by fileName does not exist or cannot be accessed.
 
+    //----------------------
+    void displayProductInfo (const char* fileName) const;
+    // Description: Displays product information from the specified file.
+    // Parameters: 
+    //   - fileName: Pointer to a character array containing the file name where product information is stored (input).
+    // Exception:
+    //   May throw an exception if the specified file (fileName) does not exist or cannot be accessed.
+    
     //----------------------
     bool addProduct (const char* fileName); 
     // Description: Creates a product and adds it to the file.
