@@ -4,7 +4,7 @@ changeRequest::changeRequest () {
     initChangeRequest ();
 }
 
-changeRequest (const changeItem& changeItem, const User& user, const Product& product, const Release* associatedRelease) {
+changeRequest::changeRequest (const changeItem& changeItem, const User& user, const Product& product, const Release* associatedRelease) {
     setChangeItem (changeItem);
     setUser (user);
     setProduct (product);
