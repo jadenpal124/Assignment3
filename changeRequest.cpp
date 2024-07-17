@@ -41,7 +41,7 @@ void changeRequest::setUser (const User& user) {
 
 
 void changeRequest::setChangeItem (const changeItem& changeItem) {
-    this->changeItem = changeItem;
+    this->ChangeItem = changeItem;
 }
 
 
