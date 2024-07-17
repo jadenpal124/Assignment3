@@ -14,6 +14,7 @@
 #define USER_H
 
 #include <iostream>
+#include <fstream>
 #include <cstring> // For string manipulation functions
 using namespace std;
 //==================================================
@@ -131,12 +132,20 @@ public:
     void closeUser ();
     // Description: Delete the Object and frees any memory allocated on the heap.
 
+    //----------------------
+    void displayUsersFromFile(const char* fileName) const;
+    // Description: Displays users stored in a file in batches of 5, allowing scrolling.
+    //              User can press Enter to view the next 5 users or 'q' to stop.
+    // Parameters:
+    //   - fileName: Pointer to a character array containing the file name where user information is stored (input).
+    // Exceptions:
+    //   May throw an exception if the specified file (fileName) does not exist or cannot be accessed.
 
 private:
-    char userID[8];   // Member variable for storing user ID (max length: 8 characters)
-    char name[30];    // Member variable for storing user name (max length: 30 characters)
-    char phone[12];   // Member variable for storing user phone number (max length: 12 characters)
-    char email[24];   // Member variable for storing user email address (max length: 24 characters)
+    char userID[9];   // Member variable for storing user ID (max length: 8 characters)
+    char name[31];    // Member variable for storing user name (max length: 30 characters)
+    char phone[13];   // Member variable for storing user phone number (max length: 12 characters)
+    char email[25];   // Member variable for storing user email address (max length: 24 characters)
 };
 
 #endif // USER_H
