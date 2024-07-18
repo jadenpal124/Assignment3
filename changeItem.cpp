@@ -157,9 +157,11 @@ void changeItem::displayRemainingReports (const char* fileName) const {
         throw exception(); // Throwing exception if file cannot be opened
     }
 
-    static changeItem ChangeItem;
-    static Product tempProduct;
-    static int thePlace = 0;
+    changeItem ChangeItem;
+    Product tempProduct;
+    int thePlace = 0;
+
+    tempProduct.displayProductFromFile(fileName);
 
     //we need a function from product.h that displays all the products so use can choose the product - according to assignment2 we need to display all th products
 
