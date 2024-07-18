@@ -1,3 +1,4 @@
+
 // Revision History:
 // Rev. 1 - 04/07/24 Original by JAWS
 //==================================================
@@ -48,7 +49,7 @@ public:
     // Description: Getter for retrieving change item description
 
     //----------------------
-    const Release* getAnticipatedReleaseID () const;    
+    const char* getAnticipatedReleaseID () const;    
     // Description: Getter for retrieving anticipated release ID
 
     //----------------------
@@ -56,7 +57,7 @@ public:
     // Description: Getter for retrieving status of change item
 
     //----------------------
-    const Product* getAssociatedProduct () const;    
+    const char* getAssociatedProductID () const;    
     // Description: Getter for retrieving associated product
 
     // Setter methods
@@ -142,6 +143,9 @@ public:
 
     // Session management methods
     //----------------------
+
+    changeItem displayAndReturnChangeItem(const char* fileName, const Product* productToFind) ;
+    
     void initChangeItem ();
     // Description: Initializes the obj with default constructor
 
@@ -153,7 +157,7 @@ private:
     int changeItemID;    // Member variable for storing change item ID (integer from [0, 999999])
     char description[30];    // Member variable for storing change item description (maximum length: 30 characters)
     Status status;    // Member variable for storing status attribute
-    const Release* getAnticipatedRelease;    // Pointer to associated Release object
+    const Release* anticipatedRelease;    // Pointer to associated Release object
     const Product* associatedProduct;    // Pointer to associated Product object
 };
 
