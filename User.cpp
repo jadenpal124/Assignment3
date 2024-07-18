@@ -161,51 +161,180 @@ void User::closeUser() {
     // This class does not use heap memory, so nothing to do here.
 }
 
-void User::displayUsersFromFile(const char* fileName) const {
+User User::displayUsersFromFile(const char* fileName) const {
     ifstream inFile(fileName, ios::binary);
     if (!inFile) {
         cerr << "Error: Could not open file " << fileName << endl;
-        return;
+        return User(); // Return a default user in case of error
     }
 
-    inFile.seekg(0, ios::end); // Move file pointer to end to get file size
-    streampos fileSize = inFile.tellg();
-    inFile.seekg(0, ios::beg); // Move file pointer back to beginning
+    const int numRecordsPerPage = 5; // Number of records to display per page
+    int startRecord = 0; // Starting record index
 
-    const int recordSize = sizeof(User);
-    User user;
-    int userCount = 0;
-    char choice = ' ';
+    bool displayNextPage = true;
+    User selectedUser; // To store the selected user
 
-    while (inFile.read(reinterpret_cast<char*>(&user), recordSize)) {
-        // Check if user is valid (assuming userID is not empty as a validity check)
-        if (strlen(user.userID) == 0) {
-            continue;
+    while (displayNextPage) {
+        // Display header
+        cout << "Change Request - Must Add or Select a User:" << endl;
+        cout << "Request Status (Page " << (startRecord / numRecordsPerPage + 1) << ")" << endl;
+        cout << setw(2) << "#" << "  ";
+        cout << setw(10) << "User ID" << "  ";
+        cout << setw(15) << "User Name" << "  ";
+        cout << setw(15) << "Phone Number" << "  ";
+        cout << setw(20) << "Email" << endl;
+        cout << setw(2) << "--" << "  ";
+        cout << setw(10) << "----------" << "  ";
+        cout << setw(15) << "---------------" << "  ";
+        cout << setw(15) << "---------------" << "  ";
+        cout << setw(20) << "--------------------" << endl;
+
+        // Display records
+        bool endOfFile = false;
+        int displayedCount = 0;
+        inFile.clear();
+        inFile.seekg(startRecord * sizeof(User), ios::beg);
+
+        for (int i = 0; i < numRecordsPerPage; ++i) {
+            User user;
+            if (!inFile.read(reinterpret_cast<char*>(&user), sizeof(User))) {
+                endOfFile = true; // End of file
+                break;
+            }
+            cout << setw(2) << startRecord + i + 1 << "  ";
+            cout << setw(10) << user.getUserID() << "  ";
+            cout << setw(15) << user.getName() << "  ";
+            cout << setw(15) << user.getPhone() << "  ";
+            cout << setw(20) << user.getEmail() << endl;
+            ++displayedCount;
         }
 
-        cout << "User ID: " << user.userID << endl;
-        cout << "Name: " << user.name << endl;
-        cout << "Phone: " << user.phone << endl;
-        cout << "Email: " << user.email << endl << endl;
+        // Prompt user for input
+        if (!endOfFile) {
+            cout << endl;
+            cout << "Press <enter> to display the next " << numRecordsPerPage << " rows, or \"q\" to go back." << endl;
+            cout << "If you would like to select a person type the number #." << endl;
+            cout << "If a User ID is known type \"s\" to enter it." << endl;
 
-        ++userCount;
+            string selection;
+            cout << "Enter Selection: ";
+            getline(cin, selection);
 
-        // Check if we have reached end of file
-        if (inFile.tellg() >= fileSize) {
-            cout << "End of file reached." << endl;
-            break;
-        }
+            // Handle user input
+            if (selection.empty()) {
+                // Default action: Display next page
+                startRecord += numRecordsPerPage;
+            } else if (selection == "q") {
+                // Quit action
+                displayNextPage = false; // Exit loop
+            } else if (selection == "s") {
+                // Enter User ID action
+                cout << "Enter User ID: ";
+                string userID;
+                getline(cin, userID);
+                inFile.clear();
+                inFile.seekg(0, ios::beg); // Move file pointer to beginning
+                bool found = false;
+                User user;
+                while (inFile.read(reinterpret_cast<char*>(&user), sizeof(User))) {
+                    if (strcmp(user.getUserID(), userID.c_str()) == 0) {
+                        cout << "User found: " << user.getName() << endl;
+                        selectedUser = user;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    cout << "User ID not found." << endl;
+                } else {
+                    displayNextPage = false; // Exit loop if user is found
+                }
+            } else if (isdigit(selection[0])) {
+                // Select by number action
+                int selectedNumber = stoi(selection);
+                inFile.clear();
+                inFile.seekg((selectedNumber - 1) * sizeof(User), ios::beg);
+                User user;
+                if (inFile.read(reinterpret_cast<char*>(&user), sizeof(User))) {
+                    cout << "User selected: " << user.getName() << endl;
+                    selectedUser = user;
+                    cout << endl;
+                    displayNextPage = false; // Exit loop if user is selected
+                } else {
+                    cout << "Invalid selection." << endl;
+                }
+            } else {
+                cout << "Invalid selection." << endl;
+            }
+        } else {
+            // End of file reached
+            cout << "End of file reached. Press q to go back" << endl;
+            cout << "If you would like to select a person type the number #." << endl;
+            cout << "If a User ID is known type \"s\" to enter it." << endl;
 
-        if (userCount % 5 == 0) {
-            cout << "Press Enter to view next user or 'q' to stop: ";
-            cin.get(choice);
-            if (choice == 'q') {
-                break; // Exit loop if user chooses to stop
+            string selection;
+            cout << "Enter Selection: ";
+            getline(cin, selection);
+
+            if (selection == "q") {
+                displayNextPage = false; // Exit loop
+            } else if (selection == "s") {
+                // Enter User ID action
+                cout << "Enter User ID: ";
+                string userID;
+                getline(cin, userID);
+                inFile.clear();
+                inFile.seekg(0, ios::beg); // Move file pointer to beginning
+                bool found = false;
+                User user;
+                while (inFile.read(reinterpret_cast<char*>(&user), sizeof(User))) {
+                    if (strcmp(user.getUserID(), userID.c_str()) == 0) {
+                        cout << "User found: " << user.getName() << endl;
+                        selectedUser = user;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    cout << "User ID not found." << endl;
+                } else {
+                    displayNextPage = false; // Exit loop if user is found
+                }
+            } else if (isdigit(selection[0])) {
+                // Select by number action
+                int selectedNumber = stoi(selection);
+                inFile.clear();
+                inFile.seekg((selectedNumber - 1) * sizeof(User), ios::beg);
+                User user;
+                if (inFile.read(reinterpret_cast<char*>(&user), sizeof(User))) {
+                    cout << "User selected: " << user.getName() << endl;
+                    selectedUser = user;
+                    displayNextPage = false; // Exit loop if user is selected
+                } else {
+                    cout << "Invalid selection." << endl;
+                }
+            } else {
+                cout << "Invalid selection." << endl;
             }
         }
     }
 
     inFile.close();
+    return selectedUser; // Return the selected user
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
    
