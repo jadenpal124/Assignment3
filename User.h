@@ -133,9 +133,10 @@ public:
     // Description: Delete the Object and frees any memory allocated on the heap.
 
     //----------------------
-    void displayUsersFromFile(const char* fileName) const;
+    User displayUsersFromFile(const char* fileName) const;
     // Description: Displays users stored in a file in batches of 5, allowing scrolling.
     //              User can press Enter to view the next 5 users or 'q' to stop.
+    //              Allows the user to select and returns that user.
     // Parameters:
     //   - fileName: Pointer to a character array containing the file name where user information is stored (input).
     // Exceptions:
