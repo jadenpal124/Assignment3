@@ -32,8 +32,8 @@ changeItem::Status changeItem::getStatus () const {
     return status;
 }    
  
-const Product* changeItem::getAssociatedProduct () const {
-    return associatedProduct;
+const char* changeItem::getAssociatedProductID () const {
+    return associatedProduct->getProductID() ;
 }  
  
 void changeItem::setChangeItemID (int changeItemID) {
@@ -157,13 +157,12 @@ void changeItem::displayRemainingReports (const char* fileName) const {
         throw exception(); // Throwing exception if file cannot be opened
     }
 
-    changeItem ChangeItem;
-    Product tempProduct;
-    int thePlace = 0;
-
-    tempProduct.displayProductFromFile(fileName);
+    static changeItem ChangeItem;
+    static Product tempProduct;
+    static int thePlace = 0;
 
     //we need a function from product.h that displays all the products so use can choose the product - according to assignment2 we need to display all th products
+    tempProduct = tempProduct.displayProductFromFile(fileName);
 
     std::cout << std::setw(2) << "#" << " "
             << std::setw(10) << "ProductID" << " "
@@ -179,8 +178,7 @@ void changeItem::displayRemainingReports (const char* fileName) const {
             << std::setw(20) << "--------------------" << std::endl;
     while (readFile.read(reinterpret_cast<char*>(&ChangeItem), sizeof(changeItem))) {
         ++thePlace;
-        if (ChangeItem.getStatus() != Status::Done || ChangeItem.getStatus() != Status::Cancelled) {
-            tempProduct = ChangeItem.getAssociatedProduct();
+        if ( !(ChangeItem.getStatus() == Status::Done || ChangeItem.getStatus() == Status::Cancelled)&& ChangeItem.getAssociatedProductID() == tempProduct.getProductID()) {
             std::cout << std::setw(2) << thePlace << " "
             << std::setw(10) << tempProduct.getProductID() << " "
             << std::setw(10) << ChangeItem.getChangeItemID() << " "
@@ -216,7 +214,7 @@ changeItem changeItem::displayAndReturnChangeItem(const char* fileName, const Pr
         }
     }
     readFile.close();
-    
+
     pageTotal = itemTotal / 5;
     
     for (int i = 1 ; i < pageCount ; i++ ) {
@@ -286,7 +284,7 @@ void changeItem::initChangeItem () {
 }
 
 void changeItem::closeChangeItem () {
-    
+
 }
 
 
