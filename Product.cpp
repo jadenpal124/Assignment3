@@ -98,94 +98,167 @@ Product& Product::checkProductExists(const char* fileName, const char* productID
     return product;
 }
 
-void Product::displayProductFromFile(const char* fileName) const {
-    ifstream readFile(fileName, ios::binary);
-    if (!readFile) {
+Product Product::displayProductFromFile(const char* fileName) const {
+    ifstream inFile(fileName, ios::binary);
+    if (!inFile) {
         cerr << "Error: Could not open file " << fileName << endl;
-        throw exception(); // Throwing exception if file cannot be opened
+        return Product(); // Return a default product in case of error
     }
 
-    readFile.seekg(0, ios::end);
-    size_t fileSize = readFile.tellg();
-    size_t totalItems = fileSize / sizeof(Product);
-    readFile.seekg(0, ios::beg);
+    const int numRecordsPerPage = 5; // Number of records to display per page
+    int startRecord = 0; // Starting record index
+    bool displayNextPage = true;
+    Product selectedProduct; // To store the selected product
+    bool productSelected = false; // Flag to track if a product was selected
 
-    int pageTotal = (totalItems + 4) / 5; // Total pages, rounded up
-    int pageCount = 0;
-    char userInput;
+    while (displayNextPage) {
+        // Display header
+        cout << "Product List - Select a Product:" << endl;
+        cout << "Page " << (startRecord / numRecordsPerPage + 1) << endl;
+        cout << setw(2) << "#" << "  ";
+        cout << setw(10) << "Product ID" << "  ";
+        cout << setw(15) << "Product Name" << endl;
+        cout << setw(2) << "--" << "  ";
+        cout << setw(10) << "----------" << "  ";
+        cout << setw(15) << "-------------" << endl;
 
-    do {
-        cout << "Product List (Page " << pageCount + 1 << "/" << pageTotal << ")" << endl;
-        cout << setw(2) << "#" << " "
-             << setw(10) << "ProductID" << " "
-             << setw(15) << "Product name" << endl;
-        cout << setw(2) << "--" << " "
-             << setw(10) << "---------" << " "
-             << setw(15) << "------------" << endl;
+        // Display records
+        bool endOfFile = false;
+        int displayedCount = 0;
+        inFile.clear();
+        inFile.seekg(startRecord * sizeof(Product), ios::beg);
 
-        readFile.clear(); // Clear EOF flag
-        readFile.seekg(pageCount * 5 * sizeof(Product), ios::beg);
-
-        for (int i = 0; i < 5 && pageCount * 5 + i < totalItems; ++i) {
-            Product tempProduct;
-            readFile.read(reinterpret_cast<char*>(&tempProduct), sizeof(Product));
-            cout << setw(2) << pageCount * 5 + i + 1 << " "
-                 << setw(10) << tempProduct.getProductID() << " "
-                 << setw(15) << tempProduct.getName() << endl;
+        for (int i = 0; i < numRecordsPerPage; ++i) {
+            Product product;
+            if (!inFile.read(reinterpret_cast<char*>(&product), sizeof(Product))) {
+                endOfFile = true; // End of file
+                break;
+            }
+            cout << setw(2) << startRecord + i + 1 << "  ";
+            cout << setw(10) << product.getProductID() << "  ";
+            cout << setw(15) << product.getName() << endl;
+            ++displayedCount;
         }
 
-        cout << "\nPress <enter> to display the next 5 rows, or “q” to go back." << endl;
-        cout << "If the Product ID is known enter “s”." << endl;
-        cout << "Type number # to select a product." << endl;
-        cout << "Enter Selection: ";
-        userInput = cin.get();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear input buffer
+        // Prompt user for input
+        if (!endOfFile) {
+            cout << endl;
+            cout << "Press <enter> to display the next " << numRecordsPerPage << " rows, or \"q\" to go back." << endl;
+            cout << "If you would like to select a product type the number #." << endl;
+            cout << "If a Product ID is known type \"s\" to enter it." << endl;
 
-        if (userInput == 'q') {
-            if (pageCount > 0) {
-                --pageCount;
-            } else {
-                cout << "Already at the first page." << endl;
-            }
-        } else if (userInput == '\n') {
-            if (pageCount < pageTotal - 1) {
-                ++pageCount;
-            } else {
-                cout << "Already at the last page." << endl;
-            }
-        } else if (userInput == 's') {
-            char searchID[10];
-            cout << "Enter Product ID to search: ";
-            cin.getline(searchID, 10);
-            bool found = false;
+            string selection;
+            cout << "Enter Selection: ";
+            getline(cin, selection);
 
-            readFile.clear();
-            readFile.seekg(0, ios::beg);
-            Product tempProduct;
-            while (readFile.read(reinterpret_cast<char*>(&tempProduct), sizeof(Product))) {
-                if (strcmp(tempProduct.getProductID(), searchID) == 0) {
-                    cout << "Product found: " << tempProduct.getName() << endl;
-                    found = true;
-                    break;
+            // Handle user input
+            if (selection.empty()) {
+                // Default action: Display next page
+                startRecord += numRecordsPerPage;
+            } else if (selection == "q") {
+                // Quit action
+                displayNextPage = false; // Exit loop
+            } else if (selection == "s") {
+                // Enter Product ID action
+                cout << "Enter Product ID: ";
+                string productID;
+                getline(cin, productID);
+                inFile.clear();
+                inFile.seekg(0, ios::beg); // Move file pointer to beginning
+                bool found = false;
+                Product product;
+                while (inFile.read(reinterpret_cast<char*>(&product), sizeof(Product))) {
+                    if (strcmp(product.getProductID(), productID.c_str()) == 0) {
+                        cout << "Product found: " << product.getName() << endl;
+                        selectedProduct = product;
+                        found = true;
+                        productSelected = true;
+                        break;
+                    }
                 }
+                if (!found) {
+                    cout << "Product ID not found." << endl;
+                } else {
+                    displayNextPage = false; // Exit loop if product is found
+                }
+            } else if (isdigit(selection[0])) {
+                // Select by number action
+                int selectedNumber = stoi(selection);
+                inFile.clear();
+                inFile.seekg((selectedNumber - 1) * sizeof(Product), ios::beg);
+                Product product;
+                if (inFile.read(reinterpret_cast<char*>(&product), sizeof(Product))) {
+                    cout << "Product selected: " << product.getName() << endl;
+                    selectedProduct = product;
+                    productSelected = true;
+                    displayNextPage = false; // Exit loop if product is selected
+                } else {
+                    cout << "Invalid selection." << endl;
+                }
+            } else {
+                cout << "Invalid selection." << endl;
             }
+        } else {
+            // End of file reached
+            cout << "End of file reached. Press 'q' to go back." << endl;
+            cout << "If you would like to select a product type the number #." << endl;
+            cout << "If a Product ID is known type \"s\" to enter it." << endl;
 
-            if (!found) {
-                cout << "Product ID not found." << endl;
-            }
-        } else if (isdigit(userInput)) {
-            int selection = userInput - '0';
-            if (selection > 0 && selection <= totalItems) {
-                readFile.clear();
-                readFile.seekg((selection - 1) * sizeof(Product), ios::beg);
-                Product tempProduct;
-                readFile.read(reinterpret_cast<char*>(&tempProduct), sizeof(Product));
-                cout << "Product selected: " << tempProduct.getName() << endl;
+            string selection;
+            cout << "Enter Selection: ";
+            getline(cin, selection);
+
+            if (selection == "q") {
+                displayNextPage = false; // Exit loop
+            } else if (selection == "s") {
+                // Enter Product ID action
+                cout << "Enter Product ID: ";
+                string productID;
+                getline(cin, productID);
+                inFile.clear();
+                inFile.seekg(0, ios::beg); // Move file pointer to beginning
+                bool found = false;
+                Product product;
+                while (inFile.read(reinterpret_cast<char*>(&product), sizeof(Product))) {
+                    if (strcmp(product.getProductID(), productID.c_str()) == 0) {
+                        cout << "Product found: " << product.getName() << endl;
+                        selectedProduct = product;
+                        found = true;
+                        productSelected = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    cout << "Product ID not found." << endl;
+                } else {
+                    displayNextPage = false; // Exit loop if product is found
+                }
+            } else if (isdigit(selection[0])) {
+                // Select by number action
+                int selectedNumber = stoi(selection);
+                inFile.clear();
+                inFile.seekg((selectedNumber - 1) * sizeof(Product), ios::beg);
+                Product product;
+                if (inFile.read(reinterpret_cast<char*>(&product), sizeof(Product))) {
+                    cout << "Product selected: " << product.getName() << endl;
+                    selectedProduct = product;
+                    productSelected = true;
+                    displayNextPage = false; // Exit loop if product is selected
+                } else {
+                    cout << "Invalid selection." << endl;
+                }
             } else {
                 cout << "Invalid selection." << endl;
             }
         }
-    } while (userInput != 'q');
+    }
+
+    inFile.close();
+    if (productSelected) {
+        return selectedProduct; // Return the selected product
+    } else {
+        return Product(); // Return a default product if none selected
+    }
 }
 
 

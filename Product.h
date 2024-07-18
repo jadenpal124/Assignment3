@@ -1,3 +1,4 @@
+
 /* Revision History: 
    Rev. 1 - 04/07/24 Original by JAWS */
 //================================ 
@@ -83,6 +84,9 @@ public:
     // Returns:
     //   - true if the product is successfully added to the file, false otherwise.
     // Exceptions: May throw an exception if the file specified by fileName does not exist or cannot be accessed.
+
+    //----------------------
+    Product displayProductFromFile (const char* fileName) const;
 
     // Session management methods
     //----------------------
