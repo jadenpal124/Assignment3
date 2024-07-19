@@ -1,5 +1,6 @@
 /* Revision History: 
-   Rev. 1 - 04/07/24 Original by JAWS /
+   Rev. 1 - 04/07/24 Original by JAWS 
+   Rev. 1 - 18/07/24 Original by JAWS /
 //==================================================
 / This module defines functions for handling various operations related to adding products, release's, and change requests,
    user updates, change requests, and reports within the system. /
@@ -41,7 +42,7 @@ void updateUserControl ();
 //   Executes 'Update User' operation.
 
 //--------------------
-void  updateChangeItemControl ();
+void  updateChangeItemControl (const char* fileName1, const char* fileName2 );
 // Description:
 //   Executes 'Update Single Issue' operation.
 
