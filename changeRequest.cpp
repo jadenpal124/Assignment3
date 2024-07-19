@@ -62,6 +62,42 @@ bool changeRequest::addChangeRequest (const char* fileName) {
 
 }
 
+void changeRequest::displayNotifyReport (const char* fileName) const {
+    ifstream readFile(fileName, ios::binary);
+    if (!readFile) {
+        cerr << "Error: Could not open file " << fileName << endl;
+        throw exception(); // Throwing exception if file cannot be opened
+    }
+
+    std::cout << std::setw(10) << "User Name" << " "
+        << std::setw(10) << "changeID" << " "
+        << std::setw(10) << "ProductID" << " "
+        << std::setw(20) << "Anticipated ReleaseID" << std::endl;
+    std::cout << std::setw(10) << "---------"
+        << std::setw(10) << "---------"
+        << std::setw(10) << "---------"
+        << std::setw(10) << "---------"
+        << std::setw(20) << "---------------------" << std::endl;
+    
+    static changeRequest tempChangeRequest; 
+    User tempUser;
+    Product tempProduct;
+    Release tempRelease;
+    changeItem tempChangeID;
+
+    while (readFile.read(reinterpret_cast<char*>(&tempChangeRequest), sizeof(tempChangeRequest))) {
+        tempChangeID = tempChangeRequest.getChangeItem();
+        tempUser = tempChangeRequest.getUser();
+        tempProduct = tempChangeRequest.getProduct();
+        tempRelease = tempChangeRequest.getAssociatedRelease();
+        std::cout << std::setw(10) << tempUser.getUserID() << " "
+        << std::setw(10) << tempChangeID.getChangeItemID() << " "
+        << std::setw(10) << tempProduct.getProductID() << " "
+        << std::setw(20) << tempRelease.getReleaseID() << std::endl; 
+    }     
+}    
+
+
 void changeRequest::initChangeRequest () {
     memset(user, 0, sizeof(user));
     memset(product, 0, sizeof(product));
