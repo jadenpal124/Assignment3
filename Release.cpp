@@ -79,6 +79,39 @@ bool Release::checkRelease (const char* fileName, const char* releaseIDToFind) {
     return found;
 }
 
+Release Release::findReleaseAndReturn (const char* fileName, const char* releaseIDToFind , const char* productIDtofind) {
+    ifstream inFile(fileName, ios::binary);
+    if (!inFile) {
+        cerr << "Error: Could not open file " << fileName << endl;
+        throw exception(); // Throwing exception if file cannot be opened
+    }
+
+    static Release release; // Static to ensure it persists after function ends
+    bool found = false;
+    Product tempProduct;
+
+    // Search for the release by releaseID
+    while (inFile.read(reinterpret_cast<char*>(&release), sizeof(Release))) {
+        tempProduct = release.getProduct();
+        if (release.getReleaseID() == releaseID && tempProduct.getProductID()==productIDtofind) {
+            found = true;
+            break;
+        }
+    }
+
+    inFile.close();
+
+    if (!found) {
+        cerr << "Error: Release with ID " << releaseID << " not found." << endl;
+        throw exception(); // Throwing exception if release not found
+    }
+    if (found) {
+        return release;
+    }
+
+
+}
+
 void Release::initRelease () {
     // Initialize object upon startup
     memset(releaseID, 0, sizeof(releaseID));
