@@ -3,7 +3,7 @@
 #include <vector>
 
 
-
+using namespace std;
 
 changeItem::changeItem () {
     initChangeItem();
@@ -85,7 +85,7 @@ changeItem& changeItem::checkChangeItem (const char* fileName, int changeItemIDT
     return ChangeItem;
 }    
 
-bool changeItem::updateChangeItem (const char* fileName, int changeItemIDToFind){
+bool changeItem::updateChangeItem (const char* fileName, changeItem changeItemTofind){
     fstream file(fileName, ios::in | ios::out | ios::binary);
     if (!file) {
         cerr << "Error: Could not open file " << fileName << endl;
@@ -93,19 +93,104 @@ bool changeItem::updateChangeItem (const char* fileName, int changeItemIDToFind)
     }
 
     bool found = false;
+    int changeItemToFindID;
     changeItem temp;
+    char userInput;
+    char* userInput3;
+    char userInput2;
+    Release tempRelease;
+    Release* tempReleaseFound;
+    Status tempStatus;
+    
 
-    // Search for the user by userID and update information
+    changeItemToFindID = changeItemTofind.getChangeItemID();
+
+    // Search for the user by changeItemID and update information
     while (file.read(reinterpret_cast<char*>(&temp), sizeof(changeItem))) {
-        if (temp.getChangeItemID() == changeItemIDToFind ) {
-            // Update information
-            temp.setDescription(description);
-            temp.setAnticipatedRelease(anticipatedRelease);
-            temp.setAssociatedProduct(associatedProduct);
+        if (temp.getChangeItemID() == changeItemToFindID ) {
+            std::cout << "Current details for Change ID: " << std::endl
+            << "ProductID: " << changeItemTofind.getAssociatedProductID() << std::endl
+            << "ChangeID: " << changeItemToFindID << std::endl
+            << "Anticipated ReleaseID: " << changeItemTofind.getAnticipatedReleaseID() << std::endl
+            << "Status: " << changeItemTofind.getStatus() << std::endl
+            << "Description: " << changeItemTofind.getDescription() << std::endl
+            << std::endl 
+            << "Enter the number of the field you want to update:" << std::endl
+            << "    1) ReleaseID" << std::endl
+            << "    2) Status" << std::endl
+            << "    3) Description" << std::endl
+            << "    0) Quit" << std::endl;
+            std::cin >> userInput ;
 
+            switch (userInput)
+            {
+            case '1':
+                while (true) {
+                std::cout << "Enter new Release ID (1-8 Character Length):";
+                std::cin >> userInput3;
+                std::cout << "Do you want to update Release ID to" << userInput << "(select Y/N)?";
+                std::cin >> userInput2;
+                if (userInput2 == 'Y') {
+                    tempReleaseFound = *tempRelease.findReleaseAndReturn(fileName, userInput3, changeItemTofind.getAssociatedProductID() );
+                    changeItemTofind.setAnticipatedRelease(tempReleaseFound);
+                    std::cout << "Release ID Successfully updated." << std::endl;
+                break;
+                }
+                }
+                break;
+            case '2':
+                while (true) {
+                    std::cout << "Enter new Status:" << endl 
+                    << "    1) NewRequest" << std::endl
+                    << "    2) ReviewRequest" << std::endl
+                    << "    3) InProgress" << std::endl
+                    << "    4) Done" << std::endl
+                    << "    5) Cancelled" << std::endl;
+                    std::cin >> userInput;
+                    if (userInput == 1) {
+                        tempStatus = NewRequest;
+                    }
+                    if (userInput == 2) {
+                        tempStatus = ReviewRequest;
+                    }
+                    if (userInput == 3) {
+                        tempStatus = InProgress;
+                    }
+                    if (userInput == 4) {
+                        tempStatus = Done;
+                    }
+                    if (userInput == 5) {
+                        tempStatus = Cancelled;
+                    }
+                    std::cout << "Do you want to update Status to" << tempStatus << "(select Y/N)?";
+                    std::cin >> userInput2;
+                    if (userInput2 == 'Y') {
+                        changeItemTofind.setStatus(tempStatus);
+                        std::cout << "Status Successfully updated." << std::endl;
+                        break;
+                    }
+                }
+                break;
+            case '3':
+                while (true) {
+                    std::cout << "Enter new Description (1-30 Character Length):";
+                    std::cin >> userInput3;
+                    std::cout << "Do you want to update the description to" << userInput3 << "(select Y/N)?";
+                    std::cin >> userInput2;
+                    if (userInput2 == 'Y') {
+                        changeItemTofind.setDescription(userInput3);
+                        std::cout << "Description Successfully updated." << std::endl;
+                        break;
+                    }
+                    break;
+                }
+            case '0':
+                break;
+            }
+            
             // Write back to file
             file.seekp(-static_cast<int>(sizeof(changeItem)), ios::cur);
-            file.write(reinterpret_cast<const char*>(&temp), sizeof(changeItem));
+            file.write(reinterpret_cast<const char*>(&changeItemTofind), sizeof(changeItem));
             found = true;
             break;
         }
@@ -114,6 +199,8 @@ bool changeItem::updateChangeItem (const char* fileName, int changeItemIDToFind)
     file.close();
     return found;
 }    
+
+
 
 bool changeItem::addChangeItem (const char* fileName) {
     ofstream outFile(fileName, ios::binary | ios::app);
@@ -273,10 +360,6 @@ changeItem changeItem::displayAndReturnChangeItem(const char* fileName, const Pr
     }
 
 }
-
-void changeItem::displayNotifyReport (const char* fileName) const {
-
-}    
 
 
 void changeItem::initChangeItem () {
