@@ -1,5 +1,7 @@
+
 // Revision History:
 // Rev. 1 - 04/07/24 Original by Soroush
+// Rev. 2 - 17/07/24 Original by Soroush
 //==================================================
 // This module implements the changeRequest class, which encapsulates data related to change requests
 // and provides methods to access and manipulate them. The class integrates data about users, products,
@@ -25,13 +27,11 @@ public:
     // Constructors
     changeRequest (); // Default constructor initializing changeRequest and name to empty strings.
 
-    changeRequest (const changeItem& changeItem, const User& user,const Product& product, const Release* associatedRelease);
+    changeRequest (const changeItem& changeItem, const User& user, const Product& product, const Release& associatedRelease);
     // Description: Parameterized constructor initializing productID and name with provided values.
     // Parameters:
-    //     - changeItem: Reference to a changeItem object representing the associated changeItem (input)
-    //     - user: Reference to a User object representing the associated user (input)
-    //     - product: Reference to a Product object representing the associated product (input)
-    //     - associatedRelease: Reference to a Release object representing the associated Release (input)
+    //   - productID: Pointer to a character array containing the product ID (input)
+    //   - name: Pointer to a character array containing the product name (input)
 
     // Getter methods
     //----------------------
@@ -84,6 +84,16 @@ public:
     // Returns: true if the change request was successfully added, false otherwise.
     // Exceptions:
     //   May throw an exception if the file specified by fileName does not exist or cannot be accessed.
+
+    //----------------------
+    void displayNotifyReport (const char* fileName) const;    
+    // Description: Displays a list of people who need to be notified upon implementation of a change item.
+    // Parameters:
+    //     - fileName: Pointer to a character array containing the file name (input)
+    // Exceptions: May throw an exception if the file specified by fileName does not exist or cannot be accessed.
+
+    // Session management methods
+    //----------------------
 
     // Session management methods
     //----------------------
