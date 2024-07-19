@@ -1,5 +1,7 @@
+
 /* Revision History: 
-   Rev. 1 - 04/07/24 Original by JAWS */
+   Rev. 1 - 04/07/24 Original by JAWS 
+   Rev. 2 - 17/07/24 Original by JAWS */
 //==================================================
 /* This module implements the Release class, which manages data related to software releases.
 
@@ -97,6 +99,7 @@ public:
     // Exceptions:
     //   May throw an exception if the file specified by fileName does not exist or cannot be accessed.
 
+    Release findReleaseAndReturn (const char* fileName, const char* releaseIDToFind , const char* productIDtofind);
     // Session management methods
     //----------------------
     void initRelease ();
