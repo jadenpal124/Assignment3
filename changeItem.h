@@ -1,6 +1,7 @@
 
 // Revision History:
 // Rev. 1 - 04/07/24 Original by JAWS
+// Rev. 2 - 16/07/24 Original by Soroush
 //==================================================
 // This module implements the changeItem class, which encapsulates data related to individual change items.
 // The class provides methods to access, modify, and persist change item data, ensuring high cohesion
@@ -103,7 +104,7 @@ public:
     // Exceptions: May throw an exception if the file specified by fileName does not exist or cannot be accessed.
 
     //----------------------
-    bool updateChangeItem (const char* fileName, int changeItemIDToFind);    
+    bool updateChangeItem (const char* fileName, changeItem changeItemToFind);    
     // Description: Method to update the change item with the given ID in the given file
     // Parameters:
     //     - fileName: Pointer to a character array containing the file name (input)
@@ -135,14 +136,7 @@ public:
     //     - fileName: Pointer to a character array containing the file name (input)
     // Exceptions: May throw an exception if the file specified by fileName does not exist or cannot be accessed.
 
-    void displayNotifyReport (const char* fileName) const;    
-    // Description: Displays a list of people who need to be notified upon implementation of a change item.
-    // Parameters:
-    //     - fileName: Pointer to a character array containing the file name (input)
-    // Exceptions: May throw an exception if the file specified by fileName does not exist or cannot be accessed.
 
-    // Session management methods
-    //----------------------
 
     changeItem displayAndReturnChangeItem(const char* fileName, const Product* productToFind) ;
     
