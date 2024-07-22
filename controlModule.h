@@ -1,6 +1,5 @@
 /* Revision History: 
-   Rev. 1 - 04/07/24 Original by JAWS 
-   Rev. 1 - 18/07/24 Original by JAWS /
+   Rev. 1 - 04/07/24 Original by JAWS /
 //==================================================
 / This module defines functions for handling various operations related to adding products, release's, and change requests,
    user updates, change requests, and reports within the system. /
@@ -11,10 +10,11 @@
 
 #include <iostream>
 #include "Product.h"
+#include <cstring>
 #include "User.h"
 #include "changeRequest.h"
 #include "Release.h"
-#include "changeItem.h"
+#include "ChangeItem.h"
 
 using namespace std;
 
@@ -42,7 +42,7 @@ void updateUserControl ();
 //   Executes 'Update User' operation.
 
 //--------------------
-void  updateChangeItemControl (const char* fileName1, const char* fileName2 );
+void  updateChangeItemControl ();
 // Description:
 //   Executes 'Update Single Issue' operation.
 
