@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <cstring> // For string manipulation functions
+#include <fstream>
 using namespace std;
 
 //================================

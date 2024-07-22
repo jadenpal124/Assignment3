@@ -38,6 +38,29 @@ void Product::setName (const char* name) {
 }
 
 
+// Copy constructor
+Product::Product(const Product& other) {
+    // Copy data from other object
+    strncpy(this->productID, other.productID, sizeof(this->productID) - 1);
+    this->productID[sizeof(this->productID) - 1] = '\0';
+
+    strncpy(this->name, other.name, sizeof(this->name) - 1);
+    this->name[sizeof(this->name) - 1] = '\0';
+}
+
+// Assignment operator
+Product& Product::operator=(const Product& other) {
+    if (this != &other) { // Self-assignment check
+        // Copy data from other object
+        strncpy(this->productID, other.productID, sizeof(this->productID) - 1);
+        this->productID[sizeof(this->productID) - 1] = '\0';
+
+        strncpy(this->name, other.name, sizeof(this->name) - 1);
+        this->name[sizeof(this->name) - 1] = '\0';
+    }
+    return *(this);
+}
+
 
 // Utility methods
 

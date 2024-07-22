@@ -1,21 +1,48 @@
 #include "Release.h"
 
 Release::Release () {
-    initRelease();
+
 }
 
 Release::Release (const char* releaseID, const Product& product, const char* releaseDate) : product (product) {
-    initRelease(); // Initialize object upon startup
     setReleaseID(releaseID);
     setProduct(product);
     setReleaseDate(releaseDate);
+}
+
+// Copy constructor
+Release::Release(const Release& other) {
+    // Copy releaseID with null-termination
+    strncpy(this->releaseID, other.releaseID, sizeof(this->releaseID) - 1);
+    this->releaseID[sizeof(this->releaseID) - 1] = '\0';
+
+    // Copy the Product object
+    this->product = other.product;
+
+    // Copy releaseDate with null-termination
+    strncpy(this->releaseDate, other.releaseDate, sizeof(this->releaseDate) - 1);
+    this->releaseDate[sizeof(this->releaseDate) - 1] = '\0';
+}
+
+// Overloaded= operator
+Release& Release::operator=(const Release& other) {
+    if (this != &other) {
+        strncpy(this->releaseID, other.releaseID, sizeof(this->releaseID) - 1);
+        this->releaseID[sizeof(this->releaseID) - 1] = '\0';
+
+        this->product = other.product; // Use Product's assignment operator
+
+        strncpy(this->releaseDate, other.releaseDate, sizeof(this->releaseDate) - 1);
+        this->releaseDate[sizeof(this->releaseDate) - 1] = '\0';
+    }
+    return *this;
 }
 
 const char* Release::getReleaseID () const {
     return releaseID;
 }
 
-const Product& Release::getProduct () const {
+const Product Release::getProduct () const {
     return product;
 }
 
@@ -28,9 +55,8 @@ void Release::setReleaseID (const char* releaseID) {
     this->releaseID[sizeof(this->releaseID) - 1] = '\0'; // Ensure null-termination
 }
 
-void Release::setProduct (const Product& product) {
-    this->product = product;
-    this->product[sizeof(this->product) - 1] = '\0'; // Ensure null-termination
+void Release::setProduct (const Product& newProduct) {
+    product = newProduct;
 }
 
 void Release::setReleaseDate (const char* releaseDate) {
@@ -38,7 +64,7 @@ void Release::setReleaseDate (const char* releaseDate) {
     this->releaseDate[sizeof(this->releaseDate) - 1] = '\0'; // Ensure null-termination
 }
 
-bool Release::addRelease (const char* fileName) {
+bool Release::addRelease () {
     ofstream outFile(fileName, ios::binary | ios::app);
     if (!outFile) {
         cerr << "Error: Could not open file " << fileName << endl;
@@ -51,7 +77,7 @@ bool Release::addRelease (const char* fileName) {
     return true;
 }
 
-bool Release::checkRelease (const char* fileName, const char* releaseIDToFind) {
+bool Release::checkRelease (const char* releaseIDToFind) {
     ifstream inFile(fileName, ios::binary);
     if (!inFile) {
         cerr << "Error: Could not open file " << fileName << endl;
@@ -79,7 +105,7 @@ bool Release::checkRelease (const char* fileName, const char* releaseIDToFind) {
     return found;
 }
 
-Release Release::findReleaseAndReturn (const char* fileName, const char* releaseIDToFind , const char* productIDtofind) {
+Release Release::findReleaseAndReturn (const char* releaseIDToFind , const char* productIDtofind) {
     ifstream inFile(fileName, ios::binary);
     if (!inFile) {
         cerr << "Error: Could not open file " << fileName << endl;
@@ -112,11 +138,8 @@ Release Release::findReleaseAndReturn (const char* fileName, const char* release
 
 }
 
-void Release::initRelease () {
-    // Initialize object upon startup
-    memset(releaseID, 0, sizeof(releaseID));
-    memset(product, 0, sizeof(Product));
-    memset(releaseDate, 0, sizeof(releaseDate));
+void Release::initRelease (const char* fileName) {
+    
 }
 
 void Release::closeRelease () {
