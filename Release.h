@@ -1,119 +1,125 @@
-
 /* Revision History: 
-   Rev. 1 - 04/07/24 Original by JAWS 
-   Rev. 2 - 17/07/24 Original by JAWS */
-//==================================================
-/* This module implements the Release class, which manages data related to software releases.
-
-   The Release class encapsulates attributes such as releaseID, product, and releaseDate, each
-   managed with specific getter and setter methods for accessing and modifying release information.
-   Additionally, utility methods are provided for checking release existence, adding new releases,
-   and searching for releases within specified files.
-
-   The procedures exhibit functional cohesion by collectively managing operations related to release
-   data, ensuring encapsulation and promoting reusability across modules. */
-//==================================================
-
+   Rev. 1 - 04/07/24 Original by JAWS */
+//================================ 
+/* This module implements the Release class, which encapsulates data related to a release.
+   The class provides methods to access, modify, and manage release information,
+   including functionalities to add, check, and find releases in a file. The class
+   uses a single file stream for efficient file operations. */
+//================================ 
 #ifndef RELEASE_H
 #define RELEASE_H
 
+#include <cstring>
 #include <iostream>
-#include <cstring> // For string manipulation functions
-#include "Product.h" // Include Product class header
+#include <fstream>
+#include <stdexcept>
+#include "Product.h"
 
 using namespace std;
 
-//==================================================
+//================================
+class Product; // Forward declaration of Product class
 
 class Release {
-
 public:
     // Constructors
     //----------------------
-    Release (); // Default constructor
+    Release(); 
+    // Default constructor initializes the release object with default values.
 
     //----------------------
-    Release (const char* releaseID, const Product& product, const char* releaseDate); // Parameterized constructor
-    // Parameterized constructor initializing releaseID, product, and releaseDate with provided values.
+    Release(const char* releaseID, const Product& product, const char* releaseDate); 
+    // Parameterized constructor initializes the release object with provided values.
     // Parameters:
     //   - releaseID: Pointer to a character array containing the release ID (input)
     //   - product: Reference to a Product object representing the associated product (input)
     //   - releaseDate: Pointer to a character array containing the release date (input)
 
+    //----------------------
+    Release(const Release& other); 
+    // Copy constructor creates a copy of the given Release object.
+    // Parameters:
+    //   - other: Reference to another Release object to copy from (input)
+
+    Release& operator=(const Release& other);
+
     // Getter methods
     //----------------------
-    const char* getReleaseID () const;
+    const char* getReleaseID() const; 
     // Retrieves the release ID.
-    // Parameters: None (no parameters)
 
     //----------------------
-    const Product& getProduct () const;
-    // Retrieves the associated product.
-    // Parameters: None (no parameters)
+    const Product getProduct() const;
+    // Retrieves the associated Product object.
 
     //----------------------
-    const char* getReleaseDate () const;
+    const char* getReleaseDate() const; 
     // Retrieves the release date.
-    // Parameters: None (no parameters)
 
     // Setter methods
     //----------------------
-    void setReleaseID (const char* releaseID);
+    void setReleaseID(const char* releaseID); 
     // Sets the release ID.
     // Parameters:
     //   - releaseID: Pointer to a character array containing the release ID (input)
 
     //----------------------
-    void setProduct (const Product& product);
-    // Sets the associated product.
+    void setProduct(const Product& product); 
+    // Sets the associated Product object.
     // Parameters:
     //   - product: Reference to a Product object representing the associated product (input)
 
     //----------------------
-    void setReleaseDate (const char* releaseDate);
+    void setReleaseDate(const char* releaseDate); 
     // Sets the release date.
     // Parameters:
     //   - releaseDate: Pointer to a character array containing the release date (input)
 
-    // Utility methods
+    // File management methods
     //----------------------
-    bool addRelease (const char* fileName);
-    // Description:
-    //   Adds the details of the Release object to the file identified by fileName.
-    // Parameters:
-    //   - fileName: Pointer to a character array containing the file name (input)
+    bool addRelease(); 
+    // Adds the release object to the file.
     // Returns:
-    //   true if the release details were successfully added to the file, false otherwise.
-    // Exceptions:
-    //   May throw an exception if the file specified by fileName does not exist or cannot be accessed.
+    //   - true if the release is successfully added to the file, false otherwise.
+    // Exceptions: May throw an exception if the file is not open or in a good state.
 
     //----------------------
-    bool checkRelease (const char* fileName, const char* releaseIDToFind);
-    // Description:
-    //   Checks if a release with the specified release ID exists in the file identified by fileName.
+    bool checkRelease(const char* releaseIDToFind); 
+    // Checks if a release with the given release ID exists in the file.
     // Parameters:
-    //   - fileName: Pointer to a character array containing the file name (input).
-    //   - releaseIDToFind: Pointer to a character array containing the release ID to search for (input).
+    //   - releaseIDToFind: Pointer to a character array containing the release ID to search for (input)
     // Returns:
-    //   true if the release with the given ID exists in the file, false otherwise.
-    // Exceptions:
-    //   May throw an exception if the file specified by fileName does not exist or cannot be accessed.
-
-    Release findReleaseAndReturn (const char* fileName, const char* releaseIDToFind , const char* productIDtofind);
-    // Session management methods
-    //----------------------
-    void initRelease ();
-    // Description: Initializes the obj with default constructor
+    //   - true if the release with the given release ID exists in the file, false otherwise.
+    // Exceptions: May throw an exception if the file is not open or in a good state.
 
     //----------------------
-    void closeRelase ();
-    // Description: Delete the Object and frees any memory allocated on the heap.
+    Release findReleaseAndReturn(const char* releaseIDToFind, const char* productIDtoFind); 
+    // Finds and returns the release with the given release ID and product ID.
+    // Parameters:
+    //   - releaseIDToFind: Pointer to a character array containing the release ID to search for (input)
+    //   - productIDtoFind: Pointer to a character array containing the product ID to search for (input)
+    // Returns:
+    //   - Release object if the release with the given IDs is found.
+    // Exceptions: May throw an exception if the file is not open or in a good state.
+
+    //----------------------
+    void initRelease(const char* fileName); 
+    // Initializes the release object and opens the file for both input and output operations.
+    // Parameters:
+    //   - fileName: Pointer to a character array containing the file name to open (input)
+    // Exceptions: May throw an exception if the file cannot be opened.
+
+    //----------------------
+    void closeRelease(); 
+    // Closes the file and releases resources.
 
 private:
-    char releaseID[8]; // Member variable for storing release ID (max length: 8 characters)
-    Product product; // Product object representing the associated product
-    char releaseDate[11]; // Member variable for storing release date (format: YYYY-MM-DD)
+    char releaseID[50];     // Member variable for storing release ID (max length: 50 characters)
+    Product product;        // Member variable for storing the associated Product object
+    char releaseDate[50];   // Member variable for storing release date (max length: 50 characters)
+    fstream file;     // File stream for input and output operations
+    string fileName;        // Store file name for accessing later
 };
+//================================
 
 #endif // RELEASE_H
-//==================================================

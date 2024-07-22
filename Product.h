@@ -1,4 +1,3 @@
-
 /* Revision History: 
    Rev. 1 - 04/07/24 Original by JAWS */
 //================================ 
@@ -12,6 +11,7 @@
 
 #include <iostream>
 #include <cstring> // For string manipulation functions
+#include <fstream>
 using namespace std;
 
 //================================
@@ -30,9 +30,14 @@ public:
     //   - productID: Pointer to a character array containing the product ID (input)
     //   - name: Pointer to a character array containing the product name (input)
 
+    //----------------------
+    Product(const Product& other); // Copy constructor
+
+    //----------------------
+    Product& operator=(const Product& other); // Assignment operator
+
     // Getter methods
     //----------------------
-
     const char* getProductID () const;
     // Retrieves the product ID.
     // Parameters: None (no parameters)
@@ -44,7 +49,6 @@ public:
 
     // Setter methods
     //----------------------
-
     void setProductID (const char* productID);
     // Sets the product ID.
     // Parameters:
@@ -56,50 +60,53 @@ public:
     // Parameters:
     //   - name: Pointer to a character array containing the product name (input)
 
-
     // Utility methods
     //----------------------
-    Product& checkProductExists (const char* fileName, const char* productIDToFind); 
+    Product& checkProductExists (const char* productIDToFind); 
     // Description: Checks if a product with the given Product ID exists in a file.
     // Parameters:
-    //   - fileName: Pointer to a character array containing the file name (input)
     //   - productIDToFind: Pointer to a character array containing the Product ID to search for (input)
     // Returns:
     //   - Reference to the Product object if the product with the given Product ID exists in the file.
     // Exceptions: May throw an exception if the file specified by fileName does not exist or cannot be accessed.
 
     //----------------------
-    void displayProductInfo (const char* fileName) const;
-    // Description: Displays product information from the specified file.
-    // Parameters: 
-    //   - fileName: Pointer to a character array containing the file name where product information is stored (input).
+    void displayProductInfo () const;
+    // Description: Displays product information.
+    // Parameters: None (no parameters).
     // Exception:
     //   May throw an exception if the specified file (fileName) does not exist or cannot be accessed.
     
     //----------------------
-    bool addProduct (const char* fileName); 
+    bool addProduct (); 
     // Description: Creates a product and adds it to the file.
-    // Parameters:
-    //   - fileName: Pointer to a character array containing the file name (input/output)
     // Returns:
     //   - true if the product is successfully added to the file, false otherwise.
     // Exceptions: May throw an exception if the file specified by fileName does not exist or cannot be accessed.
 
     //----------------------
-    Product displayProductFromFile (const char* fileName) const;
+    Product displayProductFromFile () const;
+    // Description: Displays and returns a product from the file.
+    // Parameters: None (no parameters).
+    // Returns: A Product object that matches the criteria.
+    // Exceptions: May throw an exception if the file cannot be accessed.
 
     // Session management methods
     //----------------------
-    void initProduct ();
-    // Description: Initializes the obj with default constructor
+    void initProduct (const char* fileName);
+    // Description: Initializes the obj with default constructor and opens the specified file for operations
+    // Parameters:
+    //   - fileName: Pointer to a character array containing the file name (input)
 
     //----------------------
     void closeProduct ();
-    // Description: Delete the Object and frees any memory allocated on the heap.
+    // Description: Deletes the Object and frees any memory allocated on the heap.
 
 private:
     char productID[8]; // Member variable for storing product ID (max length: 8 characters)
     char name[30]; // Member variable for storing product name (max length: 30 characters)
+    static fstream file; // File stream for read and write operations
+    const char* fileName; // File name for operations
 };
 //================================
 
