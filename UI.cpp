@@ -1,26 +1,26 @@
 #include <iostream>
-#include "controlModule.h"
+#include "ControlModule.h"
 using namespace std;
 
 class UIModule {
 public:
 
-    void run() {
+    void run () {
         int choice;
         do {
-            displayMainMenu();
+            displayMainMenu ();
             cout << "Enter Selection: ";
             cin >> choice;
 
             switch (choice) {
                 case 1:
-                     // displayAddMenu();
+                     displayAddMenu();
                     break;
                 case 2:
-                     // displayUpdatesMenu();
+                     displayUpdatesMenu();
                     break;
                 case 3:
-                     // displayDisplayMenu();
+                     displayDisplayMenu();
                     break;
                 case 0:
                     cout << "Thank you for using the JAWS Issue Tracker program." << endl;
@@ -34,7 +34,7 @@ public:
     }
 
 private:
-    void displayMainMenu() {
+    void displayMainMenu () {
         cout << "Main Menu:" << endl;
         cout << "1) Add" << endl;
         cout << "2) Updates" << endl;
@@ -42,7 +42,7 @@ private:
         cout << "0) Quit" << endl;
     }
 
-    void displayAddMenu() {
+    void displayAddMenu () {
         int choice;
 
         do {
@@ -56,16 +56,17 @@ private:
 
             switch (choice) {
                 case 1:
-                     // addProductControl();
+                     addProductControl();
                     break;
                 case 2:
-                     // addReleaseControl();
+                     addReleaseControl();
                     break;
                 case 3:
-                     // addChangeRequestControl();
+                     addChangeRequestControl();
                     break;
                 case 0:
                     cout << "Returning to Main Menu...\n" << endl;
+                    displayAddMenu();
                     break;
                 default:
                     cout << "Invalid selection. Please enter a valid option." << endl;
@@ -75,26 +76,27 @@ private:
         } while (choice != 0);
     }
 
-    void displayUpdatesMenu() {
+    void displayUpdatesMenu () {
         int choice;
 
         do {
             cout << "\nUpdates Menu:" << endl;
             cout << "1) Update User" << endl;
             cout << "2) Update Single Issue" << endl;
-            cout << "0) Quit" << endl;
+            cout << "0) Return to Main Menu" << endl;
             cout << "Enter Selection: ";
             cin >> choice;
 
             switch (choice) {
                 case 1:
-                     // updateUserControl();
+                     updateUserControl();
                     break;
                 case 2:
-                     // updateChangeItemControl();
+                     updateChangeItemControl();
                     break;
                 case 0:
                     cout << "Returning to Main Menu...\n" << endl;
+                    displayMainMenu();
                     break;
                 default:
                     cout << "Invalid selection. Please enter a valid option." << endl;
@@ -104,7 +106,7 @@ private:
         } while (choice != 0);
     }
 
-    void displayDisplayMenu() {
+    void displayDisplayMenu () {
         int choice;
 
         do {
@@ -112,25 +114,26 @@ private:
             cout << "1) Remaining Items to be Implemented Report" << endl;
             cout << "2) Users to be Notified Report" << endl;
             cout << "3) Status of Change Items" << endl;
-            cout << "0) Quit" << endl;
+            cout << "0) Return to Main Menu" << endl;
             cout << "Enter Selection: ";
             cin >> choice;
 
             switch (choice) {
                 case 1:
-                     // displayRemaingingReportControl();
+                     displayRemReportControl();
                     break;
                 case 2:
-                     // displayNotifyReportControl();
+                     displayNotifyReportControl();
                     break;
                 case 3:
                     getStatusControl();
                     break;
                 case 0:
-                     // cout << "Returning to Main Menu...\n" << endl;
+                     cout << "Returning to Main Menu...\n" << endl;
+                     displayMainMenu();
                     break;
                 default:
-                     // cout << "Invalid selection. Please enter a valid option." << endl;
+                     cout << "Invalid selection. Please enter a valid option." << endl;
                     break;
             }
             
