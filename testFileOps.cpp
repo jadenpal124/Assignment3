@@ -1,3 +1,9 @@
+// testFileOps.cpp
+// Revision History:
+// Rev. 1 - 22/07/24 Original by JAWS
+//==================================================
+// Description: This module is the testFileOps.cpp and runs the unit test.
+//==================================================
 #include <iostream>
 #include <fstream>
 #include <cassert>
@@ -7,14 +13,19 @@
 #include "User.cpp"
 
 using namespace std;
+//==================================================
 
 // Utility function to clear contents of a file
+//----------------------
 void clearFile(const char* fileName) {
+// Description:
+//   clear file contents
     ofstream ofs(fileName, ofstream::out | ofstream::trunc);
     ofs.close();
 }
 
 // Function prototypes for unit tests
+//----------------------
 void testUserClass();
 
 int main() {
@@ -29,7 +40,10 @@ int main() {
 }
 
 // Unit tests for User class
+//----------------------
 void testUserClass() {
+// Description:
+//   test functionality of User class
     const char* fileName = "UT_users_list";
     int passedTests = 0;
     int totalTests = 6; // Total number of tests
