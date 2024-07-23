@@ -1,5 +1,6 @@
+// changeItem.cpp
 // Revision History:
-// Rev. 1 - 04/15/24 Original by JAWS
+// Rev. 1 - 22/07/24 Original by JAWS
 //==================================================
 // This module implements the changeItem class, which encapsulates data related to individual change items.
 // The class provides methods to access, modify, and persist change item data, managing a file internally.
