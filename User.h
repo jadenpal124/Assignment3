@@ -1,5 +1,6 @@
 /* Revision History: 
    Rev. 1 - 04/07/24 Original by JAWS */
+   Rev. 2 - 22/07/24 Original by JAWS */
 //==================================================
 /* This module implements the User class, encapsulating user data and operations.
 
