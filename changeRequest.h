@@ -1,7 +1,7 @@
 
 // Revision History:
 // Rev. 1 - 04/07/24 Original by Soroush
-// Rev. 2 - 17/07/24 Original by Soroush
+// Rev. 2 - 22/07/24 Updated by Jaden
 //==================================================
 // This module implements the changeRequest class, which encapsulates data related to change requests
 // and provides methods to access and manipulate them. The class integrates data about users, products,
