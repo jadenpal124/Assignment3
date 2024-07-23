@@ -1,5 +1,6 @@
+// User.cpp
 /* Revision History: 
-   Rev. 1 - 04/15/24 Original by JAWS */
+   Rev. 1 - 22/07/24 Original by JAWS */
 //==================================================
 /* This module implements the User class, encapsulating user data and operations.
 
