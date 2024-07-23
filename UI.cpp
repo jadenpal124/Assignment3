@@ -1,38 +1,71 @@
+// UI.cpp
+/* Revision History: 
+   Rev. 1 - 04/07/24 Original by JAWS */
+   Rev. 2 - 22/07/24 Original by JAWS */
+//================================ 
+/* This module implements the Product class, which encapsulates data related to a product.
+   The class provides methods to access, modify, and manage product information,
+   demonstrating the principles of abstraction and high cohesion by encapsulating
+   related functionality within the Product class. */
+//================================ 
 #include <iostream>
-#include "ControlModule.h"
+#include "controlModule.h"
 using namespace std;
 
+//================================ 
 class UIModule {
 public:
 
     void run () {
         int choice;
         do {
-            displayMainMenu ();
+             //----------------------
+            displayMainMenu();
+            // Description: display function to display Main Menu
+            // Parameters: None (no parameters)
+            //----------------------
+
             cout << "Enter Selection: ";
             cin >> choice;
-
+            //----------------------
+            
             switch (choice) {
                 case 1:
-                     displayAddMenu();
+                    //----------------------
+                    displayAddMenu();
+                    // Description: display function to display Add Menu
+                    // Parameters: None (no parameters)
                     break;
+                    //----------------------
                 case 2:
-                     displayUpdatesMenu();
+                    //----------------------
+                    displayUpdatesMenu();
+                    // Description: display function to display Updates Menu
+                    // Parameters: None (no parameters)
                     break;
+                    //----------------------
                 case 3:
-                     displayDisplayMenu();
+                    //----------------------
+                    displayDisplayMenu();
+                    // Description: display function to display Display Menu
+                    // Parameters: None (no parameters)
                     break;
+                    //----------------------
                 case 0:
+                    //----------------------
                     cout << "Thank you for using the JAWS Issue Tracker program." << endl;
                     break;
+                    //----------------------
                 default:
+                    //----------------------
                     cout << "Invalid selection. Please enter a valid option." << endl;
                     break;
+                    //----------------------
             }
-            
         } while (choice != 0);
     }
 
+//================================ 
 private:
     void displayMainMenu () {
         cout << "Main Menu:" << endl;
@@ -56,26 +89,44 @@ private:
 
             switch (choice) {
                 case 1:
-                     addProductControl();
+                    //----------------------
+                    addProductControl();
+                    // Description: executes 'Add Product' operation.
+                    // Parameters: None (no parameters)
                     break;
+                    //----------------------
                 case 2:
-                     addReleaseControl();
+                    //----------------------
+                    addReleaseControl();
+                    // Description: executes 'Add Release' operation.
+                    // Parameters: None (no parameters)
                     break;
+                    //----------------------
                 case 3:
-                     addChangeRequestControl();
+                    //----------------------
+                    addChangeRequestControl();
+                    // Description: executes 'Add Product' operation.
+                    // Parameters: None (no parameters)
                     break;
+                    //----------------------
                 case 0:
+                    //----------------------
                     cout << "Returning to Main Menu...\n" << endl;
-                    displayAddMenu();
+                    displayMainMenu();
+                    // Description: return to the main menu.
+                    // Parameters: None (no parameters)
                     break;
+                    //----------------------
                 default:
+                    //----------------------
                     cout << "Invalid selection. Please enter a valid option." << endl;
                     break;
+                    //----------------------
             }
-            
         } while (choice != 0);
     }
 
+    //================================ 
     void displayUpdatesMenu () {
         int choice;
 
@@ -89,14 +140,20 @@ private:
 
             switch (choice) {
                 case 1:
-                     updateUserControl();
+                    updateUserControl();
+                    // Description: executes 'Update User' operation.
+                    // Parameters: None (no parameters)
                     break;
                 case 2:
-                     updateChangeItemControl();
+                    updateChangeItemControl();
+                    // Description: executes 'Update Change Item' operation.
+                    // Parameters: None (no parameters)
                     break;
                 case 0:
                     cout << "Returning to Main Menu...\n" << endl;
                     displayMainMenu();
+                    // Description: return to the main menu.
+                    // Parameters: None (no parameters)
                     break;
                 default:
                     cout << "Invalid selection. Please enter a valid option." << endl;
@@ -106,6 +163,7 @@ private:
         } while (choice != 0);
     }
 
+    //================================ 
     void displayDisplayMenu () {
         int choice;
 
@@ -120,23 +178,41 @@ private:
 
             switch (choice) {
                 case 1:
-                     displayRemReportControl();
+                    //----------------------
+                    displayRemReportControl();
+                    // Description: executes 'Update User' operation.
+                    // Parameters: None (no parameters)
                     break;
+                    //----------------------
                 case 2:
-                     displayNotifyReportControl();
+                    //----------------------
+                    displayNotifyReportControl();
+                    // Description: executes 'Update User' operation.
+                    // Parameters: None (no parameters)
                     break;
+                    //----------------------
                 case 3:
+                    //----------------------
                     getStatusControl();
+                    // Description: executes 'Update User' operation.
+                    // Parameters: None (no parameters)
                     break;
+                    //----------------------
                 case 0:
-                     cout << "Returning to Main Menu...\n" << endl;
-                     displayMainMenu();
+                    //----------------------
+                    cout << "Returning to Main Menu...\n" << endl;
+                    displayMainMenu();
+                    // Description: return to the main menu.
+                    // Parameters: None (no parameters)
                     break;
+                    //----------------------
                 default:
+                    //----------------------
                      cout << "Invalid selection. Please enter a valid option." << endl;
                     break;
+                    //----------------------
             }
-            
         } while (choice != 0);
     }
+    //================================ 
 };
