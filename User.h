@@ -21,7 +21,8 @@ using namespace std;
 class User {
 public:
     // Constructors
-    User (); // Default constructor
+    User (); 
+    // Description: Default constructor initializing a User object with default values.
 
     User (const char* userID, const char* name, const char* phone, const char* email); 
     // Description: Parameterized constructor initializing userID, name, phone, and email with provided values.
@@ -83,70 +84,61 @@ public:
 
     // Utility methods
     //----------------------
-    void displayUserInfo (const char* fileName) const;
-    // Description: Displays user information from the specified file.
-    // Parameters: 
-    //   - fileName: Pointer to a character array containing the file name where user information is stored (input).
+    void displayUserInfo () const;
+    // Description: Displays user information from the currently managed file.
     // Exception:
-    //   May throw an exception if the specified file (fileName) does not exist or cannot be accessed.
+    //   May throw an exception if the file cannot be accessed.
 
     //----------------------
-    bool changeUserInfo (const char* fileName);
-    // Description: Updates the user's information such as name, phone, email, and department in the specified file.
-    // Parameters:
-    //   - fileName: Pointer to a character array containing the file name where user information is stored (input).
+    bool changeUserInfo ();
+    // Description: Updates the user's information such as name, phone, email, and department in the currently managed file.
     // Returns:
-    //   true if the user information was successfully updated in the file; false otherwise.
+    //   true if the user information was successfully updated; false otherwise.
     // Exception:
-    //   May throw an exception if the specified file (fileName) does not exist or cannot be accessed.
+    //   May throw an exception if the file cannot be accessed.
 
     //----------------------
-    User& checkUser (const char* fileName, const char* userID);
-    // Description: Searches the specified file for a user based on the provided userID 
+    User& checkUser (const char* userID);
+    // Description: Searches the currently managed file for a user based on the provided userID 
     //              and returns a reference to the found User object if the user exists.
     // Parameters:
-    //   - fileName: Pointer to a character array containing the file name (input).
     //   - userID: Pointer to a character array containing the user ID to search for (input).
     // Returns:
     //   Reference to a User object representing the user with the given userID.
     // Exceptions:
-    //   May throw an exception if the file specified by fileName does not exist.
+    //   May throw an exception if the file cannot be accessed.
 
     //----------------------
-    bool addUser (const char* fileName);
-    // Description: Adds the user's details to the specified file.
-    // Parameters:
-    //   - fileName: Pointer to a character array containing the file name (input).
+    bool addUser ();
+    // Description: Adds the user's details to the currently managed file.
     // Returns:
-    //   true if the user details were successfully added to the file; false otherwise.
+    //   true if the user details were successfully added; false otherwise.
     // Exceptions:
-    //   May throw an exception if the file specified by fileName does not exist.
-
+    //   May throw an exception if the file cannot be accessed.
 
     // Session management methods
     //----------------------
-    void initUser ();
-    // Description: this will initialize a obj upon startup.
+    void initUser (const char* fileName);
+    // Description: Initializes the User object and opens the file for operations.
 
     //----------------------
     void closeUser ();
-    // Description: Delete the Object and frees any memory allocated on the heap.
+    // Description: Closes the file and performs any necessary cleanup.
 
     //----------------------
-    User displayUsersFromFile(const char* fileName) const;
-    // Description: Displays users stored in a file in batches of 5, allowing scrolling.
+    User displayUsersFromFile() const;
+    // Description: Displays users stored in the currently managed file in batches of 5, allowing scrolling.
     //              User can press Enter to view the next 5 users or 'q' to stop.
     //              Allows the user to select and returns that user.
-    // Parameters:
-    //   - fileName: Pointer to a character array containing the file name where user information is stored (input).
     // Exceptions:
-    //   May throw an exception if the specified file (fileName) does not exist or cannot be accessed.
+    //   May throw an exception if the file cannot be accessed.
 
 private:
     char userID[9];   // Member variable for storing user ID (max length: 8 characters)
     char name[31];    // Member variable for storing user name (max length: 30 characters)
     char phone[13];   // Member variable for storing user phone number (max length: 12 characters)
     char email[25];   // Member variable for storing user email address (max length: 24 characters)
+    static fstream fileStream; // Member variable for managing file operations
 };
 
 #endif // USER_H

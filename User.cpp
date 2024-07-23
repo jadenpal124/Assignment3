@@ -7,13 +7,10 @@
 using namespace std;
 
 // Default constructor
-User::User() {
-    initUser(); // Initialize object upon startup
-}
+User::User() {}
 
 // Parameterized constructor
 User::User(const char* userID, const char* name, const char* phone, const char* email) {
-    initUser(); // Initialize object upon startup
     setUserID(userID);
     setName(name);
     setPhone(phone);
@@ -59,73 +56,97 @@ void User::setEmail(const char* email) {
 }
 
 // Utility methods
-void User::displayUserInfo(const char* fileName) const {
-    ifstream inFile(fileName, ios::binary);
-    if (!inFile) {
+void User::initUser(const char* fileName) {
+    // Initialize object and open file
+    memset(userID, 0, sizeof(userID));
+    memset(name, 0, sizeof(name));
+    memset(phone, 0, sizeof(phone));
+    memset(email, 0, sizeof(email));
+
+    // Open file stream
+    fileStream.open(fileName, ios::in | ios::out | ios::binary);
+    if (!fileStream) {
         cerr << "Error: Could not open file " << fileName << endl;
         throw exception(); // Throwing exception if file cannot be opened
     }
-
-    // Read user info from file
-    while (inFile.read(reinterpret_cast<char*>(const_cast<User*>(this)), sizeof(User))) {
-        cout << "User ID: " << userID << endl;
-        cout << "Name: " << name << endl;
-        cout << "Phone: " << phone << endl;
-        cout << "Email: " << email << endl << endl;
-    }
-
-    inFile.close();
 }
 
-bool User::changeUserInfo(const char* fileName) {
-    fstream file(fileName, ios::in | ios::out | ios::binary);
-    if (!file) {
-        cerr << "Error: Could not open file " << fileName << endl;
+void User::closeUser() {
+    // Close file stream
+    if (fileStream.is_open()) {
+        fileStream.close();
+    }
+}
+
+void User::displayUserInfo() const {
+    // Check if file is open
+    if (!fileStream.is_open()) {
+        cerr << "Error: File is not open." << endl;
+        return;
+    }
+
+    // Read user info from file
+    User temp;
+    fileStream.seekg(0, ios::beg);
+    while (fileStream.read(reinterpret_cast<char*>(&temp), sizeof(User))) {
+        cout << "User ID: " << temp.getUserID() << endl;
+        cout << "Name: " << temp.getName() << endl;
+        cout << "Phone: " << temp.getPhone() << endl;
+        cout << "Email: " << temp.getEmail() << endl << endl;
+    }
+}
+
+bool User::changeUserInfo() {
+    // Check if file is open
+    if (!fileStream.is_open()) {
+        cerr << "Error: File is not open." << endl;
         return false;
     }
 
     bool found = false;
     User temp;
 
+    // Move file pointer to the beginning of the file
+    fileStream.clear(); // Clear any error flags
+    fileStream.seekg(0, ios::beg);
+
     // Search for the user by userID and update information
-    while (file.read(reinterpret_cast<char*>(&temp), sizeof(User))) {
-        if (strcmp(temp.userID, userID) == 0) {
+    while (fileStream.read(reinterpret_cast<char*>(&temp), sizeof(User))) {
+        if (strcmp(temp.getUserID(), userID) == 0) {
             // Update information
             strncpy(temp.name, name, sizeof(temp.name) - 1);
             strncpy(temp.phone, phone, sizeof(temp.phone) - 1);
             strncpy(temp.email, email, sizeof(temp.email) - 1);
 
             // Write back to file
-            file.seekp(-static_cast<int>(sizeof(User)), ios::cur);
-            file.write(reinterpret_cast<const char*>(&temp), sizeof(User));
+            fileStream.seekp(-static_cast<int>(sizeof(User)), ios::cur);
+            fileStream.write(reinterpret_cast<const char*>(&temp), sizeof(User));
             found = true;
             break;
         }
     }
 
-    file.close();
     return found;
 }
 
-User& User::checkUser(const char* fileName, const char* userID) {
-    ifstream inFile(fileName, ios::binary);
-    if (!inFile) {
-        cerr << "Error: Could not open file " << fileName << endl;
+User& User::checkUser(const char* userID) {
+    // Check if file is open
+    if (!fileStream.is_open()) {
+        cerr << "Error: File is not open." << endl;
         throw exception(); // Throwing exception if file cannot be opened
     }
 
-    static User user; // Static to ensure it persists after function ends
+    User user;
     bool found = false;
+    fileStream.seekg(0, ios::beg);
 
     // Search for the user by userID
-    while (inFile.read(reinterpret_cast<char*>(&user), sizeof(User))) {
-        if (strcmp(user.userID, userID) == 0) {
+    while (fileStream.read(reinterpret_cast<char*>(&user), sizeof(User))) {
+        if (strcmp(user.getUserID(), userID) == 0) {
             found = true;
             break;
         }
     }
-
-    inFile.close();
 
     if (!found) {
         cerr << "Error: User with ID " << userID << " not found." << endl;
@@ -135,36 +156,23 @@ User& User::checkUser(const char* fileName, const char* userID) {
     return user;
 }
 
-bool User::addUser(const char* fileName) {
-    ofstream outFile(fileName, ios::binary | ios::app);
-    if (!outFile) {
-        cerr << "Error: Could not open file " << fileName << endl;
+bool User::addUser() {
+    // Check if file is open
+    if (!fileStream.is_open()) {
+        cerr << "Error: File is not open." << endl;
         return false;
     }
 
     // Write user information to file
-    outFile.write(reinterpret_cast<const char*>(this), sizeof(User));
-    outFile.close();
+    fileStream.seekp(0, ios::end); // Move to end to append
+    fileStream.write(reinterpret_cast<const char*>(this), sizeof(User));
     return true;
 }
 
-void User::initUser() {
-    // Initialize object upon startup
-    memset(userID, 0, sizeof(userID));
-    memset(name, 0, sizeof(name));
-    memset(phone, 0, sizeof(phone));
-    memset(email, 0, sizeof(email));
-}
-
-void User::closeUser() {
-    // Delete the Object and frees any memory allocated on the heap.
-    // This class does not use heap memory, so nothing to do here.
-}
-
-User User::displayUsersFromFile(const char* fileName) const {
-    ifstream inFile(fileName, ios::binary);
-    if (!inFile) {
-        cerr << "Error: Could not open file " << fileName << endl;
+User User::displayUsersFromFile() const {
+    // Check if file is open
+    if (!fileStream.is_open()) {
+        cerr << "Error: File is not open." << endl;
         return User(); // Return a default user in case of error
     }
 
@@ -192,12 +200,12 @@ User User::displayUsersFromFile(const char* fileName) const {
         // Display records
         bool endOfFile = false;
         int displayedCount = 0;
-        inFile.clear();
-        inFile.seekg(startRecord * sizeof(User), ios::beg);
+        fileStream.clear();
+        fileStream.seekg(startRecord * sizeof(User), ios::beg);
 
         for (int i = 0; i < numRecordsPerPage; ++i) {
             User user;
-            if (!inFile.read(reinterpret_cast<char*>(&user), sizeof(User))) {
+            if (!fileStream.read(reinterpret_cast<char*>(&user), sizeof(User))) {
                 endOfFile = true; // End of file
                 break;
             }
@@ -232,11 +240,11 @@ User User::displayUsersFromFile(const char* fileName) const {
                 cout << "Enter User ID: ";
                 string userID;
                 getline(cin, userID);
-                inFile.clear();
-                inFile.seekg(0, ios::beg); // Move file pointer to beginning
+                fileStream.clear();
+                fileStream.seekg(0, ios::beg); // Move file pointer to beginning
                 bool found = false;
                 User user;
-                while (inFile.read(reinterpret_cast<char*>(&user), sizeof(User))) {
+                while (fileStream.read(reinterpret_cast<char*>(&user), sizeof(User))) {
                     if (strcmp(user.getUserID(), userID.c_str()) == 0) {
                         cout << "User found: " << user.getName() << endl;
                         selectedUser = user;
@@ -252,10 +260,10 @@ User User::displayUsersFromFile(const char* fileName) const {
             } else if (isdigit(selection[0])) {
                 // Select by number action
                 int selectedNumber = stoi(selection);
-                inFile.clear();
-                inFile.seekg((selectedNumber - 1) * sizeof(User), ios::beg);
+                fileStream.clear();
+                fileStream.seekg((selectedNumber - 1) * sizeof(User), ios::beg);
                 User user;
-                if (inFile.read(reinterpret_cast<char*>(&user), sizeof(User))) {
+                if (fileStream.read(reinterpret_cast<char*>(&user), sizeof(User))) {
                     cout << "User selected: " << user.getName() << endl;
                     selectedUser = user;
                     cout << endl;
@@ -283,11 +291,11 @@ User User::displayUsersFromFile(const char* fileName) const {
                 cout << "Enter User ID: ";
                 string userID;
                 getline(cin, userID);
-                inFile.clear();
-                inFile.seekg(0, ios::beg); // Move file pointer to beginning
+                fileStream.clear();
+                fileStream.seekg(0, ios::beg); // Move file pointer to beginning
                 bool found = false;
                 User user;
-                while (inFile.read(reinterpret_cast<char*>(&user), sizeof(User))) {
+                while (fileStream.read(reinterpret_cast<char*>(&user), sizeof(User))) {
                     if (strcmp(user.getUserID(), userID.c_str()) == 0) {
                         cout << "User found: " << user.getName() << endl;
                         selectedUser = user;
@@ -303,10 +311,10 @@ User User::displayUsersFromFile(const char* fileName) const {
             } else if (isdigit(selection[0])) {
                 // Select by number action
                 int selectedNumber = stoi(selection);
-                inFile.clear();
-                inFile.seekg((selectedNumber - 1) * sizeof(User), ios::beg);
+                fileStream.clear();
+                fileStream.seekg((selectedNumber - 1) * sizeof(User), ios::beg);
                 User user;
-                if (inFile.read(reinterpret_cast<char*>(&user), sizeof(User))) {
+                if (fileStream.read(reinterpret_cast<char*>(&user), sizeof(User))) {
                     cout << "User selected: " << user.getName() << endl;
                     selectedUser = user;
                     displayNextPage = false; // Exit loop if user is selected
@@ -319,7 +327,6 @@ User User::displayUsersFromFile(const char* fileName) const {
         }
     }
 
-    inFile.close();
     return selectedUser; // Return the selected user
 }
 
