@@ -1,5 +1,6 @@
 /* Revision History: 
    Rev. 1 - 04/07/24 Original by JAWS */
+   Rev. 2 - 22/07/24 Updated by JAWS */
 //================================ 
 /* This module implements the Release class, which encapsulates data related to a release.
    The class provides methods to access, modify, and manage release information,
