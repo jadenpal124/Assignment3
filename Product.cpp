@@ -1,5 +1,5 @@
 /* Revision History: 
-   Rev. 1 - 04/15/24 Original by JAWS */
+   Rev. 1 - 22/7/24 Original by JAWS */
 //================================ 
 /* This module implements the Product class, which encapsulates data related to a product.
    The class provides methods to access, modify, and manage product information,
