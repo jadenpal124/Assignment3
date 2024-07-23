@@ -1,6 +1,6 @@
 // Revision History:
 // Rev. 1 - 04/07/24 Original by JAWS
-// Rev. 2 - 16/07/24 Updated by Soroush
+// Rev. 2 - 22/07/24 Updated by JAWS
 //==================================================
 // This module implements the changeItem class, which encapsulates data related to individual change items.
 // The class provides methods to access, modify, and persist change item data, managing a file internally.
