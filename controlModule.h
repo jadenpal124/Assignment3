@@ -9,35 +9,41 @@
 #define CONTROL_MODULE_H
 
 #include <iostream>
-#include "Product.h"
 #include <cstring>
-#include "User.h"
-#include "changeRequest.h"
-#include "Release.h"
+
 #include "changeItem.h"
+#include "changeRequest.h"
+#include "User.h"
+#include "Release.h"
+#include "Product.h"
+
 
 using namespace std;
 
-User userTmp;
-Product prodTmp;
-Release relTmp;
-changeRequest chRTmp;
-changeItem chItemTmp;
+//==================================================
 
-const char* changeItemFile = "changeItems.dat";
-const char* productFile = "products.dat";
-const char* releaseFile = "releases.dat";
-const char* userFile = "users.dat";
-const char* changeRequestFile = "changeRequests.dat";
+extern User userTmp;
+extern Product prodTmp;
+extern Release relTmp;
+extern changeRequest chRTmp;
+extern changeItem chItemTmp;
 
+extern const char* changeItemFile;
+extern const char* productFile;
+extern const char* releaseFile;
+extern const char* userFile;
+extern const char* changeRequestFile;
 
 //==================================================
 
 // Function prototypes for operations handled by the control module
-void initialize();
-// Description: Initialize files
+void initialize ();
+// Description: 
+//   Initialize files
 
-void close();
+void close ();
+//Description: 
+//   Closes All files
 
 void addProductControl ();
 // Description:
@@ -78,4 +84,5 @@ void getStatusControl ();
 // Description:
 //   Executes ' Displays list of Status of Change Items' operation.
 
+//==================================================
 #endif // CONTROL_MODULE_H

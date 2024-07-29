@@ -1,7 +1,5 @@
-
 // Revision History:
-// Rev. 1 - 04/07/24 Original by Soroush
-// Rev. 2 - 17/07/24 Original by Soroush
+// Rev. 1 - 04/07/24 Original by Jaden Pal
 //==================================================
 // This module implements the changeRequest class, which encapsulates data related to change requests
 // and provides methods to access and manipulate them. The class integrates data about users, products,
@@ -9,16 +7,17 @@
 // the context of change requests.
 //==================================================
 
-#ifndef CHANGE_REQUEST_H
-#define CHANGE_REQUEST_H
+#ifndef CHANGEREQUEST_H
+#define CHANGEREQUEST_H
 
 #include <iostream>
 #include <cstring>
-#include <iomanip> 
+#include <fstream>
 #include "User.h"
 #include "Product.h"
 #include "changeItem.h"
 #include "Release.h"
+#include "changeRequest.h"
 
 using namespace std;
 
@@ -26,22 +25,18 @@ using namespace std;
 class changeRequest {
 public:
     // Constructors
-    changeRequest (); // Default constructor initializing changeRequest and name to empty strings.
+    changeRequest (); 
+    // Default constructor initializing all member variables to default or empty values.
 
-    changeRequest (const changeItem changeItem, const User& user, const Product& product, const Release& associatedRelease);
-    // Description: Parameterized constructor initializing productID and name with provided values.
+    changeRequest (const changeItem changeItem, const User user, const Release associatedRelease, const char* date);
+    // Description: Parameterized constructor initializing changeItem, user, associatedRelease, and dateRequested with provided values.
     // Parameters:
-    //   - productID: Pointer to a character array containing the product ID (input)
-    //   - name: Pointer to a character array containing the product name (input)
-
-    
-
+    //   - changeItem: Reference to the changeItem object (input)
+    //   - user: Reference to the User object (input)
+    //   - associatedRelease: Reference to the Release object (input)
+    //   - date: Pointer to a character array containing the date requested (input)
 
     // Getter methods
-    //----------------------
-    const Product& getProduct () const;
-    // Description: Returns the associated Product object of the change request.
-
     //----------------------
     const User& getUser () const;
     // Description: Returns the associated User object of the change request.
@@ -54,73 +49,62 @@ public:
     const Release& getAssociatedRelease () const;
     // Description: Returns the associated Release object of the change request.
 
+    //----------------------
+    const char* getDateRequested () const;
+    // Description: Returns the date requested associated with the change request.
+
     // Setter methods
     //----------------------
-    void setProduct (const Product& product);
-    // Description: Sets the product of the changeRequest object to the provided value.
-    // Parameters:
-    //   - product: Reference to a constant Product object representing the associated change request. (input)
-
-    //----------------------
     void setUser (const User& user);
-    // Description: Sets the product of the changeRequest object to the provided value.
+    // Description: Sets the user of the changeRequest object to the provided value.
     // Parameters:
-    //   - user: Reference to a constant Product object representing the associated change request. (input)
-
-    //----------------------
-    void setDateRequested (char dateN[11]);
-
+    //   - user: Reference to the User object representing the associated change request (input)
 
     //----------------------
     void setChangeItem (const changeItem& changeItem);
     // Description: Sets the change item of the changeRequest object to the provided value.
     // Parameters:
-    //   - changeItem: Reference to a constant changeItem object representing the associated change request. (input)
+    //   - changeItem: Reference to the changeItem object representing the associated change request (input)
 
     //----------------------
     void setAssociatedRelease (const Release& associatedRelease);
-    // Description: Sets the associatedRelease of the changeRequest object to the provided value.
+    // Description: Sets the associated release of the changeRequest object to the provided value.
     // Parameters:
-    //   - associatedRelease: Reference to a constant Product object representing the associated change request. (input)
+    //   - associatedRelease: Reference to the Release object representing the associated change request (input)
+
+    //----------------------
+    void setDateRequested (const char* date);
+    // Description: Sets the date requested associated with the change request.
+    // Parameters:
+    //   - date: Pointer to a character array containing the date requested (input)
 
     // Utility Methods
     //----------------------
-    bool addChangeRequest(const char* fileName);
-    // Description: Creates and adds the changeRequest object to the file identified by fileName.
+    bool addChangeRequest ();
+    // Description: Creates and adds the changeRequest object to the file.
+    // Returns: true if the change request was successfully added, false otherwise.
+
+    //----------------------
+    void displayUsersToBeNotified (); 
+    // Description: Displays a list of users who should be notified of requests that are implemented.
+
+    // Session management methods
+    //----------------------
+    void initChReq(const char* fileName);
+    // Description: Initializes the change request by opening the specified file for operations.
     // Parameters:
     //   - fileName: Pointer to a character array containing the file name (input)
-    // Returns: true if the change request was successfully added, false otherwise.
-    // Exceptions:
-    //   May throw an exception if the file specified by fileName does not exist or cannot be accessed.
 
     //----------------------
-    void displayNotifyReport (const char* fileName) const;    
-    // Description: Displays a list of people who need to be notified upon implementation of a change item.
-    // Parameters:
-    //     - fileName: Pointer to a character array containing the file name (input)
-    // Exceptions: May throw an exception if the file specified by fileName does not exist or cannot be accessed.
-
-    // Session management methods
-    //----------------------
-
-    // Session management methods
-    //----------------------
-    void initChangeRequest (const char* fileName);
-    // Description: Initializes the change request by calling the default constructor
-    //              and allocated any memeory on heap.
-
-    //----------------------
-    void closeChangeRequest ();
-    // Description: Delete the Object and frees any memory allocated on the heap.
+    void closeChReq();
+    // Description: Closes the file and frees any allocated resources.
 
 private:
-    User user; // User object to reference User class
-    Product product; // Product object to reference Product class
-    changeItem ChangeItem; // changeItem object to reference changeItem class
-    Release associatedRelease; // Release object to reference Release class
-    char dateRequested[11]; // Assuming release date format YYYY-MM-DD
-    fstream file;  // File stream for read and write operations
-    string fileName; // File name for operations
+    User user; // User object to hold User class instance
+    changeItem ChangeItem; // changeItem object to hold changeItem class instance
+    Release associatedRelease; // Release object to hold Release class instance
+    char dateRequested[11]; // Assuming date format YYYY-MM-DD
+    static std::fstream fileStream; // File for reading and writing
 };
 
 #endif // CHANGEREQUEST_H
