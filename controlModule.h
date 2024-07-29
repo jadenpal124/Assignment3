@@ -12,9 +12,9 @@
 #include "Product.h"
 #include <cstring>
 #include "User.h"
-#include "ChangeRequest.h"
+#include "changeRequest.h"
 #include "Release.h"
-#include "ChangeItem.h"
+#include "changeItem.h"
 
 using namespace std;
 

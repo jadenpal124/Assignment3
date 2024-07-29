@@ -11,9 +11,10 @@ using namespace std;
 //==================================================
 
 //----------------------
-void main () {
+int main () {
     UIModule uiModule; // Create an instance of UIModule
     uiModule.run ();    // Call the run() method to start the UI module
+    return 0;
 }
 // Description: Initializes and runs the UI module.
 // Parameters: None.
