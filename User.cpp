@@ -1,19 +1,41 @@
+/* Revision History: 
+   Rev. 1 - 04/15/24 Original by JAWS */
+//==================================================
+/* This module implements the User class, encapsulating user data and operations.
+
+   Attributes include userID, name, phone, and email, each managed with specific getter 
+   and setter methods for accessing and modifying user information. The class also provides 
+   utility methods for displaying user info and managing user data in a file.
+
+   Procedures are cohesive as they collectively manage and abstract user-related data 
+   and operations, ensuring encapsulation and promoting reusability across modules. */
+//==================================================
+
 #include "User.h"
-#include <iostream>
-#include <fstream>
-#include <iomanip> // for std::setw
-#include <cstdlib> // for std::exit
 
-using namespace std;
-
-// Define the static member variable
-fstream User::fileStream;
+//==================================================
+std::fstream User::fileStream;
+//==================================================
 
 // Default constructor
-User::User() {}
+//----------------------
+User::User () {
+// Description: Default constructor initializing a User object with default values.
+    memset(userID, 0, sizeof(userID));
+    memset(name, 0, sizeof(name));
+    memset(phone, 0, sizeof(phone));
+    memset(email, 0, sizeof(email));
+}
 
 // Parameterized constructor
-User::User(const char* userID, const char* name, const char* phone, const char* email) {
+//----------------------
+User::User (const char* userID, const char* name, const char* phone, const char* email) {
+// Description: Parameterized constructor initializing userID, name, phone, and email with provided values.
+// Parameters:
+//   - userID: Pointer to a character array containing the user ID (input)
+//   - name: Pointer to a character array containing the user name (input)
+//   - phone: Pointer to a character array containing the user phone (input)
+//   - email: Pointer to a character array containing the email (input)
     setUserID(userID);
     setName(name);
     setPhone(phone);
@@ -21,80 +43,116 @@ User::User(const char* userID, const char* name, const char* phone, const char* 
 }
 
 // Getter methods
-const char* User::getUserID() const {
+//----------------------
+const char* User::getUserID () const {
+// Description: Getter for retrieving user ID
+// Parameters: None
+// Returns: Pointer to a constant character array containing the user ID
     return userID;
 }
 
-const char* User::getName() const {
+//----------------------
+const char* User::getName () const {
+// Description: Getter for retrieving user name
+// Parameters: None
+// Returns: Pointer to a constant character array containing the user name
     return name;
 }
 
-const char* User::getPhone() const {
+//----------------------
+const char* User::getPhone () const {
+// Description: Getter for retrieving user phone number
+// Parameters: None
+// Returns: Pointer to a constant character array containing the user phone number
     return phone;
 }
 
-const char* User::getEmail() const {
+//----------------------
+const char* User::getEmail () const {
+// Description: Getter for retrieving user email address
+// Parameters: None
+// Returns: Pointer to a constant character array containing the user email address
     return email;
 }
 
 // Setter methods
-void User::setUserID(const char* userID) {
+//----------------------
+void User::setUserID (const char* userID) {
+// Description: Setter for setting user ID
+// Parameters:
+//   - userID: Pointer to a character array containing the user ID (input)
     strncpy(this->userID, userID, sizeof(this->userID) - 1);
     this->userID[sizeof(this->userID) - 1] = '\0'; // Ensure null-termination
 }
 
-void User::setName(const char* name) {
+//----------------------
+void User::setName (const char* name) {
+// Description: Setter for setting user name
+// Parameters:
+//   - name: Pointer to a character array containing the user name (input)
     strncpy(this->name, name, sizeof(this->name) - 1);
     this->name[sizeof(this->name) - 1] = '\0'; // Ensure null-termination
 }
 
-void User::setPhone(const char* phone) {
+//----------------------
+void User::setPhone (const char* phone) {
+// Description: Setter for setting user phone number
+// Parameters:
+//   - phone: Pointer to a character array containing the user phone (input)
     strncpy(this->phone, phone, sizeof(this->phone) - 1);
     this->phone[sizeof(this->phone) - 1] = '\0'; // Ensure null-termination
 }
 
-void User::setEmail(const char* email) {
+//----------------------
+void User::setEmail (const char* email) {
+// Description: Setter for setting user email address
+// Parameters:
+//   - email: Pointer to a character array containing the email (input)
     strncpy(this->email, email, sizeof(this->email) - 1);
     this->email[sizeof(this->email) - 1] = '\0'; // Ensure null-termination
 }
 
 // Utility methods
+//----------------------
 void User::initUser(const char* fileName) {
-    // Initialize object and open file
-    memset(userID, 0, sizeof(userID));
-    memset(name, 0, sizeof(name));
-    memset(phone, 0, sizeof(phone));
-    memset(email, 0, sizeof(email));
+    // Description: Initializes the User object and opens the file for operations.
+    // Parameters:
+    //   - fileName: Pointer to a character array containing the file name (input)
 
-    // Open file stream
+    // Open file stream for reading and writing in binary mode
     fileStream.open(fileName, ios::in | ios::out | ios::binary);
-
-    // If file does not exist, create it
     if (!fileStream) {
-        fileStream.clear(); // Clear error flags
-        fileStream.open(fileName, ios::out | ios::binary);
+        // File does not exist or could not be opened, attempt to create it
+        fileStream.clear(); // Clear error state
+        fileStream.open(fileName, ios::out | ios::binary | ios::trunc); // Create a new file
         if (!fileStream) {
-            cerr << "Error: Could not create file " << fileName << endl;
-            throw exception(); // Throwing exception if file cannot be created
+            cerr << "Error: Could not open or create file " << fileName << endl;
+            throw runtime_error("Error: Could not open or create file");
         }
-        fileStream.close();
+        fileStream.close(); // Close the file and reopen it in the required mode
         fileStream.open(fileName, ios::in | ios::out | ios::binary);
-        if (!fileStream) {
-            cerr << "Error: Could not open file " << fileName << endl;
-            throw exception(); // Throwing exception if file cannot be opened
-        }
+    }
+
+    if (!fileStream) {
+        cerr << "Error: Could not open file after creation attempt " << fileName << endl;
+        throw runtime_error("Error: Could not open file after creation attempt");
     }
 }
 
-void User::closeUser() {
+//----------------------
+void User::closeUser () {
+// Description: Closes the file and performs any necessary cleanup.
     // Close file stream
     if (fileStream.is_open()) {
         fileStream.close();
     }
 }
 
-
-void User::displayUserInfo() const {
+//----------------------
+void User::displayUserInfo () const {
+// Description: Displays user information from the currently managed file.
+// Exception:
+//   May throw an exception if the file cannot be accessed.
     // Check if file is open
     if (!fileStream.is_open()) {
         cerr << "Error: File is not open." << endl;
@@ -112,7 +170,13 @@ void User::displayUserInfo() const {
     }
 }
 
-bool User::changeUserInfo() {
+//----------------------
+bool User::changeUserInfo () {
+// Description: Updates the user's information such as name, phone, email, and department in the currently managed file.
+// Returns:
+//   true if the user information was successfully updated; false otherwise.
+// Exception:
+//   May throw an exception if the file cannot be accessed.
     // Check if file is open
     if (!fileStream.is_open()) {
         cerr << "Error: File is not open." << endl;
@@ -145,34 +209,13 @@ bool User::changeUserInfo() {
     return found;
 }
 
-User User::checkUser(const char* userID) {
-    // Check if file is open
-    if (!fileStream.is_open()) {
-        cerr << "Error: File is not open." << endl;
-        throw exception(); // Throwing exception if file cannot be opened
-    }
-
-    User user;
-    bool found = false;
-    fileStream.seekg(0, ios::beg);
-
-    // Search for the user by userID
-    while (fileStream.read(reinterpret_cast<char*>(&user), sizeof(User))) {
-        if (strcmp(user.getUserID(), userID) == 0) {
-            found = true;
-            break;
-        }
-    }
-
-    if (!found) {
-        cerr << "Error: User with ID " << userID << " not found." << endl;
-        throw exception(); // Throwing exception if user not found
-    }
-
-    return user;
-}
-
-bool User::addUser() {
+//----------------------
+bool User::addUser () {
+// Description: Adds the user's details to the currently managed file.
+// Returns:
+//   true if the user details were successfully added; false otherwise.
+// Exceptions:
+//   May throw an exception if the file cannot be accessed.
     // Check if file is open
     if (!fileStream.is_open()) {
         cerr << "Error: File is not open." << endl;
@@ -180,15 +223,19 @@ bool User::addUser() {
     }
 
     // Write user information to file
-    fileStream.clear(); // Clear any error flags
     fileStream.seekp(0, ios::end); // Move to end to append
     fileStream.write(reinterpret_cast<const char*>(this), sizeof(User));
     return true;
 }
 
-
-User User::displayUsersFromFile() const {
-    // Check if file is open
+//----------------------
+User User::displayUsersFromFile () const {
+// Description: Displays users stored in the currently managed file in batches of 5, allowing scrolling.
+//              User can press Enter to view the next 5 users or 'q' to stop.
+//              Allows the user to select and returns that user.
+// Exceptions:
+//   May throw an exception if the file cannot be accessed.
+// Check if file is open
     if (!fileStream.is_open()) {
         cerr << "Error: File is not open." << endl;
         return User(); // Return a default user in case of error
@@ -282,7 +329,7 @@ User User::displayUsersFromFile() const {
                 fileStream.seekg((selectedNumber - 1) * sizeof(User), ios::beg);
                 User user;
                 if (fileStream.read(reinterpret_cast<char*>(&user), sizeof(User))) {
-                    cout << "Do you select " << user.getName() << "(Select Y/N)?" << endl;
+                    cout << "User selected: " << user.getName() << endl;
                     selectedUser = user;
                     cout << endl;
                     displayNextPage = false; // Exit loop if user is selected
@@ -333,19 +380,15 @@ User User::displayUsersFromFile() const {
                 fileStream.seekg((selectedNumber - 1) * sizeof(User), ios::beg);
                 User user;
                 if (fileStream.read(reinterpret_cast<char*>(&user), sizeof(User))) {
-                    cout << "Do you select " << user.getName() << " (Select Y/N)? ";
-                    char confirm;
-                    cin >> confirm;
-                    if (confirm == 'Y' || confirm == 'y') {
-                        cout << "User Successfully Selected." << endl;
-                        selectedUser = user;
-                        displayNextPage = false; // Exit loop if user is selected
-                    } else {
-                        cout << "Selection canceled." << endl;
-                    }
+                    cout << "User selected: " << user.getName() << endl;
+                    selectedUser = user;
+                    displayNextPage = false; // Exit loop if user is selected
                 } else {
                     cout << "Invalid selection." << endl;
                 }
+            } else {
+                cout << "Invalid selection." << endl;
+            }
         }
     }
 
