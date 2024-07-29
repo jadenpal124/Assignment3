@@ -40,12 +40,10 @@ public:
     //----------------------
     const char* getProductID () const;
     // Retrieves the product ID.
-    // Parameters: None (no parameters)
 
     //----------------------
     const char* getName () const;
     // Retrieves the product name.
-    // Parameters: None (no parameters)
 
     // Setter methods
     //----------------------
@@ -69,13 +67,6 @@ public:
     // Returns:
     //   - Reference to the Product object if the product with the given Product ID exists in the file.
     // Exceptions: May throw an exception if the file specified by fileName does not exist or cannot be accessed.
-
-    //----------------------
-    void displayProductInfo () const;
-    // Description: Displays product information.
-    // Parameters: None (no parameters).
-    // Exception:
-    //   May throw an exception if the specified file (fileName) does not exist or cannot be accessed.
     
     //----------------------
     bool addProduct (); 
@@ -106,7 +97,6 @@ private:
     char productID[8]; // Member variable for storing product ID (max length: 8 characters)
     char name[30]; // Member variable for storing product name (max length: 30 characters)
     static fstream file; // File stream for read and write operations
-    const char* fileName; // File name for operations
 };
 //================================
 

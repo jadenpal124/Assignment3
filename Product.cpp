@@ -1,21 +1,35 @@
+/* Revision History: 
+   Rev. 1 - 04/15/24 Original by JAWS */
+//================================ 
+/* This module implements the Product class, which encapsulates data related to a product.
+   The class provides methods to access, modify, and manage product information,
+   demonstrating the principles of abstraction and high cohesion by encapsulating
+   related functionality within the Product class. */
+//================================ 
 
 #include "Product.h"
-#include <iostream>
-#include <fstream>
-#include <iomanip> // for std::setw
-#include <cstdlib> // for std::exit
+
+//================================ 
 
 // Initialize the static member variable
 fstream Product::file;
 
+//================================ 
+
 // Default constructor
-Product::Product() {
+//----------------------
+Product::Product () {
     productID[0] = '\0';
     name[0] = '\0';
 }
-
+//----------------------
 // Parameterized constructor
-Product::Product(const char* productID, const char* name) {
+
+Product::Product (const char* productID, const char* name) {
+// Parameterized constructor initializing productID and name with provided values.
+// Parameters:
+//   - productID: Pointer to a character array containing the product ID (input)
+//   - name: Pointer to a character array containing the product name (input)
     strncpy(this->productID, productID, sizeof(this->productID) - 1);
     strncpy(this->name, name, sizeof(this->name) - 1);
     this->productID[sizeof(this->productID) - 1] = '\0';
@@ -23,7 +37,8 @@ Product::Product(const char* productID, const char* name) {
 }
 
 // Copy constructor
-Product::Product(const Product& other) {
+//----------------------
+Product::Product (const Product& other) {
     strncpy(this->productID, other.productID, sizeof(this->productID) - 1);
     strncpy(this->name, other.name, sizeof(this->name) - 1);
     this->productID[sizeof(this->productID) - 1] = '\0';
@@ -31,7 +46,8 @@ Product::Product(const Product& other) {
 }
 
 // Assignment operator
-Product& Product::operator=(const Product& other) {
+//----------------------
+Product& Product::operator= (const Product& other) {
     if (this != &other) {
         strncpy(this->productID, other.productID, sizeof(this->productID) - 1);
         strncpy(this->name, other.name, sizeof(this->name) - 1);
@@ -42,27 +58,47 @@ Product& Product::operator=(const Product& other) {
 }
 
 // Getter methods
-const char* Product::getProductID() const {
+//----------------------
+const char* Product::getProductID () const {
+// Retrieves the product ID.
     return productID;
 }
 
-const char* Product::getName() const {
+//----------------------
+const char* Product::getName () const {
+// Retrieves the product name.
     return name;
 }
 
+
 // Setter methods
-void Product::setProductID(const char* productID) {
+//----------------------
+void Product::setProductID (const char* productID) {
+// Sets the product ID.
+// Parameters:
+//   - productID: Pointer to a character array containing the product ID (input)
     strncpy(this->productID, productID, sizeof(this->productID) - 1);
     this->productID[sizeof(this->productID) - 1] = '\0';
 }
 
-void Product::setName(const char* name) {
+//----------------------
+void Product::setName (const char* name) {
+// Sets the product name.
+// Parameters:
+//   - name: Pointer to a character array containing the product name (input)
     strncpy(this->name, name, sizeof(this->name) - 1);
     this->name[sizeof(this->name) - 1] = '\0';
 }
 
+//----------------------
 // Utility methods
-Product& Product::checkProductExists(const char* productIDToFind) {
+Product& Product::checkProductExists (const char* productIDToFind) {
+// Description: Checks if a product with the given Product ID exists in a file.
+// Parameters:
+//   - productIDToFind: Pointer to a character array containing the Product ID to search for (input)
+// Returns:
+//   - Reference to the Product object if the product with the given Product ID exists in the file.
+// Exceptions: May throw an exception if the file specified by fileName does not exist or cannot be accessed.
     file.seekg(0, ios::beg);
     while (file.read(reinterpret_cast<char*>(this), sizeof(Product))) {
         if (strcmp(this->productID, productIDToFind) == 0) {
@@ -72,18 +108,42 @@ Product& Product::checkProductExists(const char* productIDToFind) {
     throw runtime_error("Product not found");
 }
 
-void Product::displayProductInfo() const {
-    cout << "Product ID: " << productID << endl;
-    cout << "Product Name: " << name << endl;
-}
-
 bool Product::addProduct() {
+    // Description: Creates a product and adds it to the file.
+    // Returns:
+    //   - true if the product is successfully added to the file, false otherwise.
+    // Exceptions: May throw an exception if the file specified by fileName does not exist or cannot be accessed.
+
+    // Check if file is open
+    if (!file.is_open()) {
+        cerr << "Error: File is not open." << endl;
+        return false;
+    }
+
+    // Move the write pointer to the end of the file
     file.seekp(0, ios::end);
+
+    // Write the Product object to the file
     file.write(reinterpret_cast<const char*>(this), sizeof(Product));
-    return file.good();
+
+    // Check if write operation was successful
+    if (file.fail()) {
+        cerr << "Error: Failed to write to file." << endl;
+        return false;
+    }
+
+    // Clear the file error state
+    file.clear();
+
+    return true;
 }
 
-Product Product::displayProductFromFile() const {
+//----------------------
+Product Product::displayProductFromFile () const {
+// Description: Displays and returns a product from the file.
+// Parameters: None (no parameters).
+// Returns: A Product object that matches the criteria.
+// Exceptions: May throw an exception if the file cannot be accessed.
     const int numRecordsPerPage = 5; // Number of records to display per page
     int startRecord = 0; // Starting record index
     bool displayNextPage = true;
@@ -240,14 +300,37 @@ Product Product::displayProductFromFile() const {
 }
 
 // Session management methods
+//----------------------
 void Product::initProduct(const char* fileName) {
-    this->fileName = fileName;
+    // Description: Initializes the obj with default constructor and opens the specified file for operations
+    // Parameters:
+    //   - fileName: Pointer to a character array containing the file name (input)
+
+    // Attempt to open file for reading and writing in binary mode
     file.open(fileName, ios::in | ios::out | ios::binary);
-    if (!file) {
-        throw runtime_error("Error: Could not open file");
+
+    if (!file.is_open()) {
+        // File does not exist or could not be opened for reading and writing
+        file.clear(); // Clear error state
+
+        // Attempt to create a new file
+        file.open(fileName, ios::out | ios::binary | ios::trunc);
+        if (!file) {
+            throw runtime_error("Error: Could not create file");
+        }
+        file.close(); // Close the newly created file
+
+        // Reopen file for reading and writing
+        file.open(fileName, ios::in | ios::out | ios::binary);
+        if (!file) {
+            throw runtime_error("Error: Could not open file for reading and writing after creation attempt");
+        }
     }
 }
 
-void Product::closeProduct() {
+
+//----------------------
+void Product::closeProduct () {
+// Description: Deletes the Object and frees any memory allocated on the heap.
     file.close();
 }
