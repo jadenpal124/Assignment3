@@ -35,13 +35,13 @@ void addProductControl() {
     char prodID[ID_MAX_LENGTH];
     cin.getline(prodID, ID_MAX_LENGTH);
 
-    cout << "Do you want to add product: " << prodName << " (select Y/N)? ";
+    cout << "Do you want to add product: " << prodName << " (Select Y/N)? ";
     char input;
     cin >> input;
     if (input == 'Y' || input == 'y') {
         Product product(prodID, prodName);
         if (product.addProduct()) {
-            cout << "Successfully Added. Returning to Add Menu" << endl;
+            cout << "Product Successfully Added. Returning to Add Menu" << endl;
         } else {
             cout << "Failed to add product. Returning to Add Menu" << endl;
         }
@@ -65,7 +65,7 @@ void addReleaseControl() {
         return;
     }
 
-    cout << "Are you sure you want to add a Release to " << temp.getName() << " (select y/n): ";
+    cout << "Do you Want to add Release to maps " << temp.getName() << " (Select Y/N): ";
     cin >> choiceP;
     cout << endl;
 
@@ -85,14 +85,6 @@ void addReleaseControl() {
         return;
     }
 
-    cout << "Do you want to add release " << relID << " (select y/n)? ";
-    cin >> choiceR;
-    cout << endl;
-
-    if (choiceR != 'y' && choiceR != 'Y') {
-        cout << "Operation cancelled. Returning to the menu." << endl;
-        return;
-    }
 
     // Create a Release object and set its details
     Release newRelease;
@@ -106,9 +98,18 @@ void addReleaseControl() {
     cin.getline(releaseDate, 11);
     newRelease.setReleaseDate(releaseDate);
 
+    cout << "Are you sure you want to add a Release to " << relID << " (Select Y/N)? ";
+    cin >> choiceR;
+    cout << endl;
+
+    if (choiceR != 'y' && choiceR != 'Y') {
+        cout << "Operation cancelled. Returning to the menu." << endl;
+        return;
+    }
+
     // Add the release to the file
     if (newRelease.addRelease()) {
-        cout << "Release successfully added." << endl;
+        cout << "Release Successfully Added. Returning to Add Menu." << endl;
     } else {
         cout << "Failed to add release. Please check the file and try again." << endl;
     }
@@ -194,17 +195,17 @@ void updateUserControl() {
 
     User user = User().checkUser(userID);
 
-    cout << "Enter new Name (leave empty to keep current): ";
+    cout << "Enter new Name (leave empty by pressing <enter> to keep current): " << endl;
     char name[30];
     cin.getline(name, 30);
     if (strlen(name) > 0) user.setName(name);
 
-    cout << "Enter new Phone (leave empty to keep current): ";
+    cout << "Enter new phone number (leave empty by pressing <enter> to keep current): " << endl;
     char phone[15];
     cin.getline(phone, 15);
     if (strlen(phone) > 0) user.setPhone(phone);
 
-    cout << "Enter new Email (leave empty to keep current): ";
+    cout << "Enter new email (leave empty by pressing <enter> to keep current): " << endl;
     char email[30];
     cin.getline(email, 30);
     if (strlen(email) > 0) user.setEmail(email);

@@ -110,8 +110,8 @@ private:
         do {
             cout << "\nDisplay Menu:" << endl;
             cout << "1) Remaining Items to be Implemented Report" << endl;
-            cout << "2) Users to be Notified Report" << endl;
-            cout << "3) Status of Change Items" << endl;
+            cout << "2) Users to be informed" << endl;
+            cout << "3) Status on Request" << endl;
             cout << "0) Quit" << endl;
             cout << "Enter Selection: ";
             cin >> choice;

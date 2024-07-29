@@ -282,7 +282,7 @@ User User::displayUsersFromFile() const {
                 fileStream.seekg((selectedNumber - 1) * sizeof(User), ios::beg);
                 User user;
                 if (fileStream.read(reinterpret_cast<char*>(&user), sizeof(User))) {
-                    cout << "User selected: " << user.getName() << endl;
+                    cout << "Do you select " << user.getName() << "(Select Y/N)?" << endl;
                     selectedUser = user;
                     cout << endl;
                     displayNextPage = false; // Exit loop if user is selected
@@ -333,15 +333,19 @@ User User::displayUsersFromFile() const {
                 fileStream.seekg((selectedNumber - 1) * sizeof(User), ios::beg);
                 User user;
                 if (fileStream.read(reinterpret_cast<char*>(&user), sizeof(User))) {
-                    cout << "User selected: " << user.getName() << endl;
-                    selectedUser = user;
-                    displayNextPage = false; // Exit loop if user is selected
+                    cout << "Do you select " << user.getName() << " (Select Y/N)? ";
+                    char confirm;
+                    cin >> confirm;
+                    if (confirm == 'Y' || confirm == 'y') {
+                        cout << "User Successfully Selected." << endl;
+                        selectedUser = user;
+                        displayNextPage = false; // Exit loop if user is selected
+                    } else {
+                        cout << "Selection canceled." << endl;
+                    }
                 } else {
                     cout << "Invalid selection." << endl;
                 }
-            } else {
-                cout << "Invalid selection." << endl;
-            }
         }
     }
 
