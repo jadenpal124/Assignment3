@@ -6,6 +6,9 @@
 
 using namespace std;
 
+// Define the static member variable
+fstream User::fileStream;
+
 // Default constructor
 User::User() {}
 
@@ -65,9 +68,21 @@ void User::initUser(const char* fileName) {
 
     // Open file stream
     fileStream.open(fileName, ios::in | ios::out | ios::binary);
+
+    // If file does not exist, create it
     if (!fileStream) {
-        cerr << "Error: Could not open file " << fileName << endl;
-        throw exception(); // Throwing exception if file cannot be opened
+        fileStream.clear(); // Clear error flags
+        fileStream.open(fileName, ios::out | ios::binary);
+        if (!fileStream) {
+            cerr << "Error: Could not create file " << fileName << endl;
+            throw exception(); // Throwing exception if file cannot be created
+        }
+        fileStream.close();
+        fileStream.open(fileName, ios::in | ios::out | ios::binary);
+        if (!fileStream) {
+            cerr << "Error: Could not open file " << fileName << endl;
+            throw exception(); // Throwing exception if file cannot be opened
+        }
     }
 }
 
@@ -77,6 +92,7 @@ void User::closeUser() {
         fileStream.close();
     }
 }
+
 
 void User::displayUserInfo() const {
     // Check if file is open
@@ -129,7 +145,7 @@ bool User::changeUserInfo() {
     return found;
 }
 
-User& User::checkUser(const char* userID) {
+User User::checkUser(const char* userID) {
     // Check if file is open
     if (!fileStream.is_open()) {
         cerr << "Error: File is not open." << endl;
@@ -164,10 +180,12 @@ bool User::addUser() {
     }
 
     // Write user information to file
+    fileStream.clear(); // Clear any error flags
     fileStream.seekp(0, ios::end); // Move to end to append
     fileStream.write(reinterpret_cast<const char*>(this), sizeof(User));
     return true;
 }
+
 
 User User::displayUsersFromFile() const {
     // Check if file is open

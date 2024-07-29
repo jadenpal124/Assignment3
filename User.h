@@ -17,6 +17,7 @@
 #include <fstream>
 #include <cstring> // For string manipulation functions
 using namespace std;
+
 //==================================================
 class User {
 public:
@@ -98,7 +99,7 @@ public:
     //   May throw an exception if the file cannot be accessed.
 
     //----------------------
-    User& checkUser (const char* userID);
+    User checkUser (const char* userID);
     // Description: Searches the currently managed file for a user based on the provided userID 
     //              and returns a reference to the found User object if the user exists.
     // Parameters:
