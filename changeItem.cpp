@@ -3,46 +3,70 @@
 #include <vector>
 
 
-using namespace std;
-
-changeItem::changeItem () {
-    initChangeItem();
+changeItem::changeItem() {
+    // Default constructor body (can be empty)
 }   
 
-changeItem::changeItem (int changeItemID, const char* description, const Product* product, const Release* releasePtr) {
+changeItem::changeItem(int changeItemID, const char* description, const Product* product, const Release* releasePtr) {
     setChangeItemID (changeItemID);
     setDescription (description);
     setAnticipatedRelease (releasePtr);
     setAssociatedProduct (product);
 }
 
+// Copy constructor
+changeItem::changeItem(const changeItem& other) {
+    this->changeItemID = other.changeItemID;
+    this->associatedProduct = other.associatedProduct;
+    this->anticipatedRelease = other.anticipatedRelease;
+    this->description = other.description;
+}
+
+// Overloaded= operator
+changeItem& changeItem::operator=(const changeItem& other) {
+    if (this != &other) {
+        this->changeItemID = other.changeItemID;
+        this->associatedProduct = other.associatedProduct;
+        this->anticipatedRelease = other.anticipatedRelease;
+        this->description = other.description;
+    }
+    return *this;
+}
+
 int changeItem::getChangeItemID () const {
     return changeItemID;
 }    
 
-const char* changeItem::getDescription () const {
-    return description;
+const string* changeItem::getDescription () const {
+    return &description;
 }  
 
+const Release changeItem::getAnticipatedRelease () const {
+    return anticipatedRelease;
+}
+
 const char* changeItem::getAnticipatedReleaseID () const {
-    return anticipatedRelease->getReleaseID();
+    return anticipatedRelease.getReleaseID();
 }    
 
 changeItem::Status changeItem::getStatus () const {
     return status;
-}    
+}  
+
+const Product changeItem::getAssociatedProduct () const {
+    return associatedProduct;
+}
  
 const char* changeItem::getAssociatedProductID () const {
-    return associatedProduct->getProductID() ;
+    return associatedProduct.getProductID() ;
 }  
  
 void changeItem::setChangeItemID (int changeItemID) {
     this->changeItemID = changeItemID;
 }   
 
-void changeItem::setDescription (const char* description) {
-    strncpy(this->description, description, sizeof(this->description) - 1);
-    this->description[sizeof(this->description) - 1] = '\0'; // Ensure null-termination
+void changeItem::setDescription (const string descriptionNew) {
+    description = descriptionNew; // Ensure null-termination
 }
 
 void changeItem::setStatus (Status status) {
@@ -50,11 +74,11 @@ void changeItem::setStatus (Status status) {
 }    
 
 void changeItem::setAnticipatedRelease (const Release* releasePtr) {
-    this->anticipatedRelease = releasePtr;
+    this->anticipatedRelease = *releasePtr;
 } 
 
 void changeItem::setAssociatedProduct (const Product* productPtr) {
-    this->associatedProduct = productPtr;
+    this->associatedProduct = *productPtr;
 }
 
 changeItem& changeItem::checkChangeItem (const char* fileName, int changeItemIDToFind) {
@@ -85,7 +109,7 @@ changeItem& changeItem::checkChangeItem (const char* fileName, int changeItemIDT
     return ChangeItem;
 }    
 
-bool changeItem::updateChangeItem (const char* fileName, changeItem changeItemTofind){
+bool changeItem::updateChangeItem (const char* fileName, int changeItemToIDfind){
     fstream file(fileName, ios::in | ios::out | ios::binary);
     if (!file) {
         cerr << "Error: Could not open file " << fileName << endl;
@@ -99,21 +123,21 @@ bool changeItem::updateChangeItem (const char* fileName, changeItem changeItemTo
     char* userInput3;
     char userInput2;
     Release tempRelease;
-    Release* tempReleaseFound;
+    Release tempReleaseFound;
     Status tempStatus;
     
 
-    changeItemToFindID = changeItemTofind.getChangeItemID();
+    //changeItemToFindID = changeItemTofind.getChangeItemID();
 
     // Search for the user by changeItemID and update information
     while (file.read(reinterpret_cast<char*>(&temp), sizeof(changeItem))) {
         if (temp.getChangeItemID() == changeItemToFindID ) {
             std::cout << "Current details for Change ID: " << std::endl
-            << "ProductID: " << changeItemTofind.getAssociatedProductID() << std::endl
-            << "ChangeID: " << changeItemToFindID << std::endl
-            << "Anticipated ReleaseID: " << changeItemTofind.getAnticipatedReleaseID() << std::endl
-            << "Status: " << changeItemTofind.getStatus() << std::endl
-            << "Description: " << changeItemTofind.getDescription() << std::endl
+            << "ProductID: " << temp.getAssociatedProductID() << std::endl
+            << "ChangeID: " << temp.getChangeItemID() << std::endl
+            << "Anticipated ReleaseID: " << temp.getAnticipatedReleaseID() << std::endl
+            << "Status: " << temp.getStatus() << std::endl
+            << "Description: " << temp.getDescription() << std::endl
             << std::endl 
             << "Enter the number of the field you want to update:" << std::endl
             << "    1) ReleaseID" << std::endl
@@ -131,8 +155,8 @@ bool changeItem::updateChangeItem (const char* fileName, changeItem changeItemTo
                 std::cout << "Do you want to update Release ID to" << userInput << "(select Y/N)?";
                 std::cin >> userInput2;
                 if (userInput2 == 'Y') {
-                    tempReleaseFound = *tempRelease.findReleaseAndReturn(fileName, userInput3, changeItemTofind.getAssociatedProductID() );
-                    changeItemTofind.setAnticipatedRelease(tempReleaseFound);
+                   tempReleaseFound = tempRelease.findReleaseAndReturn(userInput3, associatedProduct.getProductID() );
+                    anticipatedRelease = tempReleaseFound;
                     std::cout << "Release ID Successfully updated." << std::endl;
                 break;
                 }
@@ -165,7 +189,7 @@ bool changeItem::updateChangeItem (const char* fileName, changeItem changeItemTo
                     std::cout << "Do you want to update Status to" << tempStatus << "(select Y/N)?";
                     std::cin >> userInput2;
                     if (userInput2 == 'Y') {
-                        changeItemTofind.setStatus(tempStatus);
+                        status = tempStatus;
                         std::cout << "Status Successfully updated." << std::endl;
                         break;
                     }
@@ -178,7 +202,7 @@ bool changeItem::updateChangeItem (const char* fileName, changeItem changeItemTo
                     std::cout << "Do you want to update the description to" << userInput3 << "(select Y/N)?";
                     std::cin >> userInput2;
                     if (userInput2 == 'Y') {
-                        changeItemTofind.setDescription(userInput3);
+                        description = userInput3;
                         std::cout << "Description Successfully updated." << std::endl;
                         break;
                     }
@@ -190,7 +214,7 @@ bool changeItem::updateChangeItem (const char* fileName, changeItem changeItemTo
             
             // Write back to file
             file.seekp(-static_cast<int>(sizeof(changeItem)), ios::cur);
-            file.write(reinterpret_cast<const char*>(&changeItemTofind), sizeof(changeItem));
+            file.write(reinterpret_cast<const char*>(&temp), sizeof(changeItem));
             found = true;
             break;
         }
@@ -249,7 +273,7 @@ void changeItem::displayRemainingReports (const char* fileName) const {
     static int thePlace = 0;
 
     //we need a function from product.h that displays all the products so use can choose the product - according to assignment2 we need to display all th products
-    tempProduct = tempProduct.displayProductFromFile(fileName);
+    tempProduct = tempProduct.displayProductFromFile();
 
     std::cout << std::setw(2) << "#" << " "
             << std::setw(10) << "ProductID" << " "
@@ -277,15 +301,15 @@ void changeItem::displayRemainingReports (const char* fileName) const {
 
 }   
 
-changeItem changeItem::displayAndReturnChangeItem(const char* fileName, const Product* productToFind) {
+changeItem changeItem::displayAndReturnChangeItem(const char* fileName, const char* productIDToFind) {
     ifstream readFile(fileName, ios::binary);
     if (!readFile) {
         cerr << "Error: Could not open file " << fileName << endl;
         throw exception(); // Throwing exception if file cannot be opened
     }
 
-    Product tempProduct = *productToFind;
-    static changeItem changeItemTemp;
+    //Product tempProduct = *productToFind;
+    changeItem changeItemTemp;
     int itemTotal = 0;          //total number of items with the specific productID
     int pageTotal = 0;          //total pages to show the data, it is totalItem divided by 5
     int pageCount= 0;           //just for counting how many pages we have shown so far
@@ -295,17 +319,18 @@ changeItem changeItem::displayAndReturnChangeItem(const char* fileName, const Pr
     vector<changeItem> changeItemVector;
 
     while (readFile.read(reinterpret_cast<char*>(&changeItemTemp), sizeof(changeItem))) {
-        if (changeItemTemp.getAssociatedProduct() == productToFind) {
+        if (changeItemTemp.getAssociatedProductID() == productIDToFind) {
         ++itemTotal;
         changeItemVector.push_back(changeItemTemp);  //making a vector of changeItem objects so later we can return the object we are looking for
         }
     }
     readFile.close();
 
+
     pageTotal = itemTotal / 5;
     
     for (int i = 1 ; i < pageCount ; i++ ) {
-    cout << "Change Item of Product(Page " << i << "/" << pageCount+1 <<")" << endl;
+    std::cout << "Change Item of Product(Page " << i << "/" << pageCount+1 <<")" << endl;
         std::cout << std::setw(2) << "#" << " "
             << std::setw(10) << "ProductID" << " "
             << std::setw(10) << "changeID" << " "
@@ -325,7 +350,7 @@ changeItem changeItem::displayAndReturnChangeItem(const char* fileName, const Pr
                 break;
             }
             std::cout << std::setw(2) << itemCount+1 << " "
-            << std::setw(10) << tempProduct.getProductID() << " "  // can be changed to a var
+            << std::setw(10) << changeItemVector[itemCount].getAssociatedProductID() << " "  // can be changed to a var
             << std::setw(10) << changeItemVector[itemCount].getChangeItemID() << " "
             << std::setw(10) << changeItemVector[itemCount].getAnticipatedReleaseID() << " "
             << std::setw(10) << changeItemVector[itemCount].getStatus() << " "
@@ -333,16 +358,15 @@ changeItem changeItem::displayAndReturnChangeItem(const char* fileName, const Pr
         //}
         ++itemCount;
     }
-    
-    cout << "Press <enter> to display the next 5 rows, or “q” to go back." << endl;
-    cout << "If the change ID is known enter “s”." << endl;
-    cout << "Type number # to select a change item." << endl;
-    cout << "To return to menu type “0”:" << endl;
-    cin >> userinput ;
+    std::cout << "Press <enter> to display the next 5 rows, or “q” to go back." << endl;
+    std::cout << "If the change ID is known enter “s”." << endl;
+    std::cout << "Type number # to select a change item." << endl;
+    std::cout << "To return to menu type “0”:" << endl;
+    std::cin >> userinput ;
 
     switch (userinput)
     {
-    case '/0':
+    case 'n':
         ++pageCount;
         break;
 
@@ -354,16 +378,21 @@ changeItem changeItem::displayAndReturnChangeItem(const char* fileName, const Pr
 
     default:    //not checking for invalid input yet
     int x = userinput - '0';
-    return changeItemVector[x];
+    changeItem *changeItemTempPtr = &changeItemVector[x];
+    return *changeItemTempPtr;   
     break;
     }
     }
-
+    return changeItemVector[userinput];
 }
 
 
-void changeItem::initChangeItem () {
-
+void changeItem::initChangeItem (const char* fileName) {
+    this->fileName = fileName;
+    file.open(fileName, ios::in | ios::out | ios::binary);
+    if (!file) {
+        throw runtime_error("Error: Could not open file");
+    }
 }
 
 void changeItem::closeChangeItem () {
