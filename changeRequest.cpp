@@ -2,15 +2,17 @@
 #include "changeRequest.h" 
 
 changeRequest::changeRequest () {
-    initChangeRequest ();
+    
 }
 
-changeRequest::changeRequest (const changeItem& changeItem, const User& user, const Product& product, const Release& associatedRelease) {
+changeRequest::changeRequest (const changeItem changeItem, const User& user, const Product& product, const Release& associatedRelease) {
     setChangeItem (changeItem);
     setUser (user);
     setProduct (product);
     setAssociatedRelease (associatedRelease);
 }
+
+
 
 const Product &changeRequest::getProduct () const {
     return product;
@@ -40,6 +42,10 @@ void changeRequest::setUser (const User& user) {
     this->user = user;
 }
 
+void  changeRequest::setDateRequested (char dateN[11]) {
+    strncpy(this->dateRequested, dateN, sizeof(this->dateRequested) - 1);
+    this->dateRequested[sizeof(this->dateRequested) - 1] = '\0';
+}
 
 void changeRequest::setChangeItem (const changeItem& changeItem) {
     this->ChangeItem = changeItem;
@@ -98,12 +104,12 @@ void changeRequest::displayNotifyReport (const char* fileName) const {
 }    
 
 
-void changeRequest::initChangeRequest () {
-    memset(user, 0, sizeof(user));
-    memset(product, 0, sizeof(product));
-    memset(ChangeItem, 0, sizeof(changeItem));
-    memset(associatedRelease, 0, sizeof(associatedRelease));
-
+void changeRequest::initChangeRequest (const char* fileName) {
+    this->fileName = fileName;
+    file.open(fileName, ios::in | ios::out | ios::binary);
+    if (!file) {
+        throw runtime_error("Error: Could not open file");
+    }
 }
 
 void changeRequest::closeChangeRequest () {};
