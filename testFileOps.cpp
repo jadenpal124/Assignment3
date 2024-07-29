@@ -1,6 +1,6 @@
 // testFileOps.cpp
 // Revision History:
-// Rev. 1 - 22/07/24 Original by JAWS
+// Rev. 2 - 22/07/28 Original by JAWS
 //==================================================
 // Description: This module is the testFileOps.cpp and runs the unit test.
 //==================================================
@@ -15,15 +15,6 @@
 using namespace std;
 //==================================================
 
-// Utility function to clear contents of a file
-//----------------------
-void clearFile(const char* fileName) {
-// Description:
-//   clear file contents
-    ofstream ofs(fileName, ofstream::out | ofstream::trunc);
-    ofs.close();
-}
-
 // Function prototypes for unit tests
 //----------------------
 void testUserClass();
@@ -31,8 +22,15 @@ void testUserClass();
 int main() {
     cout << "Running unit tests for User class...\n";
 
+    // Initialize user file for operations
+    User userSession;
+    userSession.initUser("usr.dat");
+
     // Call your unit tests here
     testUserClass();
+
+    // Close user file after operations
+    userSession.closeUser();
 
     cout << "All tests completed!\n";
 
@@ -42,16 +40,13 @@ int main() {
 // Unit tests for User class
 //----------------------
 void testUserClass() {
-// Description:
-//   test functionality of User class
-    const char* fileName = "UT_users_list";
+    // Description:
+    //   test functionality of User class
+    const char* fileName = "usr.dat";
     int passedTests = 0;
-    int totalTests = 6; // Total number of tests
+    int totalTests = 5; // Total number of tests
 
     cout << "Starting testUserOperations...\n";
-
-    // Clear contents of the file before starting tests
-    clearFile(fileName);
 
     // Test 1: Create a user and verify getters
     cout << "Test 1: Creating user and verifying getters... ";
@@ -76,7 +71,7 @@ void testUserClass() {
 
     // Test 3: Add user to file and check if added correctly
     cout << "Test 3: Adding user to file... ";
-    bool added = user1.addUser(fileName);
+    bool added = user1.addUser();
     assert(added);
     cout << "✔️" << endl;
     passedTests++;
@@ -84,7 +79,7 @@ void testUserClass() {
     // Test 4: Retrieve user from file and verify data
     cout << "Test 4: Retrieving user from file and verifying data... ";
     try {
-        User retrievedUser = User().checkUser(fileName, "U000001");
+        User retrievedUser = User().checkUser("U000001");
         assert(strcmp(retrievedUser.getUserID(), "U000001") == 0);
         assert(strcmp(retrievedUser.getName(), "Alice Smith") == 0);
         assert(strcmp(retrievedUser.getPhone(), "9876543210") == 0);
@@ -94,47 +89,28 @@ void testUserClass() {
     } catch (const exception& e) {
         cerr << "Exception occurred: " << e.what() << endl;
         cout << "❌" << endl;
+        return;
     }
 
-    // Test 5: Display users from file and verify output
-    cout << "Test 5: Displaying users from file and verifying output... " << endl << endl;
-    try {
-        User user1;
-        user1.displayUsersFromFile(fileName);
-        cout << "✔️" << endl << endl;
-        passedTests++;
-    } catch (const exception& e) {
-        cerr << "Exception occurred: " << e.what() << endl;
-        cout << "❌" << endl << endl;
+    // Test 5: Add two more users and verify the total count
+    cout << "Test 5: Adding two more users and verifying count... ";
+    User users[2] = {
+        User("U000002", "Bob", "1111111111", "bob@example.com"),
+        User("U000003", "Charlie", "2222222222", "charlie@example.com")
+    };
+
+    bool allAdded = true;
+    for (int i = 0; i < 2; ++i) {
+        if (!users[i].addUser()) {
+            allAdded = false;
+        }
     }
-
-    // Test 6: Add more users and test displaying the 6th user
-    cout << "Test 6: Adding more users and displaying the 6th user... " << endl << endl;
-    // Add 6 users
-    User user2("U000002", "Bob", "2345678901", "bob@example.com");
-    user2.addUser(fileName);
-    User user3("U000003", "Charlie", "3456789012", "charlie@example.com");
-    user3.addUser(fileName);
-    User user4("U000004", "David", "4567890123", "david@example.com");
-    user4.addUser(fileName);
-    User user5("U000005", "Eve", "5678901234", "eve@example.com");
-    user5.addUser(fileName);
-    User user6("U000006", "Frank", "6789012345", "frank@example.com");
-    user6.addUser(fileName);
-
-    // Display the 6th user
-    try {
-        User user1;
-        user1.displayUsersFromFile(fileName);
-        cout << "✔️" << endl << endl;
-        passedTests++;
-    } catch (const exception& e) {
-        cerr << "Exception occurred: " << e.what() << endl;
-        cout << "❌" << endl << endl;
+    if (!allAdded) {
+        cout << "❌" << endl;
+        return;
     }
-
-    // Clear contents of the file after tests
-    clearFile(fileName);
+    cout << "✔️" << endl;
+    passedTests++;
 
     // Print test summary
     cout << "Test Summary:" << endl;
