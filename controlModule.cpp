@@ -1,57 +1,108 @@
+/* Revision History: 
+   Rev. 1 - 04/07/24 Original by JAWS /
+//==================================================
+/ This module defines functions for handling various operations related to adding products, release's, and change requests,
+   user updates, change requests, and reports within the system. */
+//==================================================
+
 #include "controlModule.h"
 
-// Program Startup
-void initialize() { 
+//==================================================
+User userTmp;
+Product prodTmp;
+Release relTmp;
+changeRequest chRTmp;
+changeItem chItemTmp;
 
+const char* changeItemFile = "changeItems.dat";
+const char* productFile = "products.dat";
+const char* releaseFile = "releases.dat";
+const char* userFile = "users.dat";
+const char* changeRequestFile = "changeRequests.dat";
+//==================================================
+
+// Program Startup
+//----------------------
+void initialize () { 
+// Description: 
+//   Initialize files
     userTmp.initUser(userFile);
     prodTmp.initProduct(productFile);
     relTmp.initRelease(releaseFile);
-    chRTmp.initChangeRequest(changeRequestFile);
+    chRTmp.initChReq(changeRequestFile);
     chItemTmp.initChangeItem(changeItemFile);
 }
 
 // Closing Program
-void close() { 
+//----------------------
+void close () { 
+// Description: 
+//   Closes All files
     userTmp.closeUser();
     prodTmp.closeProduct();
     relTmp.closeRelease();
-    chRTmp.closeChangeRequest();
+    chRTmp.closeChReq();
     chItemTmp.closeChangeItem();
 }
 
 
 
 // Implementation of addProductControl
+//----------------------
 void addProductControl() {
+    // Description:
+    //   Executes 'Add Product' operation.
+
     const int NAME_MAX_LENGTH = 30;
     const int ID_MAX_LENGTH = 8;
 
-    cout << "Enter the Product Name (1-29 Character Length): ";
+    // Get product name from user
+    cout << "Enter the Product Name (1-29 Characters): ";
     char prodName[NAME_MAX_LENGTH];
-    cin.ignore();
+    cin.ignore();  // Clear any remaining newline character in the buffer
     cin.getline(prodName, NAME_MAX_LENGTH);
 
-    cout << "Enter the Product ID (1-7 Character Length): ";
+    // Get product ID from user
+    cout << "Enter the Product ID (1-7 Characters): ";
     char prodID[ID_MAX_LENGTH];
     cin.getline(prodID, ID_MAX_LENGTH);
 
-    cout << "Do you want to add product: " << prodName << " (Select Y/N)? ";
+    // Check if inputs are valid
+    if (strlen(prodName) == 0 || strlen(prodID) == 0) {
+        cout << "Invalid input. Product name and ID cannot be empty." << endl;
+        return;
+    }
+
+    if (strlen(prodName) >= NAME_MAX_LENGTH || strlen(prodID) >= ID_MAX_LENGTH) {
+        cout << "Input exceeds maximum length. Returning to Add Menu." << endl;
+        return;
+    }
+
+    // Confirm addition with the user
+    cout << "Do you want to add product: " << prodName << " (select Y/N)? ";
     char input;
     cin >> input;
+    cin.ignore();  // Clear the input buffer
+
     if (input == 'Y' || input == 'y') {
         Product product(prodID, prodName);
+
+        // Attempt to add the product
         if (product.addProduct()) {
-            cout << "Product Successfully Added. Returning to Add Menu" << endl;
+            cout << "Successfully Added. Returning to Add Menu." << endl;
         } else {
-            cout << "Failed to add product. Returning to Add Menu" << endl;
+            cout << "Failed to add product. Returning to Add Menu." << endl;
         }
     } else {
-        cout << "Product addition cancelled. Returning to Add Menu" << endl;
+        cout << "Product addition cancelled. Returning to Add Menu." << endl;
     }
 }
 
 // Implementation of addReleaseControl
-void addReleaseControl() {
+//----------------------
+void addReleaseControl () {
+// Description:
+//   Executes 'Add Release' operation.
     Product temp; 
     const char* fileName = "releases.dat"; // Set the file name for the releases
     char relID[8];
@@ -65,7 +116,7 @@ void addReleaseControl() {
         return;
     }
 
-    cout << "Do you Want to add Release to maps " << temp.getName() << " (Select Y/N): ";
+    cout << "Are you sure you want to add a Release to " << temp.getName() << " (select y/n): ";
     cin >> choiceP;
     cout << endl;
 
@@ -85,6 +136,14 @@ void addReleaseControl() {
         return;
     }
 
+    cout << "Do you want to add release " << relID << " (select y/n)? ";
+    cin >> choiceR;
+    cout << endl;
+
+    if (choiceR != 'y' && choiceR != 'Y') {
+        cout << "Operation cancelled. Returning to the menu." << endl;
+        return;
+    }
 
     // Create a Release object and set its details
     Release newRelease;
@@ -98,25 +157,19 @@ void addReleaseControl() {
     cin.getline(releaseDate, 11);
     newRelease.setReleaseDate(releaseDate);
 
-    cout << "Are you sure you want to add a Release to " << relID << " (Select Y/N)? ";
-    cin >> choiceR;
-    cout << endl;
-
-    if (choiceR != 'y' && choiceR != 'Y') {
-        cout << "Operation cancelled. Returning to the menu." << endl;
-        return;
-    }
-
     // Add the release to the file
     if (newRelease.addRelease()) {
-        cout << "Release Successfully Added. Returning to Add Menu." << endl;
+        cout << "Release successfully added." << endl;
     } else {
         cout << "Failed to add release. Please check the file and try again." << endl;
     }
 }
 
 // Implementation of addChangeRequestControl
-void addChangeRequestControl() {
+//----------------------
+void addChangeRequestControl () {
+// Description:
+//   Executes 'Add Change Request' operation.
     // Local variables for function 
     const char* userFile;
     const char* productFile;
@@ -125,7 +178,7 @@ void addChangeRequestControl() {
     changeItem tempChangeItem;
     Release tempRelease;
     Product tempProd;
-    char date[11];
+    char date[12];
     char description[30];
     char choice;
 
@@ -158,7 +211,7 @@ void addChangeRequestControl() {
     cout << endl;
 
     // Check change items for given product or add changeItem. 
-    tempChangeItem = tempChangeItem.displayAndReturnChangeItem(changeItemFile,tempProd.getProductID());
+    tempChangeItem = tempChangeItem.displayAndReturnChangeItem(tempProd);
     cout << "Do you want to add the changeItem " << tempChangeItem.getChangeItemID() << " (Select Y/N)? ";
     cin >> choice;
     if (!choice == 'Y' || !choice == 'y') { 
@@ -175,7 +228,7 @@ void addChangeRequestControl() {
         changeRequest.setDateRequested(date);
 
         // Add Change Reqeust to file.
-        if (changeRequest.addChangeRequest(changeItemFile)) {
+        if (changeRequest.addChangeRequest()) {
             cout << "Change request added successfully." << endl;
         } else {
             cout << "Failed to add change request." << endl;
@@ -186,26 +239,29 @@ void addChangeRequestControl() {
 }
 
 // Implementation of updateUserControl
-void updateUserControl() {
+//----------------------
+void updateUserControl () {
+// Description:
+//   Executes 'Update User' operation.
     const int ID_MAX_LENGTH = 8;
     cout << "Enter the User ID to update: ";
     char userID[ID_MAX_LENGTH];
     cin.ignore();
     cin.getline(userID, ID_MAX_LENGTH);
 
-    User user = User().checkUser(userID);
+    User user = user.displayUsersFromFile();
 
-    cout << "Enter new Name (leave empty by pressing <enter> to keep current): " << endl;
+    cout << "Enter new Name (leave empty to keep current): ";
     char name[30];
     cin.getline(name, 30);
     if (strlen(name) > 0) user.setName(name);
 
-    cout << "Enter new phone number (leave empty by pressing <enter> to keep current): " << endl;
+    cout << "Enter new Phone (leave empty to keep current): ";
     char phone[15];
     cin.getline(phone, 15);
     if (strlen(phone) > 0) user.setPhone(phone);
 
-    cout << "Enter new email (leave empty by pressing <enter> to keep current): " << endl;
+    cout << "Enter new Email (leave empty to keep current): ";
     char email[30];
     cin.getline(email, 30);
     if (strlen(email) > 0) user.setEmail(email);
@@ -218,29 +274,37 @@ void updateUserControl() {
 }
 
 // Implementation of updateChangeItemControl
-void updateChangeItemControl() {
+//----------------------
+void updateChangeItemControl () {
+// Description:
+//   Executes 'Update Single Issue' operation.
     const char* fileName;
     Product tempProduct;
     changeItem tempChangeItem;
 
     tempProduct = tempProduct.displayProductFromFile(); // Need to make product class open and initialize files once.
-    tempChangeItem = tempChangeItem.displayAndReturnChangeItem(fileName,tempProduct.getProductID());
-    tempChangeItem.updateChangeItem(fileName,tempChangeItem.getChangeItemID());
-
+    tempChangeItem = tempChangeItem.displayAndReturnChangeItem(tempProduct);
+    tempChangeItem.updateChangeItem(tempChangeItem);
 }
 
 // Implementation of displayRemReportControl
-void displayRemReportControl() {
+//----------------------
+void displayRemReportControl () {
+// Description:
+//   Executes ' Displays list Remaining Items Report' operation.
     const char* fileName;
     changeItem tempChangeItem;
     Product tempProduct;
     tempProduct = tempProduct.displayProductFromFile();
-    tempChangeItem.displayRemainingReports(fileName);
+    tempChangeItem.displayRemainingReports(tempProduct);
 }
 
 
 // Implementation of displayNotifyReportControl
-void displayNotifyReportControl() {
+//----------------------
+void displayNotifyReportControl () {
+// Description:
+//   Executes ' Displays Users to be Notified Report' operation.
     // Prompt for product ID
     char productID[8];
     cout << "Enter Product ID: ";
@@ -302,16 +366,18 @@ void displayNotifyReportControl() {
 }
 
 // Implementation of getStatusControl
-void getStatusControl() {
+//----------------------
+void getStatusControl () {
+// Description:
+//   Executes ' Displays list of Status of Change Items' operation.
     Product productTemp;
     changeItem changeItemTemp;
-    const char* fileName;
 
     // Display product information and return selected product
     productTemp = productTemp.displayProductFromFile();
 
     // Display change items for the selected product and return selected change item
-    changeItemTemp = changeItemTemp.displayAndReturnChangeItem(fileName,productTemp.getProductID());
+    changeItemTemp = changeItemTemp.displayAndReturnChangeItem(productTemp);
 
     // Output the details of the selected change item
     cout << "Change Item ID: " << changeItemTemp.getChangeItemID() << endl;

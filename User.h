@@ -17,7 +17,6 @@
 #include <fstream>
 #include <cstring> // For string manipulation functions
 using namespace std;
-
 //==================================================
 class User {
 public:
@@ -99,17 +98,6 @@ public:
     //   May throw an exception if the file cannot be accessed.
 
     //----------------------
-    User checkUser (const char* userID);
-    // Description: Searches the currently managed file for a user based on the provided userID 
-    //              and returns a reference to the found User object if the user exists.
-    // Parameters:
-    //   - userID: Pointer to a character array containing the user ID to search for (input).
-    // Returns:
-    //   Reference to a User object representing the user with the given userID.
-    // Exceptions:
-    //   May throw an exception if the file cannot be accessed.
-
-    //----------------------
     bool addUser ();
     // Description: Adds the user's details to the currently managed file.
     // Returns:
@@ -134,12 +122,13 @@ public:
     // Exceptions:
     //   May throw an exception if the file cannot be accessed.
 
+//==================================================
 private:
     char userID[9];   // Member variable for storing user ID (max length: 8 characters)
     char name[31];    // Member variable for storing user name (max length: 30 characters)
     char phone[13];   // Member variable for storing user phone number (max length: 12 characters)
     char email[25];   // Member variable for storing user email address (max length: 24 characters)
-    static fstream fileStream; // Member variable for managing file operations
+    static std::fstream fileStream; // Member variable for managing file operations
 };
 
 #endif // USER_H

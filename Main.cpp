@@ -1,4 +1,3 @@
-// Main.cpp
 // Revision History:
 // Rev. 1 - 04/07/24 Original by JAWS
 //==================================================
@@ -11,9 +10,9 @@ using namespace std;
 //==================================================
 
 //----------------------
-int main () {
+int main() {
     UIModule uiModule; // Create an instance of UIModule
-    uiModule.run ();    // Call the run() method to start the UI module
+    uiModule.run();    // Call the run() method to start the UI module
     return 0;
 }
 // Description: Initializes and runs the UI module.
