@@ -30,9 +30,9 @@ public:
     };
 
     // Constructors
-    changeItem ();    // Default constructor
+    changeItem();    // Default constructor
 
-    changeItem (int changeItemID, const char* description, const Product* product, const Release* releasePtr); 
+    changeItem(int changeItemID, const char* description, const Product* product, const Release* releasePtr); 
     // Description: Parameterized constructor initializing changeItemID, description, associated product, and release with provided values.
     // Parameters:
     //     - changeItemID: Integer ID of the change item (input)
@@ -40,14 +40,27 @@ public:
     //     - product: Pointer to the associated Product object (input)
     //     - releasePtr: Pointer to the anticipated Release object (input)
 
+
+    changeItem(const changeItem& other); 
+    // Copy constructor creates a copy of the given Release object.
+    // Parameters:
+    //   - other: Reference to another Release object to copy from (input)
+
+
+    changeItem& operator=(const changeItem& other);
+
     // Getter methods
     //----------------------
     int getChangeItemID () const;    
     // Description: Getter for retrieving change item ID
 
     //----------------------
-    const char* getDescription () const;     
+    const string* getDescription () const;     
     // Description: Getter for retrieving change item description
+
+    //----------------------
+    const Release getAnticipatedRelease() const;
+    // Description: Getter for retrieving anticipated release
 
     //----------------------
     const char* getAnticipatedReleaseID () const;    
@@ -56,6 +69,8 @@ public:
     //----------------------
     Status getStatus () const;    
     // Description: Getter for retrieving status of change item
+
+    const Product getAssociatedProduct () const;
 
     //----------------------
     const char* getAssociatedProductID () const;    
@@ -69,7 +84,7 @@ public:
     //     - changeItemID: Integer ID of the change item (input)
 
     //----------------------
-    void setDescription (const char* description);     
+    void setDescription (const string descriptionNew);     
     // Description: Setter for setting change item description
     // Parameters:
     //     - description: Pointer to a character array containing the description (input)
@@ -104,7 +119,7 @@ public:
     // Exceptions: May throw an exception if the file specified by fileName does not exist or cannot be accessed.
 
     //----------------------
-    bool updateChangeItem (const char* fileName, changeItem changeItemToFind);    
+    bool updateChangeItem (const char* fileName, int changeItemIDToFind);    
     // Description: Method to update the change item with the given ID in the given file
     // Parameters:
     //     - fileName: Pointer to a character array containing the file name (input)
@@ -137,10 +152,10 @@ public:
     // Exceptions: May throw an exception if the file specified by fileName does not exist or cannot be accessed.
 
 
-
-    changeItem displayAndReturnChangeItem(const char* fileName, const Product* productToFind) ;
+    //----------------------
+    changeItem displayAndReturnChangeItem(const char* fileName, const char* productIDToFind) ;
     
-    void initChangeItem ();
+    void initChangeItem (const char* fileName);
     // Description: Initializes the obj with default constructor
 
     //----------------------
@@ -149,10 +164,12 @@ public:
 
 private:
     int changeItemID;    // Member variable for storing change item ID (integer from [0, 999999])
-    char description[30];    // Member variable for storing change item description (maximum length: 30 characters)
+    string description;    // Member variable for storing change item description (maximum length: 30 characters)
     Status status;    // Member variable for storing status attribute
-    const Release* anticipatedRelease;    // Pointer to associated Release object
-    const Product* associatedProduct;    // Pointer to associated Product object
+    Release anticipatedRelease;    // Pointer to associated Release object
+    Product associatedProduct;    // Pointer to associated Product object
+    fstream file;  // File stream for read and write operations
+    string fileName; // File name for operations
 };
 
 //==================================================
