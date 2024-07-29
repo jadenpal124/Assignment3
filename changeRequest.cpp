@@ -7,7 +7,7 @@
 // the context of change requests.
 //==================================================
 
-#include "ChangeRequest.h"
+#include "changeRequest.h"
 
 //==================================================
 std::fstream changeRequest::fileStream;

@@ -5,7 +5,7 @@
 // The class provides methods to access, modify, and persist change item data, managing a file internally.
 //==================================================
 
-#include "ChangeItem.h"
+#include "changeItem.h"
 //==================================================
 std::fstream changeItem::file; // Declare the file member variable
 //==================================================

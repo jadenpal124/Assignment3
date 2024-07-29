@@ -15,9 +15,9 @@
 #include <fstream>
 #include "User.h"
 #include "Product.h"
-#include "ChangeItem.h"
+#include "changeItem.h"
 #include "Release.h"
-#include "ChangeRequest.h"
+#include "changeRequest.h"
 
 using namespace std;
 
