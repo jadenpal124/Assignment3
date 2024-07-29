@@ -11,8 +11,8 @@
 #include <iostream>
 #include <cstring>
 
-#include "ChangeItem.h"
-#include "ChangeRequest.h"
+#include "changeItem.h"
+#include "changeRequest.h"
 #include "User.h"
 #include "Release.h"
 #include "Product.h"
