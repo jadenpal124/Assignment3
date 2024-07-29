@@ -6,7 +6,7 @@ void initialize() {
     userTmp.initUser(userFile);
     prodTmp.initProduct(productFile);
     relTmp.initRelease(releaseFile);
-    chRTmp.initChReq(changeRequestFile);
+    chRTmp.initChangeRequest(changeRequestFile);
     chItemTmp.initChangeItem(changeItemFile);
 }
 
@@ -15,7 +15,7 @@ void close() {
     userTmp.closeUser();
     prodTmp.closeProduct();
     relTmp.closeRelease();
-    chRTmp.closeChReq();
+    chRTmp.closeChangeRequest();
     chItemTmp.closeChangeItem();
 }
 
@@ -157,7 +157,7 @@ void addChangeRequestControl() {
     cout << endl;
 
     // Check change items for given product or add changeItem. 
-    tempChangeItem = tempChangeItem.displayAndReturnChangeItem(tempProd);
+    tempChangeItem = tempChangeItem.displayAndReturnChangeItem(changeItemFile,tempProd.getProductID());
     cout << "Do you want to add the changeItem " << tempChangeItem.getChangeItemID() << " (Select Y/N)? ";
     cin >> choice;
     if (!choice == 'Y' || !choice == 'y') { 
@@ -174,7 +174,7 @@ void addChangeRequestControl() {
         changeRequest.setDateRequested(date);
 
         // Add Change Reqeust to file.
-        if (changeRequest.addChangeRequest()) {
+        if (changeRequest.addChangeRequest(changeItemFile)) {
             cout << "Change request added successfully." << endl;
         } else {
             cout << "Failed to add change request." << endl;
@@ -223,8 +223,9 @@ void updateChangeItemControl() {
     changeItem tempChangeItem;
 
     tempProduct = tempProduct.displayProductFromFile(); // Need to make product class open and initialize files once.
-    tempChangeItem = tempChangeItem.displayAndReturnChangeItem(tempProduct);
-    tempChangeItem.updateChangeItem(tempChangeItem);
+    tempChangeItem = tempChangeItem.displayAndReturnChangeItem(fileName,tempProduct.getProductID());
+    tempChangeItem.updateChangeItem(fileName,tempChangeItem.getChangeItemID());
+
 }
 
 // Implementation of displayRemReportControl
@@ -233,7 +234,7 @@ void displayRemReportControl() {
     changeItem tempChangeItem;
     Product tempProduct;
     tempProduct = tempProduct.displayProductFromFile();
-    tempChangeItem.displayRemainingReports(tempProduct);
+    tempChangeItem.displayRemainingReports(fileName);
 }
 
 
@@ -303,12 +304,13 @@ void displayNotifyReportControl() {
 void getStatusControl() {
     Product productTemp;
     changeItem changeItemTemp;
+    const char* fileName;
 
     // Display product information and return selected product
     productTemp = productTemp.displayProductFromFile();
 
     // Display change items for the selected product and return selected change item
-    changeItemTemp = changeItemTemp.displayAndReturnChangeItem(productTemp);
+    changeItemTemp = changeItemTemp.displayAndReturnChangeItem(fileName,productTemp.getProductID());
 
     // Output the details of the selected change item
     cout << "Change Item ID: " << changeItemTemp.getChangeItemID() << endl;
