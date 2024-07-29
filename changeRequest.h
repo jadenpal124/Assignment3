@@ -9,11 +9,12 @@
 // the context of change requests.
 //==================================================
 
-#ifndef CHANGEREQUEST_H
-#define CHANGEREQUEST_H
+#ifndef CHANGE_REQUEST_H
+#define CHANGE_REQUEST_H
 
 #include <iostream>
 #include <cstring>
+#include <iomanip> 
 #include "User.h"
 #include "Product.h"
 #include "changeItem.h"
@@ -27,11 +28,14 @@ public:
     // Constructors
     changeRequest (); // Default constructor initializing changeRequest and name to empty strings.
 
-    changeRequest (const changeItem& changeItem, const User& user, const Product& product, const Release& associatedRelease);
+    changeRequest (const changeItem changeItem, const User& user, const Product& product, const Release& associatedRelease);
     // Description: Parameterized constructor initializing productID and name with provided values.
     // Parameters:
     //   - productID: Pointer to a character array containing the product ID (input)
     //   - name: Pointer to a character array containing the product name (input)
+
+    
+
 
     // Getter methods
     //----------------------
@@ -62,6 +66,10 @@ public:
     // Description: Sets the product of the changeRequest object to the provided value.
     // Parameters:
     //   - user: Reference to a constant Product object representing the associated change request. (input)
+
+    //----------------------
+    void setDateRequested (char dateN[11]);
+
 
     //----------------------
     void setChangeItem (const changeItem& changeItem);
@@ -97,7 +105,7 @@ public:
 
     // Session management methods
     //----------------------
-    void initChangeRequest ();
+    void initChangeRequest (const char* fileName);
     // Description: Initializes the change request by calling the default constructor
     //              and allocated any memeory on heap.
 
@@ -111,6 +119,8 @@ private:
     changeItem ChangeItem; // changeItem object to reference changeItem class
     Release associatedRelease; // Release object to reference Release class
     char dateRequested[11]; // Assuming release date format YYYY-MM-DD
+    fstream file;  // File stream for read and write operations
+    string fileName; // File name for operations
 };
 
 #endif // CHANGEREQUEST_H
