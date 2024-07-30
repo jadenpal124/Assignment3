@@ -115,27 +115,29 @@ void User::setEmail (const char* email) {
 // Utility methods
 //----------------------
 void User::initUser(const char* fileName) {
-    // Description: Initializes the User object and opens the file for operations.
+    // Description: Initializes the User object and opens the specified file for operations
     // Parameters:
     //   - fileName: Pointer to a character array containing the file name (input)
 
-    // Open file stream for reading and writing in binary mode
+    // Attempt to open file for reading and writing in binary mode
     fileStream.open(fileName, ios::in | ios::out | ios::binary);
-    if (!fileStream) {
-        // File does not exist or could not be opened, attempt to create it
-        fileStream.clear(); // Clear error state
-        fileStream.open(fileName, ios::out | ios::binary | ios::trunc); // Create a new file
-        if (!fileStream) {
-            cerr << "Error: Could not open or create file " << fileName << endl;
-            throw runtime_error("Error: Could not open or create file");
-        }
-        fileStream.close(); // Close the file and reopen it in the required mode
-        fileStream.open(fileName, ios::in | ios::out | ios::binary);
-    }
 
-    if (!fileStream) {
-        cerr << "Error: Could not open file after creation attempt " << fileName << endl;
-        throw runtime_error("Error: Could not open file after creation attempt");
+    if (!fileStream.is_open()) {
+        // File does not exist or could not be opened for reading and writing
+        fileStream.clear(); // Clear error state
+
+        // Attempt to create a new file
+        fileStream.open(fileName, ios::out | ios::binary | ios::trunc);
+        if (!fileStream) {
+            throw runtime_error("Error: Could not create file");
+        }
+        fileStream.close(); // Close the newly created file
+
+        // Reopen file for reading and writing
+        fileStream.open(fileName, ios::in | ios::out | ios::binary);
+        if (!fileStream) {
+            throw runtime_error("Error: Could not open file for reading and writing after creation attempt");
+        }
     }
 }
 
@@ -210,23 +212,39 @@ bool User::changeUserInfo () {
 }
 
 //----------------------
-bool User::addUser () {
-// Description: Adds the user's details to the currently managed file.
-// Returns:
-//   true if the user details were successfully added; false otherwise.
-// Exceptions:
-//   May throw an exception if the file cannot be accessed.
+bool User::addUser() {
+    // Description: Adds the user's details to the currently managed file.
+    // Returns:
+    //   - true if the user details were successfully added; false otherwise.
+    // Exceptions: May throw an exception if the file cannot be accessed.
+
+    fileStream.clear();
     // Check if file is open
     if (!fileStream.is_open()) {
         cerr << "Error: File is not open." << endl;
         return false;
     }
 
-    // Write user information to file
-    fileStream.seekp(0, ios::end); // Move to end to append
+    // Move the write pointer to the end of the file
+    fileStream.seekp(0, ios::end);
+    if (fileStream.fail()) {
+        cerr << "Error: Failed to move write pointer to the end of the file." << endl;
+        return false;
+    }
+
+    // Write the User object to the file
     fileStream.write(reinterpret_cast<const char*>(this), sizeof(User));
+    if (fileStream.fail()) {
+        cerr << "Error: Failed to write to file." << endl;
+        fileStream.clear();  // Clear the error state
+        return false;
+    }
+
+    // Clear the file error state
+    fileStream.clear();
     return true;
 }
+
 
 //----------------------
 User User::displayUsersFromFile () const {
@@ -249,7 +267,7 @@ User User::displayUsersFromFile () const {
 
     while (displayNextPage) {
         // Display header
-        cout << "Change Request - Must Add or Select a User:" << endl;
+        cout << " - Must Add or Select a User:" << endl;
         cout << "Request Status (Page " << (startRecord / numRecordsPerPage + 1) << ")" << endl;
         cout << setw(2) << "#" << "  ";
         cout << setw(10) << "User ID" << "  ";
@@ -288,6 +306,7 @@ User User::displayUsersFromFile () const {
             cout << "Press <enter> to display the next " << numRecordsPerPage << " rows, or \"q\" to go back." << endl;
             cout << "If you would like to select a person type the number #." << endl;
             cout << "If a User ID is known type \"s\" to enter it." << endl;
+            cout << "To add a new user type \"a\"." << endl;
 
             string selection;
             cout << "Enter Selection: ";
@@ -300,6 +319,36 @@ User User::displayUsersFromFile () const {
             } else if (selection == "q") {
                 // Quit action
                 displayNextPage = false; // Exit loop
+            } else if (selection == "a") {
+                // Add new user
+                User newUser;
+                cout << "Enter User ID: ";
+                string userID;
+                getline(cin, userID);
+                newUser.setUserID(userID.c_str());
+
+                cout << "Enter User Name: ";
+                string userName;
+                getline(cin, userName);
+                newUser.setName(userName.c_str());
+
+                cout << "Enter Phone Number: ";
+                string phone;
+                getline(cin, phone);
+                newUser.setPhone(phone.c_str());
+
+                cout << "Enter Email: ";
+                string email;
+                getline(cin, email);
+                newUser.setEmail(email.c_str());
+
+                if (newUser.addUser()) {
+                    cout << "User added successfully." << endl;
+                    selectedUser = newUser;
+                    return selectedUser;
+                } else {
+                    cout << "Failed to add user." << endl;
+                }
             } else if (selection == "s") {
                 // Enter User ID action
                 cout << "Enter User ID: ";
@@ -344,6 +393,7 @@ User User::displayUsersFromFile () const {
             cout << "End of file reached. Press q to go back" << endl;
             cout << "If you would like to select a person type the number #." << endl;
             cout << "If a User ID is known type \"s\" to enter it." << endl;
+            cout << "To add a new user type \"a\"." << endl;
 
             string selection;
             cout << "Enter Selection: ";
@@ -351,6 +401,7 @@ User User::displayUsersFromFile () const {
 
             if (selection == "q") {
                 displayNextPage = false; // Exit loop
+                break;
             } else if (selection == "s") {
                 // Enter User ID action
                 cout << "Enter User ID: ";
@@ -373,6 +424,36 @@ User User::displayUsersFromFile () const {
                 } else {
                     displayNextPage = false; // Exit loop if user is found
                 }
+            } else if (selection == "a") {
+                // Add new user
+                User newUser;
+                cout << "Enter User ID: ";
+                string userID;
+                getline(cin, userID);
+                newUser.setUserID(userID.c_str());
+
+                cout << "Enter User Name: ";
+                string userName;
+                getline(cin, userName);
+                newUser.setName(userName.c_str());
+
+                cout << "Enter Phone Number: ";
+                string phone;
+                getline(cin, phone);
+                newUser.setPhone(phone.c_str());
+
+                cout << "Enter Email: ";
+                string email;
+                getline(cin, email);
+                newUser.setEmail(email.c_str());
+
+                if (newUser.addUser()) {
+                    cout << "User added successfully." << endl;
+                    selectedUser = newUser;
+                    return selectedUser;
+                } else {
+                    cout << "Failed to add user." << endl;
+                }
             } else if (isdigit(selection[0])) {
                 // Select by number action
                 int selectedNumber = stoi(selection);
@@ -384,10 +465,10 @@ User User::displayUsersFromFile () const {
                     selectedUser = user;
                     displayNextPage = false; // Exit loop if user is selected
                 } else {
-                    cout << "Invalid selection." << endl;
+                    cout << "Invalid selection.\n\n";
                 }
             } else {
-                cout << "Invalid selection." << endl;
+                cout << "Invalid selection.\n\n" << endl;
             }
         }
     }

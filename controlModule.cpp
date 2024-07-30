@@ -167,59 +167,58 @@ void addReleaseControl () {
 
 // Implementation of addChangeRequestControl
 //----------------------
-void addChangeRequestControl () {
-// Description:
-//   Executes 'Add Change Request' operation.
-    // Local variables for function 
-    const char* userFile;
-    const char* productFile;
-    const char* changeItemFile;
+void addChangeRequestControl() {
+    // Description:
+    //   Executes 'Add Change Request' operation.
+
+    // Local variables for function.
     User tempUser;
     changeItem tempChangeItem;
     Release tempRelease;
     Product tempProd;
-    char date[12];
-    char description[30];
+    char date[11]; // 10 characters + 1 for null terminator
     char choice;
 
-    // Select a User 
+    cin.ignore(); // Clear input buffer before getting new input
+
+    // Select a User
     tempUser = tempUser.displayUsersFromFile();
-    cout << "Do you want to select User " << tempUser.getName() << " (Select Y/N) ";
+    cout << "Do you want to select User " << tempUser.getName() << " (Select Y/N)? ";
     cin >> choice;
-    cout << endl;
-    if (choice != 'Y' || choice != 'y') { 
-        tempUser.displayUsersFromFile();
+    cin.ignore(); // Clear newline character from input buffer
+    if (choice != 'Y' && choice != 'y') {
+        tempUser = tempUser.displayUsersFromFile();
     }
 
     // Choose a product for change request
     tempProd = tempProd.displayProductFromFile();
-
     cout << "Do you want to select product " << tempProd.getName() << " (Select Y/N)? ";
     cin >> choice;
-    if (!choice == 'Y' || !choice == 'y') { 
-        tempUser.displayUsersFromFile();
+    cin.ignore(); // Clear newline character from input buffer
+    if (choice != 'Y' && choice != 'y') {
+        tempProd = tempProd.displayProductFromFile();
     }
     cout << endl;
 
     // Add a date of change Request
-    cout << "Enter the date, format (YYYY/MM//DD) : ";
-    cin.ignore();
-    cin.getline(date, 11);
-    cout << endl;
+    cout << "Enter the date, format (YYYY/MM/DD): ";
+    cin.getline(date, sizeof(date)); // Read date with size limit
     cout << "Do you want to add the date " << date << " (Select Y/N)? ";
     cin >> choice;
+    cin.ignore(); // Clear newline character from input buffer
     cout << endl;
 
-    // Check change items for given product or add changeItem. 
+    // Check change items for the given product or add changeItem.
     tempChangeItem = tempChangeItem.displayAndReturnChangeItem(tempProd);
     cout << "Do you want to add the changeItem " << tempChangeItem.getChangeItemID() << " (Select Y/N)? ";
     cin >> choice;
-    if (!choice == 'Y' || !choice == 'y') { 
-        tempUser.displayUsersFromFile();
+    cin.ignore(); // Clear newline character from input buffer
+    if (choice != 'Y' && choice != 'y') {
+        tempChangeItem = tempChangeItem.displayAndReturnChangeItem(tempProd);
     }
     cout << endl;
 
-    // Confirm inputs then add create change request object with corresponding variables
+    // Confirm inputs then create change request object with corresponding variables
     if (choice == 'Y' || choice == 'y') {
         // Assuming you have a ChangeRequest class and appropriate methods
         changeRequest changeRequest;
@@ -227,7 +226,7 @@ void addChangeRequestControl () {
         changeRequest.setAssociatedRelease(tempChangeItem.getAnticipatedRelease());
         changeRequest.setDateRequested(date);
 
-        // Add Change Reqeust to file.
+        // Add Change Request to file.
         if (changeRequest.addChangeRequest()) {
             cout << "Change request added successfully." << endl;
         } else {
@@ -240,16 +239,18 @@ void addChangeRequestControl () {
 
 // Implementation of updateUserControl
 //----------------------
-void updateUserControl () {
-// Description:
-//   Executes 'Update User' operation.
-    const int ID_MAX_LENGTH = 8;
-    cout << "Enter the User ID to update: ";
-    char userID[ID_MAX_LENGTH];
+void updateUserControl() {
+    // Description:
+    //   Executes 'Update User' operation.
     cin.ignore();
-    cin.getline(userID, ID_MAX_LENGTH);
 
     User user = user.displayUsersFromFile();
+
+    // Check if the returned user is valid
+    if (strlen(user.getUserID()) == 0) { // Assuming empty userID indicates an invalid user
+        cout << "\n\nNo valid user selected. Returning to Update Menu" << endl;
+        return; // Exit the function if no valid user is selected
+    }
 
     cout << "Enter new Name (leave empty to keep current): ";
     char name[30];
@@ -282,7 +283,10 @@ void updateChangeItemControl () {
     Product tempProduct;
     changeItem tempChangeItem;
 
+    cin.ignore();
+
     tempProduct = tempProduct.displayProductFromFile(); // Need to make product class open and initialize files once.
+    cout << endl;
     tempChangeItem = tempChangeItem.displayAndReturnChangeItem(tempProduct);
     tempChangeItem.updateChangeItem(tempChangeItem);
 }
