@@ -250,7 +250,7 @@ void changeRequest::displayUsersToBeNotified(Product prod) {
                 // Display information in specified format
                 cout << setw(20) << right << req.getUser().getName() << "  ";
                 cout << setw(12) << right << req.getUser().getEmail() << "  ";
-                cout << setw(12) << right << req.getChangeItem().getStatusAsString() << "  ";
+                cout << setw(12) << right << req.getChangeItem().getchangeItemID() << "  ";
                 cout << setw(20) << right << req.getChangeItem().getAnticipatedRelease().getReleaseID() << endl;
                 ++displayedCount;
 
