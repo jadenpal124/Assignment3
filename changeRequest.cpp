@@ -92,59 +92,150 @@ void changeRequest::setDateRequested (const char* date) {
     this->dateRequested[sizeof(this->dateRequested) - 1] = '\0';        // Ensure null-termination
 }
 
-//----------------------
-bool changeRequest::addChangeRequest () {
-// Description: Creates and adds the changeRequest object to the file.
-// Returns: true if the change request was successfully added, false otherwise.
+bool changeRequest::addChangeRequest() {
     // Ensure file is open
     if (!fileStream.is_open()) {
         cerr << "Error: File is not open for writing." << endl;
         return false;
     }
 
+    // Ensure that all fields are set before writing
+    // Debug output before writing
+    cout << "Writing ChangeRequest with ChangeID: " << this->getChangeItem().getChangeItemID() << endl;
+    cout << "ProductID: " << this->getChangeItem().getAssociatedProduct().getProductID() << endl;
+
     // Write the entire object to file
     fileStream.write(reinterpret_cast<const char*>(this), sizeof(changeRequest));
+    if (!fileStream) {
+        cerr << "Error: Failed to write changeRequest to file." << endl;
+        return false;
+    }
+
+    fileStream.flush(); // Ensure data is written to disk
     return true;
 }
 
 //----------------------
-void changeRequest::displayUsersToBeNotified () {
-// Description: Displays a list of users who should be notified of requests that are implemented.
-    // Open the file in read mode
-    ifstream inFile("defaultChangeRequest.bin", ios::binary);
-    if (!inFile) {
-        cerr << "Error: Could not open file for reading." << endl;
+void changeRequest::displayUsersToBeNotified(Product prod) {
+    // Description: Displays a list of users who should be notified of requests that are implemented.
+
+    // Check if file is open
+    if (!fileStream.is_open()) {
+        cerr << "Error: File is not open for reading." << endl;
         return;
     }
 
-    changeRequest req; // Temporary changeRequest object
+    const int numRecordsPerPage = 5; // Number of records to display per page
+    int startRecord = 0; // Starting record index
+    bool displayNextPage = true;
 
-    // Read the file and display relevant information
-    while (inFile.read(reinterpret_cast<char*>(&req), sizeof(changeRequest))) {
-        if (req.getChangeItem().getStatus() == changeItem::Status::Done) {
-            cout << "Requester Name: " << req.getUser().getName() << endl;
-            cout << "Requester Email: " << req.getUser().getEmail() << endl;
-            cout << "---------------------------" << endl;
+    while (displayNextPage) {
+        // Display header
+        cout << "Users To Be Notified Report (Page " << (startRecord / numRecordsPerPage + 1) << ")" << endl;
+        cout << "User Name" << endl;
+        cout << "ChangeID" << endl;
+        cout << "ProductID" << endl;
+        cout << "Anticipated ReleaseID" << endl;
+        cout << "--------- " << endl;
+        cout << "-------- " << endl;
+        cout << "--------- " << endl;
+        cout << "---------------------" << endl;
+
+        // Read the file and display relevant information
+        fileStream.clear();
+        fileStream.seekg(startRecord * sizeof(changeRequest), ios::beg);
+
+        bool endOfFile = false;
+        int displayedCount = 0;
+
+        changeRequest req;
+
+        while (fileStream.read(reinterpret_cast<char*>(&req), sizeof(changeRequest))) {
+            // Debug output
+            cout << "Read ChangeRequest with ChangeID: " << req.getChangeItem().getChangeItemID() << endl;
+            cout << "Status: " << req.getChangeItem().getStatusAsString() << endl;
+            cout << "ProductID: " << req.getChangeItem().getAssociatedProduct().getProductID() << endl;
+
+            if (req.getChangeItem().getStatusAsString() == "Done" &&
+                strcmp(req.getChangeItem().getAssociatedProduct().getProductID(), prod.getProductID()) == 0) {
+                // Display information in specified format
+                cout << setw(20) << left << req.getUser().getName() << endl;
+                cout << setw(8) << left << req.getChangeItem().getChangeItemID() << endl;
+                cout << setw(8) << left << req.getChangeItem().getAssociatedProduct().getProductID() << endl;
+                cout << setw(20) << left << req.getChangeItem().getAnticipatedRelease().getReleaseID() << endl;
+                cout << endl;
+                ++displayedCount;
+
+                if (displayedCount >= numRecordsPerPage) {
+                    break; // Stop if the maximum number of records per page is reached
+                }
+            }
+        }
+
+        if (displayedCount == 0) {
+            cout << "No matching users to notify found." << endl;
+            break; // Exit if no records are found
+        }
+
+        // Prompt user for input
+        if (fileStream.eof() && displayedCount < numRecordsPerPage) {
+            cout << "End of file reached. Press 'q' to go back" << endl;
+            displayNextPage = false;
+        } else {
+            cout << "Press <enter> to display the next " << numRecordsPerPage << " rows, or \"q\" to go back." << endl;
+            cout << "To return to menu type \"0\": ";
+
+            string selection;
+            getline(cin, selection);
+
+            if (selection.empty()) {
+                // Default action: Display next page
+                startRecord += numRecordsPerPage;
+            } else if (selection == "q") {
+                // Quit action
+                displayNextPage = false;
+            } else if (selection == "0") {
+                // Return to menu action
+                displayNextPage = false;
+            } else {
+                cout << "Invalid selection." << endl;
+            }
         }
     }
-
-    inFile.close(); // Close the file
 }
+
 
 //----------------------
 void changeRequest::initChReq (const char* fileName) {
 // Description: Initializes the change request by opening the specified file for operations.
 // Parameters:
 //   - fileName: Pointer to a character array containing the file name (input)
-    fileStream.open(fileName, ios::binary | ios::in | ios::out | ios::app); // Open for reading and writing
+    fileStream.open(fileName, ios::in | ios::out | ios::binary);
+    
     if (!fileStream.is_open()) {
-        cerr << "Error: Failed to open file " << fileName << endl;
+        // File could not be opened, attempt to create it
+        fileStream.clear(); // Clear any error flags
+        fileStream.open(fileName, ios::out | ios::binary | ios::trunc);
+        
+        if (!fileStream.is_open()) {
+            cerr << "Error: Could not open or create file " << fileName << endl;
+            throw runtime_error("Error: Could not open or create file");
+        }
+        fileStream.close(); // Close the file after creation
+
+        // Reopen the file for reading and writing
+        fileStream.open(fileName, ios::in | ios::out | ios::binary);
+    }
+
+    if (!fileStream.is_open()) {
+        cerr << "Error: Could not reopen file " << fileName << " for reading and writing" << endl;
+        throw runtime_error("Error: Could not open file after creation attempt");
     }
 }
 
 //----------------------
 void changeRequest::closeChReq () {
-    // Description: Closes the file and frees any allocated resources.
+    // Description: Closes the file
     if (fileStream.is_open()) {
         fileStream.close();
     }

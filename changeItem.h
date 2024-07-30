@@ -14,6 +14,8 @@
 #include "Release.h"    // Include Release class header
 #include "Product.h"    // Include Product class header
 #include <stdexcept>
+#include <cstdlib>  // For rand() and srand()
+#include <ctime>    // For time()
 
 using namespace std;
 
@@ -32,7 +34,10 @@ public:
     // Constructors
     changeItem ();    // Default constructor
 
-    changeItem (int changeItemID, const char* description, const Product& product, const Release& releasePtr); 
+     // Assignment operator
+    changeItem& operator=(const changeItem& other);
+
+    changeItem (int changeItemID, const char* description, const Product product, const Release releasePtr); 
     // Description: Parameterized constructor initializing changeItemID, description, associated product, and release with provided values.
     // Parameters:
     //     - changeItemID: Integer ID of the change item (input)
@@ -56,6 +61,8 @@ public:
     //----------------------
     Status getStatus () const;    
     // Description: Getter for retrieving status of change item
+
+    const char* getStatusAsString() const;
 
     //----------------------
     const Product getAssociatedProduct () const;    
@@ -118,14 +125,14 @@ public:
     // Exceptions: May throw an exception if the file cannot be accessed.
 
     //----------------------
-    void displayRemainingReports (const Product& productToFind) const;    
+    void displayRemainingReports (const Product productToFind) const;    
     // Description: Displays change items that still need to be implemented or are in progress.
     // Parameters:
     //     - productToFind: Pointer to the Product object to match against (input)
     // Exceptions: May throw an exception if the file cannot be accessed.
 
     //----------------------
-    changeItem displayAndReturnChangeItem (const Product& productToFind) const;    
+    changeItem displayAndReturnChangeItem (const Product productToFind);    
     // Description: Displays and returns a change item based on the provided product.
     // Parameters:
     //     - productToFind: Pointer to the Product object to match against (input)
@@ -141,8 +148,10 @@ private:
     Status status;    // Member variable for storing status attribute
     Release anticipatedRelease;    // Pointer to associated Release object
     Product associatedProduct;    // Pointer to associated Product object
-    const char* fileName;    // File name for operations
     static std::fstream file;    // File stream for read and write operations
+
+    int generateUniqueChangeItemID(); // Generates a random change item ID in the range [0, 999999]
+    
 };
 
 //==================================================

@@ -17,7 +17,7 @@
 #include "Product.h"
 #include "changeItem.h"
 #include "Release.h"
-#include "changeRequest.h"
+
 
 using namespace std;
 
@@ -85,7 +85,7 @@ public:
     // Returns: true if the change request was successfully added, false otherwise.
 
     //----------------------
-    void displayUsersToBeNotified (); 
+    void displayUsersToBeNotified (Product prod); 
     // Description: Displays a list of users who should be notified of requests that are implemented.
 
     // Session management methods
