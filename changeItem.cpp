@@ -6,6 +6,7 @@
 //==================================================
 
 #include "changeItem.h"
+#include "changeRequest.h"
 //==================================================
 std::fstream changeItem::file; // Declare the file member variable
 //==================================================
@@ -174,6 +175,7 @@ bool changeItem::updateChangeItem(changeItem changeItemToFind) {
 
     bool found = false;
     int changeItemToFindID = changeItemToFind.getChangeItemID();
+    changeRequest req;
     changeItem temp;
     char userChoice;
     char userInput;
@@ -188,9 +190,9 @@ bool changeItem::updateChangeItem(changeItem changeItemToFind) {
 
     while (file.read(reinterpret_cast<char*>(&temp), sizeof(changeItem))) {
         if (temp.getChangeItemID() == changeItemToFindID) {
-            cout << "Current details for Change ID " << changeItemToFindID << ":\n";
+            cout << "\nCurrent details for Change ID " << changeItemToFindID << ":\n";
             cout << "ProductID: " << temp.getAssociatedProduct().getProductID() << "\n";
-            cout << "ChangeID: " << changeItemToFindID << "\n";
+            cout << "ChangeID: " << changeItemToFind.getChangeItemID() << "\n";
             cout << "Anticipated ReleaseID: " << temp.getAnticipatedRelease().getReleaseID() << "\n";
             cout << "Status: " << temp.getStatusAsString() << "\n";  // Use getStatusAsString
             cout << "Description: " << temp.getDescription() << "\n\n";
@@ -221,7 +223,7 @@ bool changeItem::updateChangeItem(changeItem changeItemToFind) {
                     break;
                 }
                 case '2': {
-                    cout << "Enter new Status:\n";
+                    cout << "\nEnter new Status:\n";
                     cout << "1) NewRequest\n";
                     cout << "2) ReviewRequest\n";
                     cout << "3) InProgress\n";
@@ -263,6 +265,8 @@ bool changeItem::updateChangeItem(changeItem changeItemToFind) {
                     file.close();
                     return found;
             }
+
+            req.updateChangeItem(temp);
 
             // Write updated change item back to file
             file.seekp(-static_cast<int>(sizeof(changeItem)), ios::cur);

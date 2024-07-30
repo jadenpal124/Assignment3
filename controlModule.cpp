@@ -182,6 +182,8 @@ void addChangeRequestControl() {
 
     cin.ignore(); // Clear input buffer before getting new input
 
+    cout << "\nChange Request";
+
     // Select a User
     tempUser = tempUser.displayUsersFromFile();
     cout << "Do you want to select User " << tempUser.getName() << " (Select Y/N)? ";
@@ -246,7 +248,10 @@ void updateUserControl() {
     //   Executes 'Update User' operation.
     cin.ignore();
 
+    cout << "\nUpdate User";
+
     User user;
+    changeRequest req;
     
     user = user.displayUsersFromFile();
 
@@ -256,7 +261,7 @@ void updateUserControl() {
         return; // Exit the function if no valid user is selected
     }
 
-    cout << "Enter new Name (leave empty to keep current): ";
+    cout << "Enter new Name (leave empty to keep current: ";
     char name[30];
     cin.getline(name, 30);
     if (strlen(name) > 0) user.setName(name);
@@ -271,8 +276,9 @@ void updateUserControl() {
     cin.getline(email, 30);
     if (strlen(email) > 0) user.setEmail(email);
 
-    if (user.changeUserInfo()) {
+    if (user.changeUserInfo() && req.updateUser(user)) {
         cout << "Successfully Updated. Returning to Update Menu" << endl;
+
     } else {
         cout << "Failed to update user. Returning to Update Menu" << endl;
     }
@@ -280,19 +286,34 @@ void updateUserControl() {
 
 // Implementation of updateChangeItemControl
 //----------------------
-void updateChangeItemControl () {
-// Description:
-//   Executes 'Update Single Issue' operation.
-    const char* fileName;
-    Product tempProduct;
-    changeItem tempChangeItem;
-
+void updateChangeItemControl() {
+    // Description:
+    //   Executes 'Update Single Issue' operation.
+    
+    cout << endl;
     cin.ignore();
 
-    tempProduct = tempProduct.displayProductFromFile(); // Need to make product class open and initialize files once.
+    // Display and select the product
+    Product tempProduct;
+    tempProduct = tempProduct.displayProductFromFile(); // Ensure this initializes the product file
+    
     cout << endl;
-    tempChangeItem = tempChangeItem.displayAndReturnChangeItem(tempProduct);
-    tempChangeItem.updateChangeItem(tempChangeItem);
+    
+    // Display and select the change item to be updated
+    changeItem tempChangeItem;
+    tempChangeItem = tempChangeItem.displayAndReturnChangeItem(tempProduct); // Get the change item for update
+
+    if (tempChangeItem.getChangeItemID() == 0) {
+        cout << "No valid change item selected. Returning to Update Menu" << endl;
+        return;
+    }
+
+    // Perform the update
+    if (tempChangeItem.updateChangeItem(tempChangeItem)) {
+        cout << "Succefully updated Changeitem " << endl;
+    } else {
+        cout << "Failed to update change item." << endl;
+    }
 }
 
 // Implementation of displayRemReportControl

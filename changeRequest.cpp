@@ -105,6 +105,7 @@ bool changeRequest::addChangeRequest () {
     cout << "ProductID: " << this->getChangeItem().getAssociatedProduct().getProductID() << endl;
 
     // Write the entire object to file
+    fileStream.clear();
     fileStream.write(reinterpret_cast<const char*>(this), sizeof(changeRequest));
     if (!fileStream) {
         cerr << "Error: Failed to write changeRequest to file." << endl;
@@ -113,6 +114,102 @@ bool changeRequest::addChangeRequest () {
 
     fileStream.flush(); // Ensure data is written to disk
     return true;
+}
+
+bool changeRequest::updateUser(User userToUpdate) {
+    // Description: This will update the change Requests user in the change Request file, to maintain synchronization.
+    // Parameters: 
+    //   - userToUpdate: copy of new user to update (input). 
+
+    // Ensure the file stream is open
+    if (!fileStream.is_open()) {
+        std::cerr << "Error: changeRequest.dat file is not open." << std::endl;
+        return false;
+    }
+
+    // Move the read/write position to the beginning of the file
+    fileStream.clear();
+    fileStream.seekg(0, std::ios::beg); // Move the read pointer to the start
+    fileStream.seekp(0, std::ios::beg); // Move the write pointer to the start
+
+    changeRequest req;
+    bool updated = false;
+
+    // Read each record and update if a match is found
+    while (fileStream.read(reinterpret_cast<char*>(&req), sizeof(changeRequest))) {
+        if (strcmp(req.getUser().getUserID(), userToUpdate.getUserID()) == 0) {
+            req.setUser(userToUpdate); // Update the user information
+            
+            // Move write pointer back to the start of the current record
+            fileStream.seekp(-static_cast<long>(sizeof(changeRequest)), std::ios::cur);
+            
+            // Write the updated record
+            fileStream.write(reinterpret_cast<const char*>(&req), sizeof(changeRequest));
+            
+            // Check if the write operation was successful
+            if (!fileStream) {
+                std::cerr << "Error: Failed to write updated change request to file." << std::endl;
+                return false;
+            }
+
+            fileStream.flush();
+            updated = true;
+            break; // Exit loop after successful update
+        }
+    }
+
+    // Clear any error flags and return the result
+    fileStream.clear();
+    return updated;
+}
+
+bool changeRequest::updateChangeItem(changeItem changeItemToUpdate) {
+    // Description: This will update the changeItems in the changeRequest file to maintain synchronization.
+    // Parameters: 
+    //   - changeItemToUpdate: copy of updated changeItem (input). 
+
+    // Ensure the file stream is open
+    if (!fileStream.is_open()) {
+        std::cerr << "Error: changeRequest.dat file is not open." << std::endl;
+        return false;
+    }
+
+    // Move the read/write position to the beginning of the file
+    fileStream.clear();
+    fileStream.seekg(0, std::ios::beg);
+    fileStream.seekp(0, std::ios::beg);
+
+    changeRequest req;
+    bool updated = false;
+
+    while (fileStream.read(reinterpret_cast<char*>(&req), sizeof(changeRequest))) {
+
+        if (req.getChangeItem().getChangeItemID() == changeItemToUpdate.getChangeItemID()) {
+            // Debug: Print the details of the ChangeItem being updated
+            std::cout << "Updating ChangeItem ID: " << req.getChangeItem().getChangeItemID() << std::endl;
+
+            req.setChangeItem(changeItemToUpdate);
+
+            // Move the file pointer back to the position where the record was read
+            fileStream.seekp(-static_cast<long>(sizeof(changeRequest)), std::ios::cur);
+
+            // Debug: Print the new details being written
+            std::cout << "Writing ChangeItem ID: " << req.getChangeItem().getChangeItemID() << std::endl;
+
+            fileStream.write(reinterpret_cast<const char*>(&req), sizeof(changeRequest));
+            fileStream.flush();
+            
+            updated = true;
+            break;
+        }
+    }
+
+    if (!updated) {
+        std::cerr << "Error: ChangeItem ID " << changeItemToUpdate.getChangeItemID() << " not found in changeRequest file." << std::endl;
+    }
+
+    fileStream.clear();
+    return updated;
 }
 
 void changeRequest::displayUsersToBeNotified(Product prod) {
@@ -153,7 +250,7 @@ void changeRequest::displayUsersToBeNotified(Product prod) {
                 // Display information in specified format
                 cout << setw(20) << right << req.getUser().getName() << "  ";
                 cout << setw(12) << right << req.getUser().getEmail() << "  ";
-                cout << setw(12) << right << req.getChangeItem().getChangeItemID() << "  ";
+                cout << setw(12) << right << req.getChangeItem().getStatusAsString() << "  ";
                 cout << setw(20) << right << req.getChangeItem().getAnticipatedRelease().getReleaseID() << endl;
                 ++displayedCount;
 

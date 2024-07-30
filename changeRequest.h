@@ -88,6 +88,18 @@ public:
     void displayUsersToBeNotified (Product prod); 
     // Description: Displays a list of users who should be notified of requests that are implemented.
 
+    bool updateUser (User userToUpdate);
+    // Description: This will update the change Requests user in the change Request file, to maintain
+    //              synchronization.
+    // Paramters: 
+    //   - userToUpdate: copy of new user to update (input). 
+
+     bool updateChangeItem (changeItem changeItemToUpdate);
+    // Description: This will update the change Requests changeItem in the change Request file, to maintain
+    //              synchronization.
+    // Paramters: 
+    //   - userToUpdate: copy of updated changeItem(input). 
+
     // Session management methods
     //----------------------
     void initChReq(const char* fileName);
