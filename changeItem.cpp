@@ -175,8 +175,8 @@ bool changeItem::updateChangeItem(changeItem changeItemToFind) {
 
     bool found = false;
     int changeItemToFindID = changeItemToFind.getChangeItemID();
-    changeRequest req;
     changeItem temp;
+    changeRequest req;
     char userChoice;
     char userInput;
     char userInput2[9];
@@ -184,99 +184,95 @@ bool changeItem::updateChangeItem(changeItem changeItemToFind) {
     string strStatus;
     Release tempReleaseFound;
 
-    // Search for the change item by ID
     file.clear(); // Clear any error flags
     file.seekg(0, ios::beg); // Rewind to the beginning of the file
 
     while (file.read(reinterpret_cast<char*>(&temp), sizeof(changeItem))) {
         if (temp.getChangeItemID() == changeItemToFindID) {
+            found = true;
             cout << "\nCurrent details for Change ID " << changeItemToFindID << ":\n";
             cout << "ProductID: " << temp.getAssociatedProduct().getProductID() << "\n";
-            cout << "ChangeID: " << changeItemToFind.getChangeItemID() << "\n";
+            cout << "ChangeID: " << temp.getChangeItemID() << "\n";
             cout << "Anticipated ReleaseID: " << temp.getAnticipatedRelease().getReleaseID() << "\n";
             cout << "Status: " << temp.getStatusAsString() << "\n";  // Use getStatusAsString
             cout << "Description: " << temp.getDescription() << "\n\n";
 
-            cout << "Enter the number of the field you want to update:\n";
-            cout << "1) ReleaseID\n";
-            cout << "2) Status\n";
-            cout << "3) Description\n";
-            cout << "0) Quit\n";
-            cout << "Enter Selection: ";
-            cin >> userInput;
-            cin.ignore(); // Clear input buffer
+            while (true) {
+                cout << "Enter the number of the field you want to update:\n";
+                cout << "1) ReleaseID\n";
+                cout << "2) Status\n";
+                cout << "3) Description\n";
+                cout << "0) Quit\n";
+                cout << "Enter Selection: ";
+                cin >> userInput;
+                cin.ignore(); // Clear input buffer
 
-            switch (userInput) {
-                case '1': {
-                    cout << "Enter new Release ID (1-8 Character Length): ";
-                    cin.getline(userInput2, 9);
-                    cout << "Do you want to update Release ID to " << userInput2 << " (select Y/N)? ";
-                    cin >> userChoice;
-                    cin.ignore(); // Clear input buffer
-                    if (userChoice == 'Y' || userChoice == 'y') {
-                        tempReleaseFound.setReleaseID(userInput2);
-                        tempReleaseFound.setReleaseDate(temp.getAnticipatedRelease().getReleaseDate());
-                        tempReleaseFound.setProduct(temp.getAssociatedProduct());
-                        temp.setAnticipatedRelease(tempReleaseFound); // Update temp with new release
-                        cout << "Release ID Successfully updated.\n";
+                switch (userInput) {
+                    case '1': {
+                        cout << "Enter new Release ID (1-8 Character Length): ";
+                        cin.getline(userInput2, 9);
+                        cout << "Do you want to update Release ID to " << userInput2 << " (select Y/N)? ";
+                        cin >> userChoice;
+                        cin.ignore(); // Clear input buffer
+                        if (userChoice == 'Y' || userChoice == 'y') {
+                            tempReleaseFound.setReleaseID(userInput2);
+                            tempReleaseFound.setReleaseDate(temp.getAnticipatedRelease().getReleaseDate());
+                            tempReleaseFound.setProduct(temp.getAssociatedProduct());
+                            temp.setAnticipatedRelease(tempReleaseFound); // Update temp with new release
+                            cout << "Release ID Successfully updated.\n";
+                        }
+                        break;
                     }
-                    break;
+                    case '2': {
+                        cout << "\nEnter new Status:\n";
+                        cout << "1) NewRequest\n";
+                        cout << "2) ReviewRequest\n";
+                        cout << "3) InProgress\n";
+                        cout << "4) Done\n";
+                        cout << "5) Cancelled\n";
+                        cout << "Enter Selection: ";
+                        cin >> userInput;
+                        cin.ignore(); // Clear input buffer
+                        switch (userInput) {
+                            case '1': strStatus = "NewRequest"; break;
+                            case '2': strStatus = "ReviewRequest"; break;
+                            case '3': strStatus = "InProgress"; break;
+                            case '4': strStatus = "Done"; break;
+                            case '5': strStatus = "Cancelled"; break;
+                            default: strStatus = "Unknown"; break;
+                        }
+                        cout << "Do you want to update Status to " << strStatus << " (select Y/N)? ";
+                        cin >> userChoice;
+                        cin.ignore(); // Clear input buffer
+                        if (userChoice == 'Y' || userChoice == 'y') {
+                            temp.setStatus(strStatus);
+                            cout << "Status Successfully updated.\n";
+                        }
+                        break;
+                    }
+                    case '3': {
+                        cout << "Enter new Description (1-30 Character Length): ";
+                        cin.getline(userInput3, 30);
+                        cout << "Do you want to update the description to " << userInput3 << " (select Y/N)? ";
+                        cin >> userChoice;
+                        cin.ignore(); // Clear input buffer
+                        if (userChoice == 'Y' || userChoice == 'y') {
+                            temp.setDescription(userInput3);
+                            cout << "Description Successfully updated.\n";
+                        }
+                        break;
+                    }
+                    case '0':
+                        req.updateChangeItem(temp);
+                        // Write the updated change item back to the file
+                        file.seekp(-static_cast<long>(sizeof(changeItem)), ios::cur);
+                        file.write(reinterpret_cast<const char*>(&temp), sizeof(changeItem));
+                        file.flush(); // Ensure data is written to the file
+                        return found;
                 }
-                case '2': {
-                    cout << "\nEnter new Status:\n";
-                    cout << "1) NewRequest\n";
-                    cout << "2) ReviewRequest\n";
-                    cout << "3) InProgress\n";
-                    cout << "4) Done\n";
-                    cout << "5) Cancelled\n";
-                    cout << "Enter Selection: ";
-                    cin >> userInput;
-                    cin.ignore(); // Clear input buffer
-                    switch (userInput) {
-                        case '1': strStatus = "NewRequest"; break;
-                        case '2': strStatus = "ReviewRequest"; break;
-                        case '3': strStatus = "InProgress"; break;
-                        case '4': strStatus = "Done"; break;
-                        case '5': strStatus = "Cancelled"; break;
-                        default: strStatus = "Unknown"; break;
-                    }
-                    cout << "Do you want to update Status to " << strStatus << " (select Y/N)? ";
-                    cin >> userChoice;
-                    cin.ignore(); // Clear input buffer
-                    if (userChoice == 'Y' || userChoice == 'y') {
-                        temp.setStatus(strStatus);
-                        cout << "Status Successfully updated.\n";
-                    }
-                    break;
-                }
-                case '3': {
-                    cout << "Enter new Description (1-30 Character Length): ";
-                    cin.getline(userInput3, 30);
-                    cout << "Do you want to update the description to " << userInput3 << " (select Y/N)? ";
-                    cin >> userChoice;
-                    cin.ignore(); // Clear input buffer
-                    if (userChoice == 'Y' || userChoice == 'y') {
-                        temp.setDescription(userInput3);
-                        cout << "Description Successfully updated.\n";
-                    }
-                    break;
-                }
-                case '0':
-                    file.close();
-                    return found;
             }
-
-            req.updateChangeItem(temp);
-
-            // Write updated change item back to file
-            file.seekp(-static_cast<int>(sizeof(changeItem)), ios::cur);
-            file.write(reinterpret_cast<const char*>(&temp), sizeof(changeItem));
-            found = true;
-            break;
         }
     }
-
-    return found;
 }
 
 //----------------------
