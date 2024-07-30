@@ -103,10 +103,11 @@ void addProductControl() {
 void addReleaseControl () {
 // Description:
 //   Executes 'Add Release' operation.
-    Product temp; 
-    const char* fileName = "releases.dat"; // Set the file name for the releases
+    Product temp;
     char relID[8];
     char choiceP, choiceR;
+
+    cin.ignore();
 
     // Display product from file and check if it's valid
     temp = temp.displayProductFromFile(); // Assuming this method loads the product from a file
@@ -302,7 +303,9 @@ void displayRemReportControl () {
     const char* fileName;
     changeItem tempChangeItem;
     Product tempProduct;
+    cin.ignore();
     tempProduct = tempProduct.displayProductFromFile();
+
     tempChangeItem.displayRemainingReports(tempProduct);
 }
 
@@ -314,6 +317,8 @@ void displayNotifyReportControl () {
 //   Executes ' Displays Users to be Notified Report' operation.
     // Prompt for product ID
     Product tmpProduct;
+
+    cin.ignore();
 
     tmpProduct = tmpProduct.displayProductFromFile();
     
@@ -335,6 +340,8 @@ void getStatusControl () {
 //   Executes ' Displays list of Status of Change Items' operation.
     Product productTemp;
     changeItem changeItemTemp;
+
+    cin.ignore();
 
     // Display product information and return selected product
     productTemp = productTemp.displayProductFromFile();

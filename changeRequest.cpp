@@ -92,7 +92,7 @@ void changeRequest::setDateRequested (const char* date) {
     this->dateRequested[sizeof(this->dateRequested) - 1] = '\0';        // Ensure null-termination
 }
 
-bool changeRequest::addChangeRequest() {
+bool changeRequest::addChangeRequest () {
     // Ensure file is open
     if (!fileStream.is_open()) {
         cerr << "Error: File is not open for writing." << endl;
@@ -115,10 +115,7 @@ bool changeRequest::addChangeRequest() {
     return true;
 }
 
-//----------------------
 void changeRequest::displayUsersToBeNotified(Product prod) {
-    // Description: Displays a list of users who should be notified of requests that are implemented.
-
     // Check if file is open
     if (!fileStream.is_open()) {
         cerr << "Error: File is not open for reading." << endl;
@@ -132,14 +129,14 @@ void changeRequest::displayUsersToBeNotified(Product prod) {
     while (displayNextPage) {
         // Display header
         cout << "Users To Be Notified Report (Page " << (startRecord / numRecordsPerPage + 1) << ")" << endl;
-        cout << "User Name" << endl;
-        cout << "ChangeID" << endl;
-        cout << "ProductID" << endl;
-        cout << "Anticipated ReleaseID" << endl;
-        cout << "--------- " << endl;
-        cout << "-------- " << endl;
-        cout << "--------- " << endl;
-        cout << "---------------------" << endl;
+        cout << setw(20) << right << "User Name" << "  ";
+        cout << setw(12) << right << "Email" << "  ";
+        cout << setw(12) << right << "ChangeID" << "  ";
+        cout << setw(20) << right << "Anticipated ReleaseID" << endl;
+        cout << setw(20) << right << "----------------" << "  ";
+        cout << setw(12) << right << "------------" << "  ";
+        cout << setw(12) << right << "------------" << "  ";
+        cout << setw(20) << right << "---------------------" << endl;
 
         // Read the file and display relevant information
         fileStream.clear();
@@ -151,19 +148,13 @@ void changeRequest::displayUsersToBeNotified(Product prod) {
         changeRequest req;
 
         while (fileStream.read(reinterpret_cast<char*>(&req), sizeof(changeRequest))) {
-            // Debug output
-            cout << "Read ChangeRequest with ChangeID: " << req.getChangeItem().getChangeItemID() << endl;
-            cout << "Status: " << req.getChangeItem().getStatusAsString() << endl;
-            cout << "ProductID: " << req.getChangeItem().getAssociatedProduct().getProductID() << endl;
-
             if (req.getChangeItem().getStatusAsString() == "Done" &&
                 strcmp(req.getChangeItem().getAssociatedProduct().getProductID(), prod.getProductID()) == 0) {
                 // Display information in specified format
-                cout << setw(20) << left << req.getUser().getName() << endl;
-                cout << setw(8) << left << req.getChangeItem().getChangeItemID() << endl;
-                cout << setw(8) << left << req.getChangeItem().getAssociatedProduct().getProductID() << endl;
-                cout << setw(20) << left << req.getChangeItem().getAnticipatedRelease().getReleaseID() << endl;
-                cout << endl;
+                cout << setw(20) << right << req.getUser().getName() << "  ";
+                cout << setw(12) << right << req.getUser().getEmail() << "  ";
+                cout << setw(12) << right << req.getChangeItem().getChangeItemID() << "  ";
+                cout << setw(20) << right << req.getChangeItem().getAnticipatedRelease().getReleaseID() << endl;
                 ++displayedCount;
 
                 if (displayedCount >= numRecordsPerPage) {
@@ -179,7 +170,7 @@ void changeRequest::displayUsersToBeNotified(Product prod) {
 
         // Prompt user for input
         if (fileStream.eof() && displayedCount < numRecordsPerPage) {
-            cout << "End of file reached. Press 'q' to go back" << endl;
+            cout << "End of file reached. Press 'q' to go back." << endl;
             displayNextPage = false;
         } else {
             cout << "Press <enter> to display the next " << numRecordsPerPage << " rows, or \"q\" to go back." << endl;
@@ -203,6 +194,7 @@ void changeRequest::displayUsersToBeNotified(Product prod) {
         }
     }
 }
+
 
 
 //----------------------
