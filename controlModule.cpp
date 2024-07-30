@@ -256,6 +256,12 @@ void updateUserControl() {
         return; // Exit the function if no valid user is selected
     }
 
+    // Check if the returned user is valid
+    if (strlen(user.getUserID()) == 0) { // Assuming empty userID indicates an invalid user
+        cout << "\n\nNo valid user selected. Returning to Update Menu" << endl;
+        return; // Exit the function if no valid user is selected
+    }
+
     cout << "Enter new Name (leave empty to keep current): ";
     char name[30];
     cin.getline(name, 30);
