@@ -251,8 +251,10 @@ void addChangeRequestControl() {
         // Choose a release of product for changeRequest
         while (true) {
             tempRelease = tempRelease.findReleaseAndReturn(tempProd);
+
+
             // Check if no valid product was found
-            if (strlen(tempProd.getProductID()) == 0) {
+            if (strlen(tempRelease.getReleaseDate()) == 0) {
                 cout << "No valid release found. Please try again or type 'q' to quit.\n";
                 cout << "Press <enter> to display more products or type 'q' to quit.\n";
                 cin.get(choice); // Read user input

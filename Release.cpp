@@ -331,12 +331,7 @@ Release Release::findReleaseAndReturn (const Product prod) {
             }
         }
     }
-
-    if (releaseSelected) {
-        return selectedRel; // Return the selected release
-    } else {
-        throw std::runtime_error("No release selected."); // Throw an exception if no release was selected
-    }
+    return selectedRel; // Return the selected release
 }
 
 //----------------------
