@@ -224,6 +224,32 @@ bool User::changeUserInfo () {
     return found;
 }
 
+ bool User::checkUserIDExists () {
+// Description: Checks if a product with the given Product ID exists in a file.
+// Parameters:
+//   - productIDToFind: Pointer to a character array containing the Product ID to search for (input)
+// Returns:
+//   - Reference to the Product object if the product with the given Product ID exists in the file.
+// Exceptions: May throw an exception if the file specified by fileName does not exist or cannot be accessed.
+    if (!fileStream.is_open()) {
+        cerr << "File stream is not open." << endl;
+        return false;
+    }
+
+    // Seek to the beginning of the file
+    fileStream.seekg(0, ios::beg);
+    
+    User temp;
+    while (fileStream.read(reinterpret_cast<char*>(&temp), sizeof(User))) {
+        // Compare the user ID
+        if (strcmp(temp.userID, this->userID) == 0) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 //----------------------
 bool User::addUser() {
     // Description: Adds the user's details to the currently managed file.
@@ -339,10 +365,21 @@ User User::displayUsersFromFile () const {
             } else if (selection == "a") {
                 // Add new user
                 User newUser;
-                cout << "Enter User ID: ";
                 string userID;
-                getline(cin, userID);
-                newUser.setUserID(userID.c_str());
+                bool validIDEntered = false;
+
+                while (!validIDEntered) {
+                    cout << "Enter User ID: ";
+                    getline(cin, userID);
+
+                    newUser.setUserID(userID.c_str());
+
+                    if (newUser.checkUserIDExists()) {
+                        validIDEntered = true;
+                    } else {
+                        cout << "User ID already exists. Please enter a different User ID." << endl;
+                    }
+                }
 
                 cout << "Enter User Name: ";
                 string userName;
@@ -449,10 +486,20 @@ User User::displayUsersFromFile () const {
             } else if (selection == "a") {
                 // Add new user
                 User newUser;
-                cout << "Enter User ID: ";
                 string userID;
-                getline(cin, userID);
-                newUser.setUserID(userID.c_str());
+                bool validIDEntered = false;
+                while (!validIDEntered) {
+                    cout << "Enter User ID: ";
+                    getline(cin, userID);
+                    
+                    newUser.setUserID(userID.c_str());
+
+                    if (newUser.checkUserIDExists()) {
+                        validIDEntered = true;
+                    } else {
+                        cout << "User ID already exists. Please enter a different User ID." << endl;
+                    }
+                }
 
                 cout << "Enter User Name: ";
                 string userName;

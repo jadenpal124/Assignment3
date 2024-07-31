@@ -127,6 +127,12 @@ public:
     void closeUser ();
     // Description: Closes the file and performs any necessary cleanup.
 
+    bool checkUserIDExists();
+    // Description: Checks if user in file
+    // Paramters: 
+    //  - userToFind: obj of user to search for in file.
+    // Returns: return true if found, or false if not in file
+
     //----------------------
     User displayUsersFromFile() const;
     // Description: Displays users stored in the currently managed file in batches of 5, allowing scrolling.
