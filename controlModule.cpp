@@ -173,6 +173,10 @@ void addChangeRequestControl() {
     //   Executes 'Add Change Request' operation.
 
     // Local variables for function.
+
+    //DEBUGGING:
+    changeItem testUnique;
+
     User tempUser;
     changeItem tempChangeItem;
     Release tempRelease;

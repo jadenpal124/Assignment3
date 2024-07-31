@@ -138,6 +138,7 @@ void changeItem::initChangeItem(const char* fileName) {
         std::cerr << "Error: Could not reopen file " << fileName << " for reading and writing" << std::endl;
         throw std::runtime_error("Error: Could not open file after creation attempt");
     }
+    file.clear();
 }
 
 //----------------------
@@ -303,21 +304,33 @@ bool changeItem::updateChangeItem(changeItem changeItemToFind) {
 
 //----------------------
 bool changeItem::addChangeItem() {
-    fstream file("changeItems.dat", ios::in | ios::out | ios::binary | ios::app);
+    bool idExists = true;
+
+    // Loop to generate a unique ID and check if it already exists
+    while (idExists) {
+        // Generate a new unique ID
+        int newID = generateUniqueChangeItemID();
+        setChangeItemID(newID); // Set the ID for the current object
+
+        // Check if the ID already exists in the file
+        idExists = checkChangeItemID();
+
+        if (!idExists) {
+            // If ID does not exist, break the loop
+            break;
+        }
+    }
 
     file.clear();
 
-    if (!file.is_open()) {
-        cerr << "Error: Unable to open file for writing." << endl;
-        return false;
-    }
+    // Move to the end of the file
+    file.seekp(0, std::ios::end);
 
     // Serialize the changeItem object
     file.write(reinterpret_cast<const char*>(this), sizeof(changeItem));
 
     if (!file.good()) {
-        cerr << "Error: Failed to write change item to file." << endl;
-        file.close();
+        std::cerr << "Error: Failed to write change item to file." << std::endl;
         return false;
     }
 
@@ -511,18 +524,7 @@ changeItem changeItem::displayAndReturnChangeItem(const Product productToFind, c
             } else if (selection == "a") {
                 // Add new change item
                 changeItem newItem;
-                bool validIDEntered = false;
-
-                while (validIDEntered) {
-                    if (newItem.checkChangeItemID()) {
-                        validIDEntered = true;
-                    } else {
-                        int newId = generateUniqueChangeItemID();
-                        newItem.setChangeItemID(newId);
-                    }
-                }
-
-
+             
                 newItem.setStatus("NewRequest");
                 newItem.setAssociatedProduct(productToFind);
 
@@ -576,7 +578,7 @@ changeItem changeItem::displayAndReturnChangeItem(const Product productToFind, c
                 file.seekg((selectedNumber - 1) * sizeof(changeItem), ios::beg);
                 changeItem item;
                 if (file.read(reinterpret_cast<char*>(&item), sizeof(changeItem))) {
-                    cout << "Change Item selected: " << item.getDescription() << endl;
+                    cout << "Change Item selected: " << item.getChangeItemID() << endl;
                     selectedItem = item;
                     displayNextPage = false; // Exit loop if item is selected
                 } else {
@@ -626,16 +628,7 @@ changeItem changeItem::displayAndReturnChangeItem(const Product productToFind, c
             } else if (selection == "a") {
                 // Add new change item
                 changeItem newItem;
-                bool validIDEntered = false;
-
-                while (validIDEntered) {
-                    if (newItem.checkChangeItemID()) {
-                        validIDEntered = true;
-                    } else {
-                        int newId = generateUniqueChangeItemID();
-                        newItem.setChangeItemID(newId);
-                    }
-                }
+            
                 newItem.setStatus("NewRequest");
                 newItem.setAssociatedProduct(productToFind);
 
@@ -791,7 +784,7 @@ changeItem changeItem::displayAndReturnChangeItemStatus (const Product productTo
                 file.seekg((selectedNumber - 1) * sizeof(changeItem), ios::beg);
                 changeItem item;
                 if (file.read(reinterpret_cast<char*>(&item), sizeof(changeItem))) {
-                    cout << "Change Item selected: " << item.getDescription() << endl;
+                    cout << "Change Item selected: " << item.getChangeItemID() << endl;
                     selectedItem = item;
                     displayNextPage = false; // Exit loop if item is selected
                 } else {
