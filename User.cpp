@@ -211,6 +211,7 @@ bool User::changeUserInfo () {
             strncpy(temp.name, name, sizeof(temp.name) - 1);
             strncpy(temp.phone, phone, sizeof(temp.phone) - 1);
             strncpy(temp.email, email, sizeof(temp.email) - 1);
+            strncpy(temp.department, department, sizeof(temp.department) -1);
 
             // Write back to file
             fileStream.seekp(-static_cast<int>(sizeof(User)), ios::cur);
@@ -311,7 +312,7 @@ User User::displayUsersFromFile () const {
             cout << setw(10) << user.getUserID() << "  ";
             cout << setw(15) << user.getName() << "  ";
             cout << setw(15) << user.getPhone() << "  ";
-            cout << setw(20) << user.getEmail() << endl;
+            cout << setw(20) << user.getEmail() << " ";
             cout << setw(20) << user.getDepartment() << endl;
             ++displayedCount;
         }

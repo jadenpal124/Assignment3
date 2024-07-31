@@ -397,6 +397,11 @@ void updateUserControl() {
     cin.getline(email, 24);
     if (strlen(email) > 0) user.setEmail(email);
 
+    cout << "Enter new Department (leave empty to keep current): ";
+    char department[12];
+    cin.getline(department, 12);
+    if (strlen(department) > 0) user.setDepartment(department);
+
     if (user.changeUserInfo() && req.updateUser(user)) {
         cout << "Successfully Updated. Returning to Update Menu" << endl;
 
