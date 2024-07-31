@@ -8,6 +8,8 @@
 //==================================================
 
 #include "changeRequest.h"
+#include <string>
+#include <iomanip>
 
 //==================================================
 std::fstream changeRequest::fileStream;
@@ -215,17 +217,19 @@ void changeRequest::displayUsersToBeNotified(Product prod) {
     int startRecord = 0; // Starting record index
     bool displayNextPage = true;
 
-    while (displayNextPage) {
+    while (true) {
         // Display header
         cout << "Users To Be Notified Report (Page " << (startRecord / numRecordsPerPage + 1) << ")" << endl;
+        cout << setw(2) << "#" << "  ";
         cout << setw(20) << right << "User Name" << "  ";
-        cout << setw(12) << right << "Email" << "  ";
+        cout << setw(20) << right << "Email" << "  ";
         cout << setw(12) << right << "ChangeID" << "  ";
-        cout << setw(20) << right << "Anticipated ReleaseID" << endl;
-        cout << setw(20) << right << "----------------" << "  ";
+        cout << setw(22) << right << "Anticipated ReleaseID" << endl;
+        cout << setw(2) << "--" << "  ";
+        cout << setw(20) << right << "--------------------" << "  ";
+        cout << setw(20) << right << "--------------------" << "  ";
         cout << setw(12) << right << "------------" << "  ";
-        cout << setw(12) << right << "------------" << "  ";
-        cout << setw(20) << right << "---------------------" << endl;
+        cout << setw(22) << right << "----------------------" << endl;
 
         // Read the file and display relevant information
         fileStream.clear();
@@ -233,17 +237,18 @@ void changeRequest::displayUsersToBeNotified(Product prod) {
 
         bool endOfFile = false;
         int displayedCount = 0;
-
         changeRequest req;
 
+        int i = startRecord; // Initialize i with the starting record index
         while (fileStream.read(reinterpret_cast<char*>(&req), sizeof(changeRequest))) {
             if (req.getChangeItem().getStatusAsString() == "Done" &&
                 strcmp(req.getChangeItem().getAssociatedProduct().getProductID(), prod.getProductID()) == 0) {
                 // Display information in specified format
+                cout << setw(2) << ++i << "  ";
                 cout << setw(20) << right << req.getUser().getName() << "  ";
-                cout << setw(12) << right << req.getUser().getEmail() << "  ";
+                cout << setw(20) << right << req.getUser().getEmail() << "  ";
                 cout << setw(12) << right << req.getChangeItem().getChangeItemID() << "  ";
-                cout << setw(20) << right << req.getChangeItem().getAnticipatedRelease().getReleaseID() << endl;
+                cout << setw(22) << right << req.getChangeItem().getAnticipatedRelease().getReleaseID() << endl;
                 ++displayedCount;
 
                 if (displayedCount >= numRecordsPerPage) {
@@ -252,34 +257,27 @@ void changeRequest::displayUsersToBeNotified(Product prod) {
             }
         }
 
-        if (displayedCount == 0) {
-            cout << "No matching users to notify found." << endl;
+        if (displayedCount < 5) {
+            cout << "End of File." << endl;
             break; // Exit if no records are found
         }
 
         // Prompt user for input
-        if (fileStream.eof() && displayedCount < numRecordsPerPage) {
-            cout << "End of file reached. Press 'q' to go back." << endl;
-            displayNextPage = false;
+        cout << "Press <enter> to display the next " << numRecordsPerPage << " rows, or \"q\" to go back." << endl;
+        cout << "To return to menu type \"0\": ";
+
+        string selection;
+        getline(cin, selection);
+
+        if (selection.empty()) {
+            // Default action: Display next page
+            startRecord += numRecordsPerPage;
+        } else if (selection == "q") {
+            break;
+        } else if (selection == "0") {
+            break;
         } else {
-            cout << "Press <enter> to display the next " << numRecordsPerPage << " rows, or \"q\" to go back." << endl;
-            cout << "To return to menu type \"0\": ";
-
-            string selection;
-            getline(cin, selection);
-
-            if (selection.empty()) {
-                // Default action: Display next page
-                startRecord += numRecordsPerPage;
-            } else if (selection == "q") {
-                // Quit action
-                displayNextPage = false;
-            } else if (selection == "0") {
-                // Return to menu action
-                displayNextPage = false;
-            } else {
-                cout << "Invalid selection." << endl;
-            }
+            cout << "Invalid selection." << endl;
         }
     }
 }
