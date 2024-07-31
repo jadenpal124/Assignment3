@@ -132,11 +132,18 @@ public:
     // Exceptions: May throw an exception if the file cannot be accessed.
 
     //----------------------
-    changeItem displayAndReturnChangeItem (const Product productToFind);    
+    changeItem displayAndReturnChangeItem (const Product productToFind, const Release rel);    
     // Description: Displays and returns a change item based on the provided product.
     // Parameters:
     //     - productToFind: Pointer to the Product object to match against (input)
     // Returns: A changeItem object that matches the criteria.
+
+    changeItem displayAndReturnChangeItemStatus (const Product productToFind);
+    // Description: Displays change items stored in the currently managed file in batches of 5, allowing scrolling.
+    //              User can press Enter to view the next 5 items or 'q' to stop.
+    //              Allows the user to select and returns that change item.
+    // Exceptions:
+    //   May throw an exception if the file cannot be accessed.
 
     //----------------------
     changeItem::Status stringToStatus (const string &statusStr);

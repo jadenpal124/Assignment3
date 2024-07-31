@@ -75,6 +75,11 @@ const char* User::getEmail () const {
     return email;
 }
 
+//----------------------
+const char* User::getDepartment() const {
+    return department;
+}
+
 // Setter methods
 //----------------------
 void User::setUserID (const char* userID) {
@@ -110,6 +115,12 @@ void User::setEmail (const char* email) {
 //   - email: Pointer to a character array containing the email (input)
     strncpy(this->email, email, sizeof(this->email) - 1);
     this->email[sizeof(this->email) - 1] = '\0'; // Ensure null-termination
+}
+
+//----------------------
+void User::setDepartment(const char* dept) {
+    strncpy(this->department, dept, sizeof(department) - 1);
+    department[sizeof(department) - 1] = '\0'; // Ensure null-termination
 }
 
 // Utility methods
@@ -168,7 +179,8 @@ void User::displayUserInfo () const {
         cout << "User ID: " << temp.getUserID() << endl;
         cout << "Name: " << temp.getName() << endl;
         cout << "Phone: " << temp.getPhone() << endl;
-        cout << "Email: " << temp.getEmail() << endl << endl;
+        cout << "Email: " << temp.getEmail() << endl;
+        cout << "Department: " << temp.getDepartment() << endl << endl;
     }
 }
 
@@ -241,6 +253,7 @@ bool User::addUser() {
     }
 
     // Clear the file error state
+    fileStream.flush();
     fileStream.clear();
     return true;
 }
@@ -273,11 +286,13 @@ User User::displayUsersFromFile () const {
         cout << setw(10) << "User ID" << "  ";
         cout << setw(15) << "User Name" << "  ";
         cout << setw(15) << "Phone Number" << "  ";
-        cout << setw(20) << "Email" << endl;
+        cout << setw(20) << "Email" << "  ";
+        cout << setw(20) << "Department" << endl;
         cout << setw(2) << "--" << "  ";
         cout << setw(10) << "----------" << "  ";
         cout << setw(15) << "---------------" << "  ";
         cout << setw(15) << "---------------" << "  ";
+        cout << setw(20) << "--------------------" << "  ";
         cout << setw(20) << "--------------------" << endl;
 
         // Display records
@@ -297,6 +312,7 @@ User User::displayUsersFromFile () const {
             cout << setw(15) << user.getName() << "  ";
             cout << setw(15) << user.getPhone() << "  ";
             cout << setw(20) << user.getEmail() << endl;
+            cout << setw(20) << user.getDepartment() << endl;
             ++displayedCount;
         }
 
@@ -341,6 +357,11 @@ User User::displayUsersFromFile () const {
                 string email;
                 getline(cin, email);
                 newUser.setEmail(email.c_str());
+
+                cout << "Enter Department (leave empty if not internal): ";
+                string department;
+                getline(cin, department);
+                newUser.setDepartment(department.c_str());
 
                 if (newUser.addUser()) {
                     cout << "User added successfully." << endl;
@@ -446,6 +467,11 @@ User User::displayUsersFromFile () const {
                 string email;
                 getline(cin, email);
                 newUser.setEmail(email.c_str());
+
+                cout << "Enter Department (leave empty if not internal): ";
+                string department;
+                getline(cin, department);
+                newUser.setDepartment(department.c_str());
 
                 if (newUser.addUser()) {
                     cout << "User added successfully." << endl;

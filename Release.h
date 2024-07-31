@@ -92,7 +92,7 @@ public:
     // Exceptions: May throw an exception if the file is not open or in a good state.
 
     //----------------------
-    Release findReleaseAndReturn (const char* releaseIDToFind, const char* productIDtoFind); 
+    Release findReleaseAndReturn (const Product prod); 
     // Finds and returns the release with the given release ID and product ID.
     // Parameters:
     //   - releaseIDToFind: Pointer to a character array containing the release ID to search for (input)
@@ -113,9 +113,9 @@ public:
     // Closes the file and releases resources.
 
 private:
-    char releaseID[8];     // Member variable for storing release ID (max length: 50 characters)
+    char releaseID[8];     // Member variable for storing release ID (max length: 8 characters)
     Product product;        // Member variable for storing the associated Product object
-    char releaseDate[12];   // Member variable for storing release date (max length: 50 characters)
+    char releaseDate[12];   // Member variable for storing release date (max length: 12 characters)
     static fstream file;     // File stream for input and output operations
     string fileName;        // Store file name for accessing later
 };

@@ -57,6 +57,13 @@ public:
     // Parameters: None
     // Returns: Pointer to a constant character array containing the user email address
 
+    //----------------------
+    const char* getDepartment() const;
+    // Description: Getter for retrieving user department
+    // Parameters: None
+    // Returns: Pointer to a constant character array containing the user department
+
+
     // Setter methods
     //----------------------
     void setUserID (const char* userID); 
@@ -81,6 +88,12 @@ public:
     // Description: Setter for setting user email address
     // Parameters:
     //   - email: Pointer to a character array containing the email (input)
+
+    //----------------------
+    void setDepartment(const char* dept);
+    // Description: Setter for setting user department
+    // Parameters:
+    //   - dept: Pointer to a character array containing the user department (input)
 
     // Utility methods
     //----------------------
@@ -124,10 +137,11 @@ public:
 
 //==================================================
 private:
-    char userID[9];   // Member variable for storing user ID (max length: 8 characters)
-    char name[31];    // Member variable for storing user name (max length: 30 characters)
-    char phone[13];   // Member variable for storing user phone number (max length: 12 characters)
-    char email[25];   // Member variable for storing user email address (max length: 24 characters)
+    char userID[8];       // Member variable for storing user ID (max length: 8 characters)
+    char name[30];        // Member variable for storing user name (max length: 30 characters)
+    char phone[12];       // Member variable for storing user phone number (max length: 12 characters)
+    char email[24];       // Member variable for storing user email address (max length: 24 characters)
+    char department[12];  // Membervariable for storing user department (max length: 12 characters)
     static std::fstream fileStream; // Member variable for managing file operations
 };
 

@@ -99,11 +99,6 @@ bool changeRequest::addChangeRequest () {
         return false;
     }
 
-    // Ensure that all fields are set before writing
-    // Debug output before writing
-    cout << "Writing ChangeRequest with ChangeID: " << this->getChangeItem().getChangeItemID() << endl;
-    cout << "ProductID: " << this->getChangeItem().getAssociatedProduct().getProductID() << endl;
-
     // Write the entire object to file
     fileStream.clear();
     fileStream.write(reinterpret_cast<const char*>(this), sizeof(changeRequest));
