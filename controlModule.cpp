@@ -191,6 +191,7 @@ void addChangeRequestControl() {
         // Select a User
         while (true) {
             tempUser = tempUser.displayUsersFromFile();
+            cout << endl;
             // Check if no valid user was found
             if (strlen(tempUser.getUserID()) == 0) {
                 cout << "No valid user found. Please try again or type 'q' to quit.\n";
@@ -210,6 +211,8 @@ void addChangeRequestControl() {
             cin >> choice;
             cin.ignore(); // Clear newline character from input buffer
 
+            cout << endl;
+
             if (choice == 'Y' || choice == 'y') {
                 break; // Exit loop if user confirms selection
             } else if (choice == 'q' || choice == 'Q') {
@@ -223,6 +226,7 @@ void addChangeRequestControl() {
         // Choose a product for change request
         while (true) {
             tempProd = tempProd.displayProductFromFile();
+            cout << endl;
             // Check if no valid product was found
             if (strlen(tempProd.getProductID()) == 0) {
                 cout << "No valid product found. Please try again or type 'q' to quit.\n";
@@ -242,6 +246,8 @@ void addChangeRequestControl() {
             cin >> choice;
             cin.ignore(); // Clear newline character from input buffer
 
+            cout << endl;
+
             if (choice == 'Y' || choice == 'y') {
                 break; // Exit loop if user confirms selection
             } else if (choice == 'q' || choice == 'Q') {
@@ -255,8 +261,7 @@ void addChangeRequestControl() {
         // Choose a release of product for changeRequest
         while (true) {
             tempRelease = tempRelease.findReleaseAndReturn(tempProd);
-
-
+            cout << endl;
             // Check if no valid product was found
             if (strlen(tempRelease.getReleaseDate()) == 0) {
                 cout << "No valid release found. Please try again or type 'q' to quit.\n";
@@ -288,8 +293,9 @@ void addChangeRequestControl() {
 
         // Add a date of change request
         while (true) {
-            cout << "Enter the date, format (YYYY/MM/DD): ";
+            cout << "\nEnter the date, format (YYYY/MM/DD): ";
             cin.getline(date, sizeof(date)); // Read date with size limit
+            cout << endl;
 
             cout << "Do you want to add the date " << date << " (Y/N)? ";
             cin >> choice;
@@ -305,11 +311,10 @@ void addChangeRequestControl() {
             }
         }
 
-
-
         // Check change items for the given product or add changeItem
         while (true) {
             tempChangeItem = tempChangeItem.displayAndReturnChangeItem(tempProd, tempRelease);
+            cout << endl;
 
             // Check if no valid change item was found
             if (tempChangeItem.getChangeItemID() == 0) {
@@ -326,7 +331,7 @@ void addChangeRequestControl() {
             }
 
             // Prompt for change item confirmation
-            cout << "Do you want to add the change item " << tempChangeItem.getChangeItemID() << " (Y/N)? ";
+            cout << "\nDo you want to add the change item " << tempChangeItem.getChangeItemID() << " (Y/N)? ";
             cin >> choice;
             tempChangeItem.setAnticipatedRelease(tempRelease);
 
