@@ -200,6 +200,21 @@ Release Release::findReleaseAndReturn (const Product prod) {
     Release selectedRel; // To store the selected release
     bool releaseSelected = false; // Flag to track if a release was selected
 
+    // First Pass: Count Matching Records
+    file.clear();
+    file.seekg(0, std::ios::beg);
+    int totalRecords = 0;
+    int matchingRecords = 0;
+    Release tempRelease;
+
+    // read items from file to find amount of matching release for product ID
+    while (file.read(reinterpret_cast<char*>(&tempRelease), sizeof(Release))) {
+        totalRecords++;
+        if (strcmp(tempRelease.getProduct().getProductID(), prod.getProductID()) == 0) {
+            matchingRecords++;
+        }
+    }
+
     // Display table items loop
     while (displayNextPage) {
         // Display header
@@ -207,34 +222,32 @@ Release Release::findReleaseAndReturn (const Product prod) {
         std::cout << "Page " << (startRecord / numRecordsPerPage + 1) << std::endl;
         std::cout << std::setw(2) << "#" << "  ";
         std::cout << std::setw(15) << "Release ID" << "  ";
-        std::cout << std::setw(12) << "Release Date" << endl;
+        std::cout << std::setw(12) << "Release Date" << std::endl;
         std::cout << std::setw(2) << "--" << "  ";
         std::cout << std::setw(15) << "-----------" << "  ";
-        std::cout << std::setw(12) << "------------" << endl;
+        std::cout << std::setw(12) << "------------" << std::endl;
 
-        // Display records
-        bool endOfFile = false;
-        int displayedCount = 0;
+        // Second Pass: Display Records
         file.clear();
-        file.seekg(startRecord * sizeof(Release), std::ios::beg);
+        file.seekg(0, std::ios::beg);
+        int displayedCount = 0;
+        int recordIndex = 0;
 
-        for (int i = 0; i < numRecordsPerPage; ++i) {
-            Release release;
-            if (!file.read(reinterpret_cast<char*>(&release), sizeof(Release))) {
-                endOfFile = true; // End of file
-                break;
-            }
-            if (strcmp(release.getProduct().getProductID(), prod.getProductID()) == 0) {
-                std::cout << std::setw(2) << (startRecord + i + 1) << "  ";
-                std::cout << std::setw(15) << release.getReleaseID() << "  ";
-                std::cout << std::setw(12) << release.getReleaseDate() << endl;
-           
-                ++displayedCount;
+        // read items from file to find matching productID.
+        while (file.read(reinterpret_cast<char*>(&tempRelease), sizeof(Release))) {
+            if (strcmp(tempRelease.getProduct().getProductID(), prod.getProductID()) == 0) {
+                if (recordIndex >= startRecord && displayedCount < numRecordsPerPage) {
+                    std::cout << std::setw(2) << (startRecord + displayedCount + 1) << "  ";
+                    std::cout << std::setw(15) << tempRelease.getReleaseID() << "  ";
+                    std::cout << std::setw(12) << tempRelease.getReleaseDate() << std::endl;
+                    ++displayedCount;
+                }
+                ++recordIndex;
             }
         }
 
         // Prompt user for input
-        if (!endOfFile) {
+        if (displayedCount < matchingRecords) {
             std::cout << std::endl;
             std::cout << "Press <enter> to display the next " << numRecordsPerPage << " rows, or \"q\" to go back." << std::endl;
             std::cout << "If you would like to select a release, type the number #." << std::endl;
@@ -259,10 +272,10 @@ Release Release::findReleaseAndReturn (const Product prod) {
                 file.clear();
                 file.seekg(0, std::ios::beg); // Move file pointer to beginning
                 bool found = false;
-                Release release;
-                while (file.read(reinterpret_cast<char*>(&release), sizeof(Release))) {
-                    if (strcmp(release.getReleaseID(), releaseID.c_str()) == 0 && strcmp(release.getProduct().getProductID(), prod.getProductID()) == 0) {
-                        selectedRel = release;
+                // search for items in file with matching release and product id
+                while (file.read(reinterpret_cast<char*>(&tempRelease), sizeof(Release))) {
+                    if (strcmp(tempRelease.getReleaseID(), releaseID.c_str()) == 0 && strcmp(tempRelease.getProduct().getProductID(), prod.getProductID()) == 0) {
+                        selectedRel = tempRelease;
                         found = true;
                         releaseSelected = true;
                         break;
@@ -276,13 +289,21 @@ Release Release::findReleaseAndReturn (const Product prod) {
             } else if (isdigit(selection[0])) {
                 // Select by number action
                 int selectedNumber = std::stoi(selection);
-                file.clear();
-                file.seekg((startRecord + selectedNumber - 1) * sizeof(Release), std::ios::beg);
-                Release release;
-                if (file.read(reinterpret_cast<char*>(&release), sizeof(Release))) {
-                    selectedRel = release;
-                    releaseSelected = true;
-                    displayNextPage = false; // Exit loop if release is selected
+                if (selectedNumber > 0 && selectedNumber <= matchingRecords) {
+                    file.clear();
+                    file.seekg(0, std::ios::beg); // Move file pointer to beginning
+                    int currentIndex = 0;
+                    // Find item with selected index
+                    while (file.read(reinterpret_cast<char*>(&tempRelease), sizeof(Release))) {
+                        if (strcmp(tempRelease.getProduct().getProductID(), prod.getProductID()) == 0) {
+                            if (++currentIndex == selectedNumber) {
+                                selectedRel = tempRelease;
+                                releaseSelected = true;
+                                displayNextPage = false; // Exit loop if release is selected
+                                break;
+                            }
+                        }
+                    }
                 } else {
                     std::cout << "Invalid selection." << std::endl;
                 }
@@ -309,11 +330,9 @@ Release Release::findReleaseAndReturn (const Product prod) {
                 file.clear();
                 file.seekg(0, std::ios::beg); // Move file pointer to beginning
                 bool found = false;
-                Release release;
-                // Read items from file loop
-                while (file.read(reinterpret_cast<char*>(&release), sizeof(Release))) {
-                    if (strcmp(release.getReleaseID(), releaseID.c_str()) == 0 && strcmp(release.getProduct().getProductID(), prod.getProductID()) == 0) {
-                        selectedRel = release;
+                while (file.read(reinterpret_cast<char*>(&tempRelease), sizeof(Release))) {
+                    if (strcmp(tempRelease.getReleaseID(), releaseID.c_str()) == 0 && strcmp(tempRelease.getProduct().getProductID(), prod.getProductID()) == 0) {
+                        selectedRel = tempRelease;
                         found = true;
                         releaseSelected = true;
                         break;
@@ -329,14 +348,17 @@ Release Release::findReleaseAndReturn (const Product prod) {
                 int selectedNumber = std::stoi(selection);
                 if (selectedNumber > 0 && selectedNumber <= numRecordsPerPage) {
                     file.clear();
-                    file.seekg((startRecord + selectedNumber - 1) * sizeof(Release), std::ios::beg);
-                    Release release;
-                    if (file.read(reinterpret_cast<char*>(&release), sizeof(Release))) {
-                        selectedRel = release;
-                        releaseSelected = true;
-                        displayNextPage = false; // Exit loop if release is selected
-                    } else {
-                        std::cout << "Invalid selection." << std::endl;
+                    file.seekg(0, std::ios::beg); // Move file pointer to beginning
+                    int currentIndex = 0;
+                    while (file.read(reinterpret_cast<char*>(&tempRelease), sizeof(Release))) {
+                        if (strcmp(tempRelease.getProduct().getProductID(), prod.getProductID()) == 0) {
+                            if (++currentIndex == selectedNumber) {
+                                selectedRel = tempRelease;
+                                releaseSelected = true;
+                                displayNextPage = false; // Exit loop if release is selected
+                                break;
+                            }
+                        }
                     }
                 } else {
                     std::cout << "Invalid selection." << std::endl;
@@ -346,6 +368,7 @@ Release Release::findReleaseAndReturn (const Product prod) {
             }
         }
     }
+
     return selectedRel; // Return the selected release
 }
 
