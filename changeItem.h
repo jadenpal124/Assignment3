@@ -125,6 +125,12 @@ public:
     // Exceptions: May throw an exception if the file cannot be accessed.
 
     //----------------------
+    bool checkChangeItemID ();    
+    // Description: Method to check if changeItem exists already
+    // Returns: true if the change item is in file, false otherwise.
+    // Exceptions: May throw an exception if the file cannot be accessed.
+
+    //----------------------
     void displayRemainingReports (const Product productToFind) const;    
     // Description: Displays change items that still need to be implemented or are in progress.
     // Parameters:

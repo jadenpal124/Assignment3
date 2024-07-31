@@ -148,6 +148,31 @@ void changeItem::closeChangeItem () {
     }
 }
 
+bool changeItem::checkChangeItemID () {
+// Description: Method to check if changeItem exists already
+// Returns: true if the change item is in file, false otherwise.
+// Exceptions: May throw an exception if the file cannot be accessed.
+    if (!file.is_open()) {
+        cerr << "Error: File is not open." << endl;
+        return false; // File not open, cannot check ID
+    }
+
+    // Clear any existing state of the file stream
+    file.clear();
+    file.seekg(0, ios::beg);
+
+    changeItem temp;
+    // Iterate through each record in the file
+    while (file.read(reinterpret_cast<char*>(&temp), sizeof(temp))) {
+        if (temp.getChangeItemID() == this->changeItemID) {
+            return true; // Change Item ID found
+        }
+    }
+
+    return false; // Change Item ID not found
+}
+
+
 //----------------------
 changeItem::Status changeItem::stringToStatus (const string& statusStr) {
     if (statusStr == "Cancelled") return Cancelled;
@@ -486,6 +511,18 @@ changeItem changeItem::displayAndReturnChangeItem(const Product productToFind, c
             } else if (selection == "a") {
                 // Add new change item
                 changeItem newItem;
+                bool validIDEntered = false;
+
+                while (validIDEntered) {
+                    if (newItem.checkChangeItemID()) {
+                        validIDEntered = true;
+                    } else {
+                        int newId = generateUniqueChangeItemID();
+                        newItem.setChangeItemID(newId);
+                    }
+                }
+
+
                 newItem.setStatus("NewRequest");
                 newItem.setAssociatedProduct(productToFind);
 
@@ -589,6 +626,16 @@ changeItem changeItem::displayAndReturnChangeItem(const Product productToFind, c
             } else if (selection == "a") {
                 // Add new change item
                 changeItem newItem;
+                bool validIDEntered = false;
+
+                while (validIDEntered) {
+                    if (newItem.checkChangeItemID()) {
+                        validIDEntered = true;
+                    } else {
+                        int newId = generateUniqueChangeItemID();
+                        newItem.setChangeItemID(newId);
+                    }
+                }
                 newItem.setStatus("NewRequest");
                 newItem.setAssociatedProduct(productToFind);
 
