@@ -40,7 +40,14 @@ public:
     // Parameters:
     //   - other: Reference to another Release object to copy from (input)
 
-    Release& operator= (const Release& other);
+
+    //----------------------
+    Release& operator=(const Release& other); 
+    // Copy assignment operator assigns the values from another Release object to this object.
+    // Parameters:
+    //   - other: Reference to another Release object to copy from (input)
+    // Returns:
+    //   - A reference to the assigned Release object (output)
 
     // Getter methods
     //----------------------
@@ -110,7 +117,7 @@ public:
 
     //----------------------
     void closeRelease (); 
-    // Closes the file and releases resources.
+    // Descriptiom:  Closes the file and releases resources.
 
 private:
     char releaseID[8];     // Member variable for storing release ID (max length: 8 characters)

@@ -49,9 +49,9 @@ void close () {
 
 // Implementation of addProductControl
 //----------------------
-void addProductControl() {
-    // Description:
-    //   Executes 'Add Product' operation.
+void addProductControl () {
+// Description:
+//   Executes 'Add Product' operation.
 
     const int NAME_MAX_LENGTH = 30;
     const int ID_MAX_LENGTH = 8;
@@ -169,8 +169,8 @@ void addReleaseControl () {
 // Implementation of addChangeRequestControl
 //----------------------
 void addChangeRequestControl() {
-    // Description:
-    //   Executes 'Add Change Request' operation.
+// Description:
+//   Executes 'Add Change Request' operation.
 
     // Local variables for function.
 
@@ -184,11 +184,12 @@ void addChangeRequestControl() {
     char date[12]; // 10 characters + 1 for null terminator
     char choice;
 
+    // Loop to Process unless want to exit
     while (true) {
         cin.ignore(); // Clear input buffer before getting new input
         cout << "\nChange Request\n";
 
-        // Select a User
+        // Select a User, loops unless want to exit
         while (true) {
             tempUser = tempUser.displayUsersFromFile();
             cout << endl;
@@ -223,7 +224,7 @@ void addChangeRequestControl() {
             }
         }
 
-        // Choose a product for change request
+        // Choose a product for change request, loops unless want to exit
         while (true) {
             tempProd = tempProd.displayProductFromFile();
             cout << endl;
@@ -258,7 +259,7 @@ void addChangeRequestControl() {
             }
         }
 
-        // Choose a release of product for changeRequest
+        // Choose a release of product for changeRequest, loops unless want to exit
         while (true) {
             tempRelease = tempRelease.findReleaseAndReturn(tempProd);
             cout << endl;
@@ -291,7 +292,7 @@ void addChangeRequestControl() {
             }
         }
 
-        // Add a date of change request
+        // Add a date of change request, loops unless want to exit
         while (true) {
             cout << "\nEnter the date, format (YYYY/MM/DD): ";
             cin.getline(date, sizeof(date)); // Read date with size limit
@@ -374,8 +375,8 @@ void addChangeRequestControl() {
 // Implementation of updateUserControl
 //----------------------
 void updateUserControl() {
-    // Description:
-    //   Executes 'Update User' operation.
+// Description:
+//   Executes 'Update User' operation.
     cin.ignore();
 
     cout << "\nUpdate User";
@@ -422,8 +423,8 @@ void updateUserControl() {
 // Implementation of updateChangeItemControl
 //----------------------
 void updateChangeItemControl() {
-    // Description:
-    //   Executes 'Update Single Issue' operation.
+// Description:
+//   Executes 'Update Single Issue' operation.
     
     cout << endl;
     cin.ignore();

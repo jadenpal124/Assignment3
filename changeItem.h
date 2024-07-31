@@ -32,11 +32,11 @@ public:
     };
 
     // Constructors
-    changeItem ();    // Default constructor
+    //----------------------
+    changeItem ();    
+    // Description: Default constructor
 
-     // Assignment operator
-    changeItem& operator=(const changeItem& other);
-
+     //----------------------
     changeItem (int changeItemID, const char* description, const Product product, const Release releasePtr); 
     // Description: Parameterized constructor initializing changeItemID, description, associated product, and release with provided values.
     // Parameters:
@@ -153,6 +153,8 @@ public:
 
     //----------------------
     changeItem::Status stringToStatus (const string &statusStr);
+    // Description: Converts the status enum to a corresponding string representation.
+    // Returns: A string representing the current status of the change item.
 
     //==================================================
 private:
@@ -163,7 +165,9 @@ private:
     Product associatedProduct;    // Pointer to associated Product object
     static std::fstream file;    // File stream for read and write operations
 
-    int generateUniqueChangeItemID(); // Generates a random change item ID in the range [0, 999999]
+    int generateUniqueChangeItemID (); 
+    // Description: Generates a unique change item ID using random number generation.
+    // Returns: A randomly generated ID in the range [0, 999999].
     
 };
 

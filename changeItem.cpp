@@ -57,7 +57,10 @@ changeItem::Status changeItem::getStatus () const {
     return status;
 }
 
+//----------------------
 const char* changeItem::getStatusAsString() const {
+// Description: Converts the status enum to a corresponding string representation.
+// Returns: A string representing the current status of the change item.
     switch (status) {
         case Cancelled:
             return "Cancelled";
@@ -122,7 +125,7 @@ void changeItem::setAssociatedProduct (const Product productPtr) {
 }
 
 //----------------------
-void changeItem::initChangeItem(const char* fileName) {
+void changeItem::initChangeItem (const char* fileName) {
     file.open(fileName, std::ios::in | std::ios::out | std::ios::binary);
     if (!file.is_open()) {
         file.clear();
@@ -176,6 +179,11 @@ bool changeItem::checkChangeItemID () {
 
 //----------------------
 changeItem::Status changeItem::stringToStatus (const string& statusStr) {
+    // Description: Converts a string to a corresponding Status enum value
+    // Parameters: statusStr - string representing the status
+    // Returns: Corresponding Status enum value
+    // Exceptions: Throws invalid_argument if the input string doesn't match any known status
+
     if (statusStr == "Cancelled") return Cancelled;
     if (statusStr == "NewRequest") return NewRequest;
     if (statusStr == "ReviewRequest") return ReviewRequest;
@@ -187,7 +195,7 @@ changeItem::Status changeItem::stringToStatus (const string& statusStr) {
 }
 
 
-bool changeItem::updateChangeItem(changeItem changeItemToFind) {
+bool changeItem::updateChangeItem (changeItem changeItemToFind) {
     // Description: Updates a change item in the file based on user input.
     // Parameters:
     //     - changeItemToFind: The change item to find and update (input).
@@ -213,6 +221,7 @@ bool changeItem::updateChangeItem(changeItem changeItemToFind) {
     file.clear(); // Clear any error flags
     file.seekg(0, ios::beg); // Rewind to the beginning of the file
 
+    // read from items file loop 
     while (file.read(reinterpret_cast<char*>(&temp), sizeof(changeItem))) {
         if (temp.getChangeItemID() == changeItemToFindID) {
             found = true;
@@ -223,6 +232,7 @@ bool changeItem::updateChangeItem(changeItem changeItemToFind) {
             cout << "Status: " << temp.getStatusAsString() << "\n";  // Use getStatusAsString
             cout << "Description: " << temp.getDescription() << "\n\n";
 
+            // loop menu
             while (true) {
                 cout << "Enter the number of the field you want to update:\n";
                 cout << "1) ReleaseID\n";
@@ -303,7 +313,11 @@ bool changeItem::updateChangeItem(changeItem changeItemToFind) {
 }
 
 //----------------------
-bool changeItem::addChangeItem() {
+bool changeItem::addChangeItem () {
+// Description: Adds a changeItem to the file with a unique ID.
+// Returns: true if the change item is successfully added, false otherwise.
+// Exceptions: May throw an exception if the file cannot be accessed or written to.
+
     bool idExists = true;
 
     // Loop to generate a unique ID and check if it already exists
@@ -340,7 +354,7 @@ bool changeItem::addChangeItem() {
 }
 
 //----------------------
-void changeItem::displayRemainingReports(const Product productToFind) const {
+void changeItem::displayRemainingReports (const Product productToFind) const {
     // Description:
     //   Displays change items that still need to be implemented or are in progress.
     // Parameters:
@@ -365,6 +379,7 @@ void changeItem::displayRemainingReports(const Product productToFind) const {
     file.clear();
     file.seekg(0);
     changeItem item;
+    // read item from file loop
     while (file.read(reinterpret_cast<char*>(&item), sizeof(changeItem))) {
         if (item.getStatus() != changeItem::Status::Done && 
             strcmp(item.getAssociatedProduct().getProductID(), productToFind.getProductID()) == 0) {
@@ -378,7 +393,7 @@ void changeItem::displayRemainingReports(const Product productToFind) const {
         return;
     }
 
-    // Display pages
+    // Display table loop
     do {
         // Rewind to the beginning and seek to the starting record for the current page
         file.clear();
@@ -443,7 +458,7 @@ void changeItem::displayRemainingReports(const Product productToFind) const {
 }
 
 //----------------------
-changeItem changeItem::displayAndReturnChangeItem(const Product productToFind, const Release rel) {
+changeItem changeItem::displayAndReturnChangeItem (const Product productToFind, const Release rel) {
     // Description: Displays change items stored in the currently managed file in batches of 5, allowing scrolling.
     //              User can press Enter to view the next 5 items or 'q' to stop.
     //              Allows the user to select and returns that change item.
@@ -462,6 +477,7 @@ changeItem changeItem::displayAndReturnChangeItem(const Product productToFind, c
     bool displayNextPage = true;
     changeItem selectedItem; // To store the selected changeItem
 
+    // Display list loop
     while (displayNextPage) {
         // Display header
         cout << " - Must Add or Select a Change Item:" << endl;
@@ -678,7 +694,8 @@ changeItem changeItem::displayAndReturnChangeItem(const Product productToFind, c
     return selectedItem; // Return the selected change item
 }
 
-changeItem changeItem::displayAndReturnChangeItemStatus(const Product productToFind) {
+//----------------------
+changeItem changeItem::displayAndReturnChangeItemStatus (const Product productToFind) {
     // Description: Displays change items stored in the currently managed file in batches of 5, allowing scrolling.
     //              User can press Enter to view the next 5 items or 'q' to stop.
     //              Allows the user to select and returns that change item.
@@ -697,6 +714,8 @@ changeItem changeItem::displayAndReturnChangeItemStatus(const Product productToF
 
     // First pass: Count total matching items
     changeItem item;
+
+    // Read items from file loop
     while (file.read(reinterpret_cast<char*>(&item), sizeof(changeItem))) {
         if (strcmp(item.getAssociatedProduct().getProductID(), productToFind.getProductID()) == 0) {
             totalMatchingItems++;
@@ -708,6 +727,7 @@ changeItem changeItem::displayAndReturnChangeItemStatus(const Product productToF
     bool displayNextPage = true;
     changeItem selectedItem; // To store the selected changeItem
 
+    // Display items in table loop
     while (displayNextPage) {
         file.clear(); // Clear any error flags
         file.seekg(0, ios::beg); // Move file pointer to beginning
@@ -823,6 +843,8 @@ changeItem changeItem::displayAndReturnChangeItemStatus(const Product productToF
                 bool found = false;
                 file.clear(); // Clear any error flags
                 file.seekg(0, ios::beg); // Move file pointer to beginning
+
+                // Read items in file loop
                 while (file.read(reinterpret_cast<char*>(&item), sizeof(changeItem))) {
                     if (strcmp(item.getAssociatedProduct().getProductID(), productToFind.getProductID()) == 0 && item.getChangeItemID() == changeItemID) {
                         cout << "Change Item found: " << item.getDescription() << endl;
@@ -857,9 +879,11 @@ changeItem changeItem::displayAndReturnChangeItemStatus(const Product productToF
 }
 
 
+//----------------------
+int changeItem::generateUniqueChangeItemID () {
+    // Description: Generates a unique change item ID using random number generation.
+    // Returns: A randomly generated ID in the range [0, 999999].
 
-// Function to generate a unique change item ID
-int changeItem::generateUniqueChangeItemID() {
     // Seed the random number generator
     srand(static_cast<unsigned>(time(0)));
 
@@ -867,16 +891,4 @@ int changeItem::generateUniqueChangeItemID() {
     int id = rand() % 1000000; // 1000000 is exclusive
 
     return id;
-}
-
-changeItem& changeItem::operator=(const changeItem& other) {
-    if (this != &other) {
-        changeItemID = other.changeItemID;
-        status = other.status;
-        associatedProduct = other.associatedProduct;
-        anticipatedRelease = other.anticipatedRelease;
-        strncpy(description, other.description, sizeof(description) - 1);
-        description[sizeof(description) - 1] = '\0';
-    }
-    return *this;
 }

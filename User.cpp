@@ -77,6 +77,9 @@ const char* User::getEmail () const {
 
 //----------------------
 const char* User::getDepartment() const {
+// Description: Getter for retrieving user department
+// Parameters: None
+// Returns: Pointer to a constant character array containing the user department
     return department;
 }
 
@@ -118,14 +121,17 @@ void User::setEmail (const char* email) {
 }
 
 //----------------------
-void User::setDepartment(const char* dept) {
+void User::setDepartment (const char* dept) {
+// Description: Setter for setting user department
+// Parameters:
+//   - dept: Pointer to a character array containing the user department (input)
     strncpy(this->department, dept, sizeof(department) - 1);
     department[sizeof(department) - 1] = '\0'; // Ensure null-termination
 }
 
 // Utility methods
 //----------------------
-void User::initUser(const char* fileName) {
+void User::initUser (const char* fileName) {
     // Description: Initializes the User object and opens the specified file for operations
     // Parameters:
     //   - fileName: Pointer to a character array containing the file name (input)
@@ -251,11 +257,11 @@ bool User::changeUserInfo () {
 }
 
 //----------------------
-bool User::addUser() {
-    // Description: Adds the user's details to the currently managed file.
-    // Returns:
-    //   - true if the user details were successfully added; false otherwise.
-    // Exceptions: May throw an exception if the file cannot be accessed.
+bool User::addUser () {
+// Description: Adds the user's details to the currently managed file.
+// Returns:
+//   - true if the user details were successfully added; false otherwise.
+// Exceptions: May throw an exception if the file cannot be accessed.
 
     fileStream.clear();
     // Check if file is open
@@ -305,6 +311,7 @@ User User::displayUsersFromFile () const {
     bool displayNextPage = true;
     User selectedUser; // To store the selected user
 
+    // Loop to display items in table
     while (displayNextPage) {
         // Display header
         cout << " - Must Add or Select a User:" << endl;
@@ -374,7 +381,7 @@ User User::displayUsersFromFile () const {
 
                     newUser.setUserID(userID.c_str());
 
-                    if (newUser.checkUserIDExists()) {
+                    if (!newUser.checkUserIDExists()) {
                         validIDEntered = true;
                     } else {
                         cout << "User ID already exists. Please enter a different User ID." << endl;
@@ -417,6 +424,7 @@ User User::displayUsersFromFile () const {
                 fileStream.seekg(0, ios::beg); // Move file pointer to beginning
                 bool found = false;
                 User user;
+                // Loop to read items from file
                 while (fileStream.read(reinterpret_cast<char*>(&user), sizeof(User))) {
                     if (strcmp(user.getUserID(), userID.c_str()) == 0) {
                         cout << "User found: " << user.getName() << endl;
@@ -494,7 +502,7 @@ User User::displayUsersFromFile () const {
                     
                     newUser.setUserID(userID.c_str());
 
-                    if (newUser.checkUserIDExists()) {
+                    if (!newUser.checkUserIDExists()) {
                         validIDEntered = true;
                     } else {
                         cout << "User ID already exists. Please enter a different User ID." << endl;

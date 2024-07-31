@@ -54,10 +54,12 @@ Release::Release (const Release& other) {
 // Overloaded assignment operator
 //----------------------
 Release& Release::operator= (const Release& other) {
+// Copy assignment operator assigns the values from another Release object to this object.
+// Parameters:
+//   - other: Reference to another Release object to copy from (input)
+// Returns:
+//   - A reference to the assigned Release object (output)
     if (this != &other) {
-        // Description: Assignment operator to assign values from another Release object.
-        // Parameters:
-        //   - other: Another Release object to assign from (input)
 
         // Copy releaseID with null-termination
         strncpy(this->releaseID, other.releaseID, sizeof(this->releaseID) - 1);
@@ -127,15 +129,28 @@ void Release::setReleaseDate (const char* releaseDate) {
 
 // Utility methods
 //----------------------
-bool Release::addRelease () {
+bool Release::addRelease() {
     // Description: Adds the release's details to the currently managed file.
     // Returns:
     //   true if the release details were successfully added; false otherwise.
-    // Exceptions:
-    //   May throw an exception if the file cannot be accessed.
+
+    if (!file.is_open()) {
+        return false;
+    }
+
     file.seekp(0, std::ios::end); // Move to end to append
+    if (!file.good()) {
+        return false;
+    }
+
     file.write(reinterpret_cast<const char*>(this), sizeof(Release));
-    return file.good();
+    if (!file.good()) {
+        return false;
+    }
+
+    file.flush();
+    file.clear();
+    return true;
 }
 
 //----------------------
@@ -185,6 +200,7 @@ Release Release::findReleaseAndReturn (const Product prod) {
     Release selectedRel; // To store the selected release
     bool releaseSelected = false; // Flag to track if a release was selected
 
+    // Display table items loop
     while (displayNextPage) {
         // Display header
         std::cout << "Release List for Product ID: " << prod.getProductID() << std::endl;
@@ -211,7 +227,7 @@ Release Release::findReleaseAndReturn (const Product prod) {
                 break;
             }
             if (strcmp(release.getProduct().getProductID(), prod.getProductID()) == 0) {
-                std::cout << std::setw(2) << startRecord + i + 1 << "  ";
+                std::cout << std::setw(2) << (startRecord + i + 1) << "  ";
                 std::cout << std::setw(15) << release.getReleaseID() << "  ";
                 std::cout << std::setw(12) << release.getReleaseDate() << "  ";
                 std::cout << std::setw(15) << release.getProduct().getProductID() << std::endl;
@@ -296,6 +312,7 @@ Release Release::findReleaseAndReturn (const Product prod) {
                 file.seekg(0, std::ios::beg); // Move file pointer to beginning
                 bool found = false;
                 Release release;
+                // Read items from file loop
                 while (file.read(reinterpret_cast<char*>(&release), sizeof(Release))) {
                     if (strcmp(release.getReleaseID(), releaseID.c_str()) == 0 && strcmp(release.getProduct().getProductID(), prod.getProductID()) == 0) {
                         selectedRel = release;
@@ -335,7 +352,7 @@ Release Release::findReleaseAndReturn (const Product prod) {
 }
 
 //----------------------
-void Release::initRelease(const char* fileName) {
+void Release::initRelease (const char* fileName) {
     // Description: Initializes the Release object and opens the file for operations.
     // Parameters:
     //   - fileName: Pointer to a character array containing the file name (input)

@@ -90,7 +90,7 @@ public:
     //   - email: Pointer to a character array containing the email (input)
 
     //----------------------
-    void setDepartment(const char* dept);
+    void setDepartment (const char* dept);
     // Description: Setter for setting user department
     // Parameters:
     //   - dept: Pointer to a character array containing the user department (input)
@@ -127,14 +127,14 @@ public:
     void closeUser ();
     // Description: Closes the file and performs any necessary cleanup.
 
-    bool checkUserIDExists();
+    bool checkUserIDExists ();
     // Description: Checks if user in file
     // Paramters: 
     //  - userToFind: obj of user to search for in file.
     // Returns: return true if found, or false if not in file
 
     //----------------------
-    User displayUsersFromFile() const;
+    User displayUsersFromFile () const;
     // Description: Displays users stored in the currently managed file in batches of 5, allowing scrolling.
     //              User can press Enter to view the next 5 users or 'q' to stop.
     //              Allows the user to select and returns that user.

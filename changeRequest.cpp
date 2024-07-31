@@ -94,7 +94,10 @@ void changeRequest::setDateRequested (const char* date) {
     this->dateRequested[sizeof(this->dateRequested) - 1] = '\0';        // Ensure null-termination
 }
 
+//----------------------
 bool changeRequest::addChangeRequest () {
+// Description: Creates and adds the changeRequest object to the file.
+// Returns: true if the change request was successfully added, false otherwise.
     // Ensure file is open
     if (!fileStream.is_open()) {
         cerr << "Error: File is not open for writing." << endl;
@@ -113,7 +116,8 @@ bool changeRequest::addChangeRequest () {
     return true;
 }
 
-bool changeRequest::updateUser(User userToUpdate) {
+//----------------------
+bool changeRequest::updateUser (User userToUpdate) {
     // Description: This will update the change Requests user in the change Request file, to maintain synchronization.
     // Parameters: 
     //   - userToUpdate: copy of new user to update (input). 
@@ -160,7 +164,8 @@ bool changeRequest::updateUser(User userToUpdate) {
     return updated;
 }
 
-bool changeRequest::updateChangeItem(changeItem changeItemToUpdate) {
+//----------------------
+bool changeRequest::updateChangeItem (changeItem changeItemToUpdate) {
     // Description: This will update the changeItems in the changeRequest file to maintain synchronization.
     // Parameters: 
     //   - changeItemToUpdate: copy of updated changeItem (input). 
@@ -206,7 +211,11 @@ bool changeRequest::updateChangeItem(changeItem changeItemToUpdate) {
     return updated;
 }
 
-void changeRequest::displayUsersToBeNotified(Product prod) {
+//----------------------
+void changeRequest::displayUsersToBeNotified (Product prod) {
+// Description: Displays a list of users who should be notified of requests that are implemented.
+// Parameters: 
+//  - prod: The Product object used to filter and display relevant users.
     // Check if file is open
     if (!fileStream.is_open()) {
         cerr << "Error: File is not open for reading." << endl;
@@ -217,6 +226,7 @@ void changeRequest::displayUsersToBeNotified(Product prod) {
     int startRecord = 0; // Starting record index
     bool displayNextPage = true;
 
+    // Loop to display items 
     while (true) {
         // Display header
         cout << "Users To Be Notified Report (Page " << (startRecord / numRecordsPerPage + 1) << ")" << endl;
@@ -240,6 +250,8 @@ void changeRequest::displayUsersToBeNotified(Product prod) {
         changeRequest req;
 
         int i = startRecord; // Initialize i with the starting record index
+
+        // loop to read items from file
         while (fileStream.read(reinterpret_cast<char*>(&req), sizeof(changeRequest))) {
             if (req.getChangeItem().getStatusAsString() == "Done" &&
                 strcmp(req.getChangeItem().getAssociatedProduct().getProductID(), prod.getProductID()) == 0) {
