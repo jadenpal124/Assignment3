@@ -120,7 +120,7 @@ public:
     // Descriptiom:  Closes the file and releases resources.
 
 private:
-    char releaseID[8];     // Member variable for storing release ID (max length: 8 characters)
+    char releaseID[9];     // Member variable for storing release ID (max length: 8 characters)
     Product product;        // Member variable for storing the associated Product object
     char releaseDate[12];   // Member variable for storing release date (max length: 12 characters)
     static fstream file;     // File stream for input and output operations

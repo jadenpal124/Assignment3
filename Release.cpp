@@ -134,54 +134,62 @@ bool Release::addRelease() {
     // Returns:
     //   true if the release details were successfully added; false otherwise.
 
+    // Check if the file stream is open
     if (!file.is_open()) {
+        std::cerr << "Error: File not open." << std::endl;
         return false;
     }
 
-    file.seekp(0, std::ios::end); // Move to end to append
+    // Move to the end of the file to append data
+    file.clear(); // Clear any previous error state
+    file.seekp(0, std::ios::end);
+
+    // Check if seeking was successful
     if (!file.good()) {
+        std::cerr << "Error: Failed to seek to end of file." << std::endl;
         return false;
     }
 
+    // Write the Release object to the file
     file.write(reinterpret_cast<const char*>(this), sizeof(Release));
+
+    // Check if writing was successful
     if (!file.good()) {
+        std::cerr << "Error: Failed to write Release to file." << std::endl;
         return false;
     }
 
+    // Flush the file to ensure all data is written
     file.flush();
+
+    // Clear any error flags
     file.clear();
+
     return true;
 }
 
 //----------------------
-bool Release::checkRelease (const char* releaseIDToFind) {
-    // Description: Checks if a release with the specified releaseID exists in the file.
+bool Release::checkRelease(const char* releaseIDToFind) {
+    // Description: Checks if a release with the specified releaseID already exists in the file.
     // Parameters:
     //   - releaseIDToFind: Pointer to a character array containing the release ID to search for (input)
     // Returns:
-    //   true if the release is found; false otherwise.
-    // Exceptions:
-    //   Throws an exception if the release is not found.
-    file.clear();
-    file.seekg(0, std::ios::beg);
+    //   true if the release already exists; false otherwise.
 
-    static Release release; // Static to ensure it persists after function ends
-    bool found = false;
+    file.clear(); // Clear any error flags
+    file.seekg(0, std::ios::beg); // Move to the beginning of the file
 
-    // Search for the release by releaseID
+    Release release; // Local variable to hold the release being read
+
     while (file.read(reinterpret_cast<char*>(&release), sizeof(Release))) {
-        if (std::strcmp(release.releaseID, releaseIDToFind) == 0) {
-            found = true;
-            break;
+        if (strcmp(release.getReleaseID(), releaseIDToFind) == 0) {
+            // Release ID already exists in the file
+            return true;
         }
     }
 
-    if (!found) {
-        std::cerr << "Error: Release with ID " << releaseIDToFind << " not found." << std::endl;
-        throw std::exception(); // Throwing exception if release not found
-    }
-
-    return found;
+    // Release ID was not found in the file
+    return false;
 }
 
 //----------------------
@@ -372,8 +380,7 @@ Release Release::findReleaseAndReturn (const Product prod) {
     return selectedRel; // Return the selected release
 }
 
-//----------------------
-void Release::initRelease (const char* fileName) {
+void Release::initRelease(const char* fileName) {
     // Description: Initializes the Release object and opens the file for operations.
     // Parameters:
     //   - fileName: Pointer to a character array containing the file name (input)
@@ -388,15 +395,20 @@ void Release::initRelease (const char* fileName) {
         if (!file) {
             throw std::runtime_error("Error: Could not open or create file");
         }
-        file.close(); // Close the file and reopen in the required mode
+        file.close(); // Close the file after creation
+
+        // Reopen the file in read-write mode
         file.open(fileName, std::ios::in | std::ios::out | std::ios::binary);
     }
 
-    if (!file) {
+    if (!file.is_open()) {
         throw std::runtime_error("Error: Could not open file after creation attempt");
     }
-}
 
+    // Optional: Verify file position and state (e.g., at the beginning)
+    file.seekg(0, std::ios::beg);
+    file.clear(); // Clear any potential error state
+}
 //----------------------
 void Release::closeRelease () {
     // Description: Closes the file and performs any necessary cleanup.

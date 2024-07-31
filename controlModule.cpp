@@ -106,6 +106,7 @@ void addReleaseControl () {
     Product temp;
     char relID[8];
     char choiceP, choiceR;
+    Release newRelease;
 
     cin.ignore();
 
@@ -121,21 +122,38 @@ void addReleaseControl () {
     cin >> choiceP;
     cout << endl;
 
+    cin.ignore();
+
     // Validate choice
     if (choiceP != 'y' && choiceP != 'Y') {
         cout << "Operation cancelled. Returning to the menu." << endl;
         return;
     }
 
-    cout << "Enter Release ID (1-8 character Length): "; 
-    cin.ignore();
-    cin.getline(relID, 8);
+    // loop to check for valid release ID
+    while (true) {
+    cout << "Enter Release ID (1-8 character Length): ";
+    cin.getline(relID, 8); // Read up to 8 characters + 1 for null terminator
 
     // Validate Release ID length
-    if (strlen(relID) == 0) {
-        cout << "Release ID cannot be empty. Returning to the menu." << endl;
-        return;
+    size_t length = strlen(relID);
+    if (length == 0) {
+        cout << "Release ID cannot be empty. Please try again." << endl;
+    } else if (length > 8) {
+        cout << "Release ID must be 8 characters or fewer. Please try again." << endl;
+    } else {
+        // Check if the release already exists
+        if (newRelease.checkRelease(relID)) {
+            cout << "Release with ID " << relID << " already exists. Please try again." << endl;
+        } else {
+            // If the ID is valid and does not already exist, set the releaseID
+            newRelease.setReleaseID(relID);
+            break; // Exit the loop if everything is fine
+        }
     }
+}
+
+
 
     cout << "Do you want to add release " << relID << " (select y/n)? ";
     cin >> choiceR;
@@ -147,8 +165,6 @@ void addReleaseControl () {
     }
 
     // Create a Release object and set its details
-    Release newRelease;
-    newRelease.setReleaseID(relID);
     newRelease.setProduct(temp);
 
     // Optionally, set release date or other fields if needed
@@ -157,6 +173,9 @@ void addReleaseControl () {
     cin.ignore();
     cin.getline(releaseDate, 12);
     newRelease.setReleaseDate(releaseDate);
+
+    cout << newRelease.getReleaseID () << endl;
+    cout << newRelease.getReleaseDate() << endl;
 
     // Add the release to the file
     if (newRelease.addRelease()) {
@@ -327,6 +346,8 @@ void addChangeRequestControl() {
             cin.getline(releastDate, 12);
             antRel.setReleaseDate(releastDate);
             antRel.setProduct(tempProd);
+
+            antRel.addRelease();
 
 
             tempChangeItem = tempChangeItem.displayAndReturnChangeItem(tempProd, antRel);
