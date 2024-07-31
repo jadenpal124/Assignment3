@@ -207,12 +207,10 @@ Release Release::findReleaseAndReturn (const Product prod) {
         std::cout << "Page " << (startRecord / numRecordsPerPage + 1) << std::endl;
         std::cout << std::setw(2) << "#" << "  ";
         std::cout << std::setw(15) << "Release ID" << "  ";
-        std::cout << std::setw(12) << "Release Date" << "  ";
-        std::cout << std::setw(15) << "Product ID" << std::endl;
+        std::cout << std::setw(12) << "Release Date" << endl;
         std::cout << std::setw(2) << "--" << "  ";
         std::cout << std::setw(15) << "-----------" << "  ";
-        std::cout << std::setw(12) << "------------" << "  ";
-        std::cout << std::setw(15) << "----------" << std::endl;
+        std::cout << std::setw(12) << "------------" << endl;
 
         // Display records
         bool endOfFile = false;
@@ -229,8 +227,8 @@ Release Release::findReleaseAndReturn (const Product prod) {
             if (strcmp(release.getProduct().getProductID(), prod.getProductID()) == 0) {
                 std::cout << std::setw(2) << (startRecord + i + 1) << "  ";
                 std::cout << std::setw(15) << release.getReleaseID() << "  ";
-                std::cout << std::setw(12) << release.getReleaseDate() << "  ";
-                std::cout << std::setw(15) << release.getProduct().getProductID() << std::endl;
+                std::cout << std::setw(12) << release.getReleaseDate() << endl;
+           
                 ++displayedCount;
             }
         }

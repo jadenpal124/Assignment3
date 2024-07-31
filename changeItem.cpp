@@ -310,6 +310,7 @@ bool changeItem::updateChangeItem (changeItem changeItemToFind) {
             }
         }
     }
+    return false;
 }
 
 //----------------------
@@ -381,7 +382,7 @@ void changeItem::displayRemainingReports (const Product productToFind) const {
     changeItem item;
     // read item from file loop
     while (file.read(reinterpret_cast<char*>(&item), sizeof(changeItem))) {
-        if (item.getStatus() != changeItem::Status::Done && 
+        if (strcmp(item.getStatusAsString(), "Done") == 0 && 
             strcmp(item.getAssociatedProduct().getProductID(), productToFind.getProductID()) == 0) {
             ++totalCount;
         }

@@ -253,7 +253,7 @@ void changeRequest::displayUsersToBeNotified (Product prod) {
 
         // loop to read items from file
         while (fileStream.read(reinterpret_cast<char*>(&req), sizeof(changeRequest))) {
-            if (req.getChangeItem().getStatusAsString() == "Done" &&
+            if (strcmp(req.getChangeItem().getStatusAsString(), "Done") == 0 &&
                 strcmp(req.getChangeItem().getAssociatedProduct().getProductID(), prod.getProductID()) == 0) {
                 // Display information in specified format
                 cout << setw(2) << ++i << "  ";
