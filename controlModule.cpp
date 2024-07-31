@@ -338,15 +338,33 @@ void addChangeRequestControl() {
             cout << endl;
             char releastDate[12];
             char relID[8];
-            cout << "Enter in an Anticipated Release: ";
-            cin.getline(relID, 8);
-            antRel.setReleaseID(relID);
+            bool validID = true;
+
+            while (validID) {
+                cout << "Enter Anticipated Release ID (1-8 character Length): ";
+                cin.getline(relID, 8); // Read up to 8 characters + 1 for null terminator
+
+                // Validate Release ID length
+                size_t length = strlen(relID);
+                if (length == 0) {
+                    cout << "Release ID cannot be empty. Please try again." << endl;
+                } else if (length > 8) {
+                    cout << "Release ID must be 8 characters or fewer. Please try again." << endl;
+                } else {
+                    // Check if the release already exists
+                    if (antRel.checkRelease(relID)) {
+                        cout << "Release with ID " << relID << " already exists. Please try again." << endl;
+                    } else {
+                        // If the ID is valid and does not already exist, set the releaseID
+                        antRel.setReleaseID(relID);
+                        validID = false;
+                 }
+            }
 
             cout << "Enter in an Aniticpated Release Date: ";
             cin.getline(releastDate, 12);
             antRel.setReleaseDate(releastDate);
             antRel.setProduct(tempProd);
-
             antRel.addRelease();
 
 
@@ -408,6 +426,7 @@ void addChangeRequestControl() {
         } else {
             cout << "Change request not added." << endl;
             return; // Exit function if change request is not added
+        }
         }
     }
 }
