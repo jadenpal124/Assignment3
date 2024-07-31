@@ -314,8 +314,27 @@ void addChangeRequestControl() {
 
         // Check change items for the given product or add changeItem
         while (true) {
-            tempChangeItem = tempChangeItem.displayAndReturnChangeItem(tempProd, tempRelease);
+
+            Release antRel;
             cout << endl;
+            char releastDate[12];
+            char relID[8];
+            cout << "Enter in an Anticipated Release: ";
+            cin.getline(relID, 8);
+            antRel.setReleaseID(relID);
+
+            cout << "Enter in an Aniticpated Release Date: ";
+            cin.getline(releastDate, 12);
+            antRel.setReleaseDate(releastDate);
+            antRel.setProduct(tempProd);
+
+
+            tempChangeItem = tempChangeItem.displayAndReturnChangeItem(tempProd, antRel);
+
+
+
+            cout << endl;
+            
 
             // Check if no valid change item was found
             if (tempChangeItem.getChangeItemID() == 0) {
@@ -334,7 +353,6 @@ void addChangeRequestControl() {
             // Prompt for change item confirmation
             cout << "\nDo you want to add the change item " << tempChangeItem.getChangeItemID() << " (Y/N)? ";
             cin >> choice;
-            tempChangeItem.setAnticipatedRelease(tempRelease);
 
             cin.ignore(); // Clear newline character from input buffer
 
@@ -348,13 +366,15 @@ void addChangeRequestControl() {
             }
         }
 
+
+
         // Confirm inputs and create change request object with corresponding variables
         if (choice == 'Y' || choice == 'y') {
             // Assuming you have a ChangeRequest class and appropriate methods
             changeRequest cr;
             cr.setChangeItem(tempChangeItem);
             cr.setUser(tempUser);
-            cr.setAssociatedRelease(tempChangeItem.getAnticipatedRelease());
+            cr.setAssociatedRelease(tempRelease);
             cr.setDateRequested(date);
 
             // Add Change Request to file.
