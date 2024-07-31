@@ -323,6 +323,7 @@ void addChangeRequestControl() {
     }
 }
 
+
 // Implementation of updateUserControl
 //----------------------
 void updateUserControl() {

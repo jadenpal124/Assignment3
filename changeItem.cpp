@@ -480,8 +480,8 @@ changeItem changeItem::displayAndReturnChangeItem(const Product productToFind) {
                 // Default action: Display next page
                 startRecord += numRecordsPerPage;
             } else if (selection == "q") {
-                // Quit action
                 displayNextPage = false; // Exit loop
+                break;
             } else if (selection == "a") {
                 // Add new change item
                 changeItem newItem;

@@ -18,7 +18,6 @@
 using namespace std;
 
 //================================
-class Product; // Forward declaration of Product class
 
 class Release {
 public:
@@ -117,7 +116,7 @@ private:
     char releaseID[8];     // Member variable for storing release ID (max length: 50 characters)
     Product product;        // Member variable for storing the associated Product object
     char releaseDate[12];   // Member variable for storing release date (max length: 50 characters)
-    fstream file;     // File stream for input and output operations
+    static fstream file;     // File stream for input and output operations
     string fileName;        // Store file name for accessing later
 };
 //================================

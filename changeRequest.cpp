@@ -193,12 +193,9 @@ bool changeRequest::updateChangeItem(changeItem changeItemToUpdate) {
             // Move the file pointer back to the position where the record was read
             fileStream.seekp(-static_cast<long>(sizeof(changeRequest)), std::ios::cur);
 
-            // Debug: Print the new details being written
-            std::cout << "Writing ChangeItem ID: " << req.getChangeItem().getChangeItemID() << std::endl;
-
             fileStream.write(reinterpret_cast<const char*>(&req), sizeof(changeRequest));
             fileStream.flush();
-            
+
             updated = true;
             break;
         }
@@ -250,7 +247,7 @@ void changeRequest::displayUsersToBeNotified(Product prod) {
                 // Display information in specified format
                 cout << setw(20) << right << req.getUser().getName() << "  ";
                 cout << setw(12) << right << req.getUser().getEmail() << "  ";
-                cout << setw(12) << right << req.getChangeItem().getchangeItemID() << "  ";
+                cout << setw(12) << right << req.getChangeItem().getChangeItemID() << "  ";
                 cout << setw(20) << right << req.getChangeItem().getAnticipatedRelease().getReleaseID() << endl;
                 ++displayedCount;
 
