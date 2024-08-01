@@ -276,7 +276,8 @@ Release Release::findReleaseAndReturn (const Product prod) {
             }
         } else if (selection == "q") {
             // Quit action
-            displayNextPage = false; // Exit loop
+            displayNextPage = false;
+            break;
         } else if (selection == "s") {
             // Enter Release ID action
             std::cout << "Enter Release ID: ";
@@ -323,11 +324,6 @@ Release Release::findReleaseAndReturn (const Product prod) {
         } else {
             std::cout << "Invalid selection." << std::endl;
         }
-    }
-
-    // Check if a release was selected, otherwise throw an exception
-    if (!releaseSelected) {
-        throw std::runtime_error("Release not found.");
     }
 
     return selectedRel; // Return the selected release
