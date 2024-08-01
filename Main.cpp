@@ -1,3 +1,7 @@
+// TO RUN PROGRAM:  
+//   g++ -std=c++11  Main.cpp UI.cpp changeItem.cpp controlModule.cpp changeRequest.cpp User.cpp Product.cpp Release.cpp -o program && ./program
+
+
 // Revision History:
 // Rev. 1 - 04/07/24 Original by JAWS
 //==================================================
