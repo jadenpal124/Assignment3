@@ -187,15 +187,9 @@ bool changeRequest::updateChangeItem (changeItem changeItemToUpdate) {
     while (fileStream.read(reinterpret_cast<char*>(&req), sizeof(changeRequest))) {
         // Check if the changeItem within the current changeRequest matches the ID to be updated
         if (req.getChangeItem().getChangeItemID() == changeItemToUpdate.getChangeItemID()) {
-            std::cout << "Updating ChangeItem ID: " << req.getChangeItem().getChangeItemID() << std::endl;
-            std::cout << "Status : " << req.getChangeItem().getStatusAsString() << std::endl;
 
             // Update the changeItem within the changeRequest
             req.setChangeItem(changeItemToUpdate);
-
-            cout << "UPDATED: " <<  changeItemToUpdate.getStatusAsString() << endl;
-
-            std::cout << "Status : " << req.getChangeItem().getStatusAsString() << std::endl;
 
             // Move the file pointer back to the position where the record was read
             fileStream.seekp(-static_cast<long>(sizeof(changeRequest)), std::ios::cur);

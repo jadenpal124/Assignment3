@@ -40,7 +40,7 @@ User::User (const char* userID, const char* name, const char* phone, const char*
     setName(name);
     setPhone(phone);
     setEmail(email);
-    setDepartment(department);
+    setDepartment(depar);
 }
 
 // Getter methods
@@ -126,8 +126,8 @@ void User::setDepartment (const char* dept) {
 // Description: Setter for setting user department
 // Parameters:
 //   - dept: Pointer to a character array containing the user department (input)
-    strncpy(this->department, dept, sizeof(department) - 1);
-    department[sizeof(department) - 1] = '\0'; // Ensure null-termination
+    strncpy(this->department, dept, sizeof(this->department) - 1);
+    department[sizeof(this->department) - 1] = '\0'; // Ensure null-termination
 }
 
 // Utility methods
@@ -258,37 +258,44 @@ bool User::changeUserInfo () {
 }
 
 //----------------------
-bool User::addUser () {
-// Description: Adds the user's details to the currently managed file.
-// Returns:
-//   - true if the user details were successfully added; false otherwise.
-// Exceptions: May throw an exception if the file cannot be accessed.
+bool User::addUser() {
+    // Description: Adds the user's details to the currently managed file.
+    // Returns:
+    //   - true if the user details were successfully added; false otherwise.
+    // Exceptions: May throw an exception if the file cannot be accessed.
 
+    // Clear any error state before starting
     fileStream.clear();
-    // Check if file is open
+
+    // Check if the file is open
     if (!fileStream.is_open()) {
-        cerr << "Error: File is not open." << endl;
+        std::cerr << "Error: File is not open." << std::endl;
         return false;
     }
 
     // Move the write pointer to the end of the file
-    fileStream.seekp(0, ios::end);
+    fileStream.seekp(0, std::ios::end);
     if (fileStream.fail()) {
-        cerr << "Error: Failed to move write pointer to the end of the file." << endl;
+        std::cerr << "Error: Failed to move write pointer to the end of the file." << std::endl;
         return false;
     }
 
     // Write the User object to the file
     fileStream.write(reinterpret_cast<const char*>(this), sizeof(User));
     if (fileStream.fail()) {
-        cerr << "Error: Failed to write to file." << endl;
+        std::cerr << "Error: Failed to write to file." << std::endl;
         fileStream.clear();  // Clear the error state
         return false;
     }
 
-    // Clear the file error state
+    // Flush the stream to ensure all data is written
     fileStream.flush();
-    fileStream.clear();
+    if (fileStream.fail()) {
+        std::cerr << "Error: Failed to flush the file stream." << std::endl;
+        fileStream.clear();  // Clear the error state
+        return false;
+    }
+
     return true;
 }
 
