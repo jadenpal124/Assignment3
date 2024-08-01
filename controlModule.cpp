@@ -568,6 +568,12 @@ void getStatusControl () {
     // Display product information and return selected product
     productTemp = productTemp.displayProductFromFile();
 
+    // Ensure we proceed only if a valid product is selected
+    if (strlen(productTemp.getProductID()) == 0) {
+        std::cout << "No product selected. Returning to Menu." << std::endl;
+        return;
+    }
+
     // Display change items for the selected product and return selected change item
     changeItemTemp = changeItemTemp.displayAndReturnChangeItemStatus(productTemp);
 
