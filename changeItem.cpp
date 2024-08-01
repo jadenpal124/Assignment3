@@ -515,6 +515,7 @@ changeItem changeItem::displayAndReturnChangeItem (const Product productToFind, 
         int displayedCount = 0;
         file.clear();
         file.seekg(startRecord * sizeof(changeItem), ios::beg);
+        int indexCounter = 0;
 
         for (int i = 0; i < numRecordsPerPage; ++i) {
             changeItem item;
@@ -524,7 +525,8 @@ changeItem changeItem::displayAndReturnChangeItem (const Product productToFind, 
             }
 
             if (strcmp(item.getAssociatedProduct().getProductID(), productToFind.getProductID()) == 0) {
-                cout << setw(4) << right << startRecord + i  << "  "; // Adjusted width to align with data
+                indexCounter++;
+                cout << setw(4) << right << indexCounter << "  "; // Adjusted width to align with data
                 cout << setw(15) << right << item.getAssociatedProduct().getProductID() << "  "; // Adjusted width
                 cout << setw(15) << right << item.getChangeItemID() << "  "; // Adjusted width
                 cout << setw(24) << right << item.getAnticipatedRelease().getReleaseID() << "  "; // Adjusted width
@@ -540,6 +542,7 @@ changeItem changeItem::displayAndReturnChangeItem (const Product productToFind, 
             cout << "Press <enter> to display the next " << numRecordsPerPage << " rows, or \"q\" to go back." << endl;
             cout << "If you would like to select an item, type the number #." << endl;
             cout << "If a Change Item ID is known, type \"s\" to enter it." << endl;
+            cout << "To add a new change item type \"a\"." << endl;
 
             string selection;
             cout << "Enter Selection: ";
@@ -619,6 +622,7 @@ changeItem changeItem::displayAndReturnChangeItem (const Product productToFind, 
             cout << "End of items reached. Press q to go back" << endl;
             cout << "If you would like to select an item, type the number #." << endl;
             cout << "If a Change Item ID is known, type \"s\" to enter it." << endl;
+            cout << "To add a new change item type \"a\"." << endl;
 
             string selection;
             cout << "Enter Selection: ";
@@ -755,6 +759,7 @@ changeItem changeItem::displayAndReturnChangeItemStatus (const Product productTo
         int displayedCount = 0;
         file.clear();
         file.seekg(startRecord * sizeof(changeItem), ios::beg);
+        int indexCounter = 0;
 
         for (int i = 0; i < numRecordsPerPage; ++i) {
             changeItem item;
@@ -764,7 +769,8 @@ changeItem changeItem::displayAndReturnChangeItemStatus (const Product productTo
             }
 
             if (strcmp(item.getAssociatedProduct().getProductID(), productToFind.getProductID()) == 0) {
-                cout << setw(4) << right << startRecord + i  << "  "; // Adjusted width to align with data
+                indexCounter++;
+                cout << setw(4) << right << indexCounter << "  "; // Adjusted width to align with data
                 cout << setw(15) << right << item.getAssociatedProduct().getProductID() << "  "; // Adjusted width
                 cout << setw(15) << right << item.getChangeItemID() << "  "; // Adjusted width
                 cout << setw(24) << right << item.getAnticipatedRelease().getReleaseID() << "  "; // Adjusted width
