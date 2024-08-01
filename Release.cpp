@@ -215,7 +215,7 @@ Release Release::findReleaseAndReturn (const Product prod) {
     int matchingRecords = 0;
     Release tempRelease;
 
-    // read items from file to find amount of matching release for product ID
+    // Read items from file to find the amount of matching releases for the product ID
     while (file.read(reinterpret_cast<char*>(&tempRelease), sizeof(Release))) {
         totalRecords++;
         if (strcmp(tempRelease.getProduct().getProductID(), prod.getProductID()) == 0) {
@@ -241,7 +241,7 @@ Release Release::findReleaseAndReturn (const Product prod) {
         int displayedCount = 0;
         int recordIndex = 0;
 
-        // read items from file to find matching productID.
+        // Read items from file to find matching productID.
         while (file.read(reinterpret_cast<char*>(&tempRelease), sizeof(Release))) {
             if (strcmp(tempRelease.getProduct().getProductID(), prod.getProductID()) == 0) {
                 if (recordIndex >= startRecord && displayedCount < numRecordsPerPage) {
@@ -255,126 +255,79 @@ Release Release::findReleaseAndReturn (const Product prod) {
         }
 
         // Prompt user for input
-        if (displayedCount < matchingRecords) {
-            std::cout << std::endl;
+        std::cout << std::endl;
+        if (startRecord + displayedCount < matchingRecords) {
             std::cout << "Press <enter> to display the next " << numRecordsPerPage << " rows, or \"q\" to go back." << std::endl;
-            std::cout << "If you would like to select a release, type the number #." << std::endl;
-            std::cout << "If a Release ID is known, type \"s\" to enter it." << std::endl;
+        } else {
+            std::cout << "End of file reached. Press <enter> to redisplay the last page or 'q' to go back." << std::endl;
+        }
+        std::cout << "If you would like to select a release, type the number #." << std::endl;
+        std::cout << "If a Release ID is known, type \"s\" to enter it." << std::endl;
 
-            std::string selection;
-            std::cout << "Enter Selection: ";
-            std::getline(std::cin, selection);
+        std::string selection;
+        std::cout << "Enter Selection: ";
+        std::getline(std::cin, selection);
 
-            // Handle user input
-            if (selection.empty()) {
-                // Default action: Display next page
+        // Handle user input
+        if (selection.empty()) {
+            // Default action: Display next page or redisplay last page
+            if (startRecord + displayedCount < matchingRecords) {
                 startRecord += numRecordsPerPage;
-            } else if (selection == "q") {
-                // Quit action
-                displayNextPage = false; // Exit loop
-            } else if (selection == "s") {
-                // Enter Release ID action
-                std::cout << "Enter Release ID: ";
-                std::string releaseID;
-                std::getline(std::cin, releaseID);
+            }
+        } else if (selection == "q") {
+            // Quit action
+            displayNextPage = false; // Exit loop
+        } else if (selection == "s") {
+            // Enter Release ID action
+            std::cout << "Enter Release ID: ";
+            std::string releaseID;
+            std::getline(std::cin, releaseID);
+            file.clear();
+            file.seekg(0, std::ios::beg); // Move file pointer to beginning
+            bool found = false;
+            // Search for items in file with matching release and product id
+            while (file.read(reinterpret_cast<char*>(&tempRelease), sizeof(Release))) {
+                if (strcmp(tempRelease.getReleaseID(), releaseID.c_str()) == 0 && strcmp(tempRelease.getProduct().getProductID(), prod.getProductID()) == 0) {
+                    selectedRel = tempRelease;
+                    found = true;
+                    releaseSelected = true;
+                    break;
+                }
+            }
+            if (!found) {
+                std::cout << "Release ID not found." << std::endl;
+            } else {
+                displayNextPage = false; // Exit loop if release is found
+            }
+        } else if (isdigit(selection[0])) {
+            // Select by number action
+            int selectedNumber = std::stoi(selection);
+            if (selectedNumber > 0 && selectedNumber <= matchingRecords) {
                 file.clear();
                 file.seekg(0, std::ios::beg); // Move file pointer to beginning
-                bool found = false;
-                // search for items in file with matching release and product id
+                int currentIndex = 0;
+                // Find item with selected index
                 while (file.read(reinterpret_cast<char*>(&tempRelease), sizeof(Release))) {
-                    if (strcmp(tempRelease.getReleaseID(), releaseID.c_str()) == 0 && strcmp(tempRelease.getProduct().getProductID(), prod.getProductID()) == 0) {
-                        selectedRel = tempRelease;
-                        found = true;
-                        releaseSelected = true;
-                        break;
-                    }
-                }
-                if (!found) {
-                    std::cout << "Release ID not found." << std::endl;
-                } else {
-                    displayNextPage = false; // Exit loop if release is found
-                }
-            } else if (isdigit(selection[0])) {
-                // Select by number action
-                int selectedNumber = std::stoi(selection);
-                if (selectedNumber > 0 && selectedNumber <= matchingRecords) {
-                    file.clear();
-                    file.seekg(0, std::ios::beg); // Move file pointer to beginning
-                    int currentIndex = 0;
-                    // Find item with selected index
-                    while (file.read(reinterpret_cast<char*>(&tempRelease), sizeof(Release))) {
-                        if (strcmp(tempRelease.getProduct().getProductID(), prod.getProductID()) == 0) {
-                            if (++currentIndex == selectedNumber) {
-                                selectedRel = tempRelease;
-                                releaseSelected = true;
-                                displayNextPage = false; // Exit loop if release is selected
-                                break;
-                            }
+                    if (strcmp(tempRelease.getProduct().getProductID(), prod.getProductID()) == 0) {
+                        if (++currentIndex == selectedNumber) {
+                            selectedRel = tempRelease;
+                            releaseSelected = true;
+                            displayNextPage = false; // Exit loop if release is selected
+                            break;
                         }
                     }
-                } else {
-                    std::cout << "Invalid selection." << std::endl;
                 }
             } else {
                 std::cout << "Invalid selection." << std::endl;
             }
         } else {
-            // End of file reached
-            std::cout << "End of file reached. Press 'q' to go back." << std::endl;
-            std::cout << "If you would like to select a release, type the number #." << std::endl;
-            std::cout << "If a Release ID is known, type \"s\" to enter it." << std::endl;
-
-            std::string selection;
-            std::cout << "Enter Selection: ";
-            std::getline(std::cin, selection);
-
-            if (selection == "q") {
-                displayNextPage = false; // Exit loop
-            } else if (selection == "s") {
-                // Enter Release ID action
-                std::cout << "Enter Release ID: ";
-                std::string releaseID;
-                std::getline(std::cin, releaseID);
-                file.clear();
-                file.seekg(0, std::ios::beg); // Move file pointer to beginning
-                bool found = false;
-                while (file.read(reinterpret_cast<char*>(&tempRelease), sizeof(Release))) {
-                    if (strcmp(tempRelease.getReleaseID(), releaseID.c_str()) == 0 && strcmp(tempRelease.getProduct().getProductID(), prod.getProductID()) == 0) {
-                        selectedRel = tempRelease;
-                        found = true;
-                        releaseSelected = true;
-                        break;
-                    }
-                }
-                if (!found) {
-                    std::cout << "Release ID not found." << std::endl;
-                } else {
-                    displayNextPage = false; // Exit loop if release is found
-                }
-            } else if (isdigit(selection[0])) {
-                // Select by number action
-                int selectedNumber = std::stoi(selection);
-                if (selectedNumber > 0 && selectedNumber <= numRecordsPerPage) {
-                    file.clear();
-                    file.seekg(0, std::ios::beg); // Move file pointer to beginning
-                    int currentIndex = 0;
-                    while (file.read(reinterpret_cast<char*>(&tempRelease), sizeof(Release))) {
-                        if (strcmp(tempRelease.getProduct().getProductID(), prod.getProductID()) == 0) {
-                            if (++currentIndex == selectedNumber) {
-                                selectedRel = tempRelease;
-                                releaseSelected = true;
-                                displayNextPage = false; // Exit loop if release is selected
-                                break;
-                            }
-                        }
-                    }
-                } else {
-                    std::cout << "Invalid selection." << std::endl;
-                }
-            } else {
-                std::cout << "Invalid selection." << std::endl;
-            }
+            std::cout << "Invalid selection." << std::endl;
         }
+    }
+
+    // Check if a release was selected, otherwise throw an exception
+    if (!releaseSelected) {
+        throw std::runtime_error("Release not found.");
     }
 
     return selectedRel; // Return the selected release

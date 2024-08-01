@@ -104,7 +104,7 @@ void addReleaseControl () {
 // Description:
 //   Executes 'Add Release' operation.
     Product temp;
-    char relID[8];
+    string relID;
     char choiceP, choiceR;
     Release newRelease;
 
@@ -133,21 +133,24 @@ void addReleaseControl () {
     // loop to check for valid release ID
     while (true) {
     cout << "Enter Release ID (1-8 character Length): ";
-    cin.getline(relID, 8); // Read up to 8 characters + 1 for null terminator
-
+    cin >> relID; // Read up to 8 characters + 1 for null terminator
+    
     // Validate Release ID length
-    size_t length = strlen(relID);
+    size_t length = relID.length();
+    char relIdchar[9];
+    strncpy(relIdchar, relID.c_str(), sizeof(relIdchar) - 1);
+    relIdchar[sizeof(relIdchar) - 1] = '\0';
     if (length == 0) {
         cout << "Release ID cannot be empty. Please try again." << endl;
-    } else if (length > 8) {
+    } else if (length > 9) {
         cout << "Release ID must be 8 characters or fewer. Please try again." << endl;
     } else {
         // Check if the release already exists
-        if (newRelease.checkRelease(relID)) {
+        if (newRelease.checkRelease(relIdchar)) {
             cout << "Release with ID " << relID << " already exists. Please try again." << endl;
         } else {
             // If the ID is valid and does not already exist, set the releaseID
-            newRelease.setReleaseID(relID);
+            newRelease.setReleaseID(relIdchar);
             break; // Exit the loop if everything is fine
         }
     }
@@ -337,12 +340,12 @@ void addChangeRequestControl() {
             Release antRel;
             cout << endl;
             char releastDate[12];
-            char relID[8];
+            char relID[9];
             bool validID = true;
 
             while (validID) {
                 cout << "Enter Anticipated Release ID (1-8 character Length): ";
-                cin.getline(relID, 8); // Read up to 8 characters + 1 for null terminator
+                cin.getline(relID, 9); // Read up to 8 characters + 1 for null terminator
 
                 // Validate Release ID length
                 size_t length = strlen(relID);
@@ -507,13 +510,7 @@ void updateChangeItemControl() {
     }
 
     // Perform the update
-    if (tempChangeItem.updateChangeItem(tempChangeItem)) {
-        cout << "Succefully updated Changeitem " << endl;
-    } else {
-        cout << "Failed to update change item." << endl;
-    }
-
-    
+   tempChangeItem.updateChangeItem(tempChangeItem); 
 }
 
 // Implementation of displayRemReportControl
@@ -581,6 +578,7 @@ void getStatusControl () {
    }
 
     // Output the details of the selected change item
+    cout << endl;
     cout << "Change Item ID: " << changeItemTemp.getChangeItemID() << endl;
     cout << "Description: " << changeItemTemp.getDescription() << endl;
     cout << "Status: " << changeItemTemp.getStatusAsString() << endl;

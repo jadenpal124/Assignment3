@@ -230,7 +230,7 @@ bool changeItem::updateChangeItem (changeItem changeItemToFind) {
             cout << "ProductID: " << temp.getAssociatedProduct().getProductID() << "\n";
             cout << "ChangeID: " << temp.getChangeItemID() << "\n";
             cout << "Anticipated ReleaseID: " << temp.getAnticipatedRelease().getReleaseID() << "\n";
-            cout << "Status: " << temp.getStatusAsString() << "\n";  // Use getStatusAsString
+            cout << "Status: " << temp.getStatusAsString() << "\n";  
             cout << "Description: " << temp.getDescription() << "\n\n";
 
             // loop menu
@@ -246,13 +246,26 @@ bool changeItem::updateChangeItem (changeItem changeItemToFind) {
 
                 switch (userInput) {
                     case '1': {
-                        cout << "Enter new Release ID (1-8 Character Length): ";
-                        cin.getline(userInput2, 9);
+                    
+                        bool validUser = false;
+                        while (!validUser) {
+                            cout << "Enter new Release ID (1-8 Character Length): ";
+                            cin.getline(userInput2, 9);
+                            if (tempReleaseFound.checkRelease(userInput2)) { 
+                                cout << "Release ID Already Exists. \n"; 
+                                continue;
+                            }
+                            else {     
+                                validUser = true;
+                            }
+                        }
                         cout << "Do you want to update Release ID to " << userInput2 << " (select Y/N)? ";
                         cin >> userChoice;
                         cin.ignore(); // Clear input buffer
                         if (userChoice == 'Y' || userChoice == 'y') {
+                            
                             tempReleaseFound.setReleaseID(userInput2);
+                            tempReleaseFound.checkRelease(userInput2);
                             tempReleaseFound.setReleaseDate(temp.getAnticipatedRelease().getReleaseDate());
                             tempReleaseFound.setProduct(temp.getAssociatedProduct());
                             tempReleaseFound.addRelease();
