@@ -37,7 +37,7 @@ public:
     // Description: Default constructor
 
      //----------------------
-    changeItem (int changeItemID, const char* description, const Product product, const Release releasePtr); 
+    changeItem (const char* description, const Product product, const Release releasePtr); 
     // Description: Parameterized constructor initializing changeItemID, description, associated product, and release with provided values.
     // Parameters:
     //     - changeItemID: Integer ID of the change item (input)

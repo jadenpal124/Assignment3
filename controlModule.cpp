@@ -485,6 +485,8 @@ void updateUserControl() {
 void updateChangeItemControl() {
 // Description:
 //   Executes 'Update Single Issue' operation.
+
+    changeRequest req;
     
     cout << endl;
     cin.ignore();
@@ -510,6 +512,8 @@ void updateChangeItemControl() {
     } else {
         cout << "Failed to update change item." << endl;
     }
+
+    
 }
 
 // Implementation of displayRemReportControl
@@ -524,6 +528,10 @@ void displayRemReportControl () {
     tempProduct = tempProduct.displayProductFromFile();
 
     tempChangeItem.displayRemainingReports(tempProduct);
+
+
+
+
 }
 
 

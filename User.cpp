@@ -29,7 +29,7 @@ User::User () {
 
 // Parameterized constructor
 //----------------------
-User::User (const char* userID, const char* name, const char* phone, const char* email) {
+User::User (const char* userID, const char* name, const char* phone, const char* email, const char* depar) {
 // Description: Parameterized constructor initializing userID, name, phone, and email with provided values.
 // Parameters:
 //   - userID: Pointer to a character array containing the user ID (input)
@@ -40,6 +40,7 @@ User::User (const char* userID, const char* name, const char* phone, const char*
     setName(name);
     setPhone(phone);
     setEmail(email);
+    setDepartment(department);
 }
 
 // Getter methods
@@ -314,20 +315,20 @@ User User::displayUsersFromFile () const {
     // Loop to display items in table
     while (displayNextPage) {
         // Display header
-        cout << " - Must Add or Select a User:" << endl;
+        cout << "Update User - Must Add or Select a User:" << endl;
         cout << "Request Status (Page " << (startRecord / numRecordsPerPage + 1) << ")" << endl;
-        cout << setw(2) << "#" << "  ";
-        cout << setw(10) << "User ID" << "  ";
-        cout << setw(15) << "User Name" << "  ";
-        cout << setw(15) << "Phone Number" << "  ";
-        cout << setw(20) << "Email" << "  ";
-        cout << setw(20) << "Department" << endl;
-        cout << setw(2) << "--" << "  ";
-        cout << setw(10) << "----------" << "  ";
-        cout << setw(15) << "---------------" << "  ";
-        cout << setw(15) << "---------------" << "  ";
-        cout << setw(20) << "--------------------" << "  ";
-        cout << setw(20) << "--------------------" << endl;
+        cout << setw(5) << right << "#" << " "
+            << setw(12) << right << "User ID" << " "
+            << setw(22) << right << "User Name" << " "
+            << setw(22) << right << "Phone Number" << " "
+            << setw(35) << right << "Email" << " "
+            << setw(22) << right << "Department" << endl;
+        cout << setw(5) << right << "---" << " "
+            << setw(12) << right << "------------" << " "
+            << setw(22) << right << "----------------------" << " "
+            << setw(22) << right << "----------------------" << " "
+            << setw(35) << right << "-----------------------------------" << " "
+            << setw(22) << right << "--------------------" << endl;
 
         // Display records
         bool endOfFile = false;
@@ -341,14 +342,16 @@ User User::displayUsersFromFile () const {
                 endOfFile = true; // End of file
                 break;
             }
-            cout << setw(2) << startRecord + i + 1 << "  ";
-            cout << setw(10) << user.getUserID() << "  ";
-            cout << setw(15) << user.getName() << "  ";
-            cout << setw(15) << user.getPhone() << "  ";
-            cout << setw(20) << user.getEmail() << " ";
-            cout << setw(20) << user.getDepartment() << endl;
+            cout << setw(5) << right << (startRecord + i + 1) << " "
+                << setw(12) << right << user.getUserID() << " "
+                << setw(22) << right << user.getName() << " "
+                << setw(22) << right << user.getPhone() << " "
+                << setw(35) << right << user.getEmail() << " "
+                << setw(22) << right << user.getDepartment() << endl;
             ++displayedCount;
         }
+
+
 
         // Prompt user for input
         if (!endOfFile) {

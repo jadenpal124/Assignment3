@@ -24,7 +24,7 @@ public:
     User (); 
     // Description: Default constructor initializing a User object with default values.
 
-    User (const char* userID, const char* name, const char* phone, const char* email); 
+    User (const char* userID, const char* name, const char* phone, const char* email, const char* department); 
     // Description: Parameterized constructor initializing userID, name, phone, and email with provided values.
     // Parameters:
     //   - userID: Pointer to a character array containing the user ID (input)

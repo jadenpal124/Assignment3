@@ -166,9 +166,9 @@ bool changeRequest::updateUser (User userToUpdate) {
 
 //----------------------
 bool changeRequest::updateChangeItem (changeItem changeItemToUpdate) {
-    // Description: This will update the changeItems in the changeRequest file to maintain synchronization.
+    // Description: This will update all changeItems in the changeRequest file that match the given changeItem ID to maintain synchronization.
     // Parameters: 
-    //   - changeItemToUpdate: copy of updated changeItem (input). 
+    //   - changeItemToUpdate: The updated changeItem with new status (input). 
 
     // Ensure the file stream is open
     if (!fileStream.is_open()) {
@@ -185,37 +185,42 @@ bool changeRequest::updateChangeItem (changeItem changeItemToUpdate) {
     bool updated = false;
 
     while (fileStream.read(reinterpret_cast<char*>(&req), sizeof(changeRequest))) {
-
+        // Check if the changeItem within the current changeRequest matches the ID to be updated
         if (req.getChangeItem().getChangeItemID() == changeItemToUpdate.getChangeItemID()) {
-            // Debug: Print the details of the ChangeItem being updated
             std::cout << "Updating ChangeItem ID: " << req.getChangeItem().getChangeItemID() << std::endl;
+            std::cout << "Status : " << req.getChangeItem().getStatusAsString() << std::endl;
 
+            // Update the changeItem within the changeRequest
             req.setChangeItem(changeItemToUpdate);
+
+            cout << "UPDATED: " <<  changeItemToUpdate.getStatusAsString() << endl;
+
+            std::cout << "Status : " << req.getChangeItem().getStatusAsString() << std::endl;
 
             // Move the file pointer back to the position where the record was read
             fileStream.seekp(-static_cast<long>(sizeof(changeRequest)), std::ios::cur);
 
+            // Write the updated changeRequest back to the file
             fileStream.write(reinterpret_cast<const char*>(&req), sizeof(changeRequest));
             fileStream.flush();
 
             updated = true;
-            break;
         }
     }
 
     if (!updated) {
-        std::cerr << "Error: ChangeItem ID " << changeItemToUpdate.getChangeItemID() << " not found in changeRequest file." << std::endl;
+        std::cerr << "Error: ChangeItem ID " << changeItemToUpdate.getChangeItemID() << " not found in any changeRequest record." << std::endl;
     }
 
     fileStream.clear();
     return updated;
 }
 
-//----------------------
-void changeRequest::displayUsersToBeNotified (Product prod) {
-// Description: Displays a list of users who should be notified of requests that are implemented.
-// Parameters: 
-//  - prod: The Product object used to filter and display relevant users.
+void changeRequest::displayUsersToBeNotified(Product prod) {
+    // Description: Displays a list of users who should be notified of requests that are implemented.
+    // Parameters: 
+    //  - prod: The Product object used to filter and display relevant users.
+
     // Check if file is open
     if (!fileStream.is_open()) {
         cerr << "Error: File is not open for reading." << endl;
@@ -230,16 +235,19 @@ void changeRequest::displayUsersToBeNotified (Product prod) {
     while (true) {
         // Display header
         cout << "Users To Be Notified Report (Page " << (startRecord / numRecordsPerPage + 1) << ")" << endl;
-        cout << setw(2) << "#" << "  ";
-        cout << setw(20) << right << "User Name" << "  ";
-        cout << setw(20) << right << "Email" << "  ";
-        cout << setw(12) << right << "ChangeID" << "  ";
+        cout << setw(4) << right << "#" << "  ";
+        cout << setw(25) << right << "User Name" << "  ";
+        cout << setw(30) << right << "Email" << "  ";
+        cout << setw(10) << right << "ChangeID" << "  ";
         cout << setw(22) << right << "Anticipated ReleaseID" << endl;
-        cout << setw(2) << "--" << "  ";
-        cout << setw(20) << right << "--------------------" << "  ";
-        cout << setw(20) << right << "--------------------" << "  ";
-        cout << setw(12) << right << "------------" << "  ";
-        cout << setw(22) << right << "----------------------" << endl;
+        cout << setw(4) << right << "--" << "  ";
+        cout << setw(25) << right << "-------------------------"
+             << "  ";
+        cout << setw(30) << right << "------------------------------"
+             << "  ";
+        cout << setw(10) << right << "----------"
+             << "  ";
+        cout << setw(22) << right << "------------------------" << endl;
 
         // Read the file and display relevant information
         fileStream.clear();
@@ -253,13 +261,13 @@ void changeRequest::displayUsersToBeNotified (Product prod) {
 
         // loop to read items from file
         while (fileStream.read(reinterpret_cast<char*>(&req), sizeof(changeRequest))) {
-            if (strcmp(req.getChangeItem().getStatusAsString(), "Done") == 0 &&
+            if (req.getChangeItem().getStatus() == changeItem::Status::Done &&
                 strcmp(req.getChangeItem().getAssociatedProduct().getProductID(), prod.getProductID()) == 0) {
                 // Display information in specified format
-                cout << setw(2) << ++i << "  ";
-                cout << setw(20) << right << req.getUser().getName() << "  ";
-                cout << setw(20) << right << req.getUser().getEmail() << "  ";
-                cout << setw(12) << right << req.getChangeItem().getChangeItemID() << "  ";
+                cout << setw(4) << right << ++i << "  ";
+                cout << setw(25) << right << req.getUser().getName() << "  ";
+                cout << setw(30) << right << req.getUser().getEmail() << "  ";
+                cout << setw(10) << right << req.getChangeItem().getChangeItemID() << "  ";
                 cout << setw(22) << right << req.getChangeItem().getAnticipatedRelease().getReleaseID() << endl;
                 ++displayedCount;
 
@@ -269,7 +277,7 @@ void changeRequest::displayUsersToBeNotified (Product prod) {
             }
         }
 
-        if (displayedCount < 5) {
+        if (displayedCount < numRecordsPerPage) {
             cout << "End of File." << endl;
             break; // Exit if no records are found
         }
@@ -293,7 +301,6 @@ void changeRequest::displayUsersToBeNotified (Product prod) {
         }
     }
 }
-
 
 
 //----------------------

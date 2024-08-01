@@ -21,8 +21,8 @@ changeItem::changeItem()
 }
 
 //----------------------
-changeItem::changeItem(int changeItemID, const char* description, const Product product, const Release releasePtr)
-    : changeItemID(changeItemID), status(NewRequest), anticipatedRelease(releasePtr), associatedProduct(product) {
+changeItem::changeItem(const char* description, const Product product, const Release releasePtr)
+    : status(NewRequest), anticipatedRelease(releasePtr), associatedProduct(product) {
     // Description: Parameterized constructor initializing changeItemID, description, associated product, and release with provided values.
     // Parameters:
     //     - changeItemID: Integer ID of the change item (input)
@@ -31,6 +31,7 @@ changeItem::changeItem(int changeItemID, const char* description, const Product 
     //     - releasePtr: Pointer to the anticipated Release object (input)
     strncpy(this->description, description, sizeof(this->description) - 1);
     this->description[sizeof(this->description) - 1] = '\0';
+    changeItemID = generateUniqueChangeItemID();
 }
 
 //----------------------
@@ -306,6 +307,7 @@ bool changeItem::updateChangeItem (changeItem changeItemToFind) {
                         file.write(reinterpret_cast<const char*>(&temp), sizeof(changeItem));
                         file.flush(); // Ensure data is written to the file
                         return found;
+                        
                 }
             }
         }
@@ -355,7 +357,7 @@ bool changeItem::addChangeItem () {
 }
 
 //----------------------
-void changeItem::displayRemainingReports(const Product productToFind) const {
+void changeItem::displayRemainingReports (const Product productToFind) const {
     // Description:
     //   Displays change items that still need to be implemented or are in progress.
     // Parameters:
@@ -734,47 +736,43 @@ changeItem changeItem::displayAndReturnChangeItemStatus (const Product productTo
     bool displayNextPage = true;
     changeItem selectedItem; // To store the selected changeItem
 
-    // Display items in table loop
     while (displayNextPage) {
         // Right-justify the column headers
         cout << "Change Items Report (Page " << (startRecord / numRecordsPerPage + 1) << ")" << endl;
-        cout << setw(4) << right << "#" << "  "; // Adjusted width to align with data
-        cout << setw(15) << right << "ProductID" << "  "; // Adjusted width to align with data
-        cout << setw(15) << right << "ChangeID" << "  "; // Adjusted width to align with data
-        cout << setw(24) << right << "Anticipated ReleaseID" << "  "; // Adjusted width
-        cout << setw(10) << right << "Status" << "  "; // Adjusted width to align with data
-        cout << "Description" << endl;
-
-        // Right-justify the column separators
-        cout << setw(4) << right << "--" << "  "; // Adjusted width to align with data
-        cout << setw(15) << right << "---------------" << "  "; // Adjusted width
-        cout << setw(15) << right << "---------------" << "  "; // Adjusted width
-        cout << setw(24) << right << "------------------------" << "  "; // Adjusted width
-        cout << setw(10) << right << "----------" << "  "; // Adjusted width
-        cout << "-----------" << endl;
+        cout << setw(4) << right << "#" << " "
+            << setw(15) << right << "ProductID" << " "
+            << setw(15) << right << "ChangeID" << " "
+            << setw(24) << right << "Anticipated ReleaseID" << " "
+            << setw(10) << right << "Status" << " "
+            << "Description" << endl;
+        cout << setw(4) << right << "---" << " "
+            << setw(15) << right << "---------------" << " "
+            << setw(15) << right << "---------------" << " "
+            << setw(24) << right << "------------------------" << " "
+            << setw(10) << right << "----------" << " "
+            << "-----------------------------" << endl;
 
         // Display records
         bool endOfFile = false;
         int displayedCount = 0;
         file.clear();
-        file.seekg(startRecord * sizeof(changeItem), ios::beg);
-        int indexCounter = 0;
+        file.seekg(0, ios::beg); // Move file pointer to beginning
+        int recordCounter = 0; // To keep track of the record index
 
         for (int i = 0; i < numRecordsPerPage; ++i) {
-            changeItem item;
             if (!file.read(reinterpret_cast<char*>(&item), sizeof(changeItem))) {
                 endOfFile = true; // End of file
                 break;
             }
 
             if (strcmp(item.getAssociatedProduct().getProductID(), productToFind.getProductID()) == 0) {
-                indexCounter++;
-                cout << setw(4) << right << indexCounter << "  "; // Adjusted width to align with data
-                cout << setw(15) << right << item.getAssociatedProduct().getProductID() << "  "; // Adjusted width
-                cout << setw(15) << right << item.getChangeItemID() << "  "; // Adjusted width
-                cout << setw(24) << right << item.getAnticipatedRelease().getReleaseID() << "  "; // Adjusted width
-                cout << setw(10) << right << item.getStatusAsString() << "  "; // Adjusted width
-                cout << item.getDescription() << endl;
+                ++recordCounter;
+                cout << setw(4) << right << (startRecord + recordCounter) << " "
+                    << setw(15) << right << item.getAssociatedProduct().getProductID() << " "
+                    << setw(15) << right << item.getChangeItemID() << " "
+                    << setw(24) << right << item.getAnticipatedRelease().getReleaseID() << " "
+                    << setw(10) << right << item.getStatusAsString() << " "
+                    << item.getDescription() << endl;
                 ++displayedCount;
             }
         }
@@ -796,7 +794,6 @@ changeItem changeItem::displayAndReturnChangeItemStatus (const Product productTo
                 startRecord += numRecordsPerPage;
             } else if (selection == "q") {
                 displayNextPage = false; // Exit loop
-                break;
             } else if (selection == "s") {
                 // Enter Change Item ID action
                 cout << "Enter Change Item ID: ";
@@ -830,24 +827,23 @@ changeItem changeItem::displayAndReturnChangeItemStatus (const Product productTo
                     // Calculate the position of the selected item
                     int recordToRead = startRecord + selectedNumber - 1;
                     file.clear(); // Clear any error flags
-                    file.seekg(recordToRead * sizeof(changeItem), ios::beg);
+                    file.seekg(0, ios::beg); // Move file pointer to beginning
+                    recordCounter = 0; // Reset record counter
 
-                    // Read the selected item
-                    if (file.read(reinterpret_cast<char*>(&item), sizeof(changeItem))) {
-                        selectedItem = item;
-
-                        // Print the selected item's details
-                        cout << "Change Item ID: " << item.getChangeItemID() << endl;
-                        cout << "Description: " << item.getDescription() << endl;
-                        cout << "Status: " << item.getStatusAsString() << endl;
-                        cout << "Associated Product ID: " << item.getAssociatedProduct().getProductID() << endl;
-                        cout << "Associated Product Name: " << item.getAssociatedProduct().getName() << endl;
-                        cout << "Anticipated Release ID: " << item.getAnticipatedRelease().getReleaseID() << endl;
-                        cout << "Anticipated Release Date: " << item.getAnticipatedRelease().getReleaseDate() << endl;
-
-                        displayNextPage = false; // Exit loop if item is selected
+                    // Read items in file loop
+                    while (file.read(reinterpret_cast<char*>(&item), sizeof(changeItem))) {
+                        if (strcmp(item.getAssociatedProduct().getProductID(), productToFind.getProductID()) == 0) {
+                            ++recordCounter;
+                            if (recordCounter == selectedNumber) {
+                                selectedItem = item;
+                                break;
+                            }
+                        }
+                    }
+                    if (recordCounter != selectedNumber) {
+                        cout << "Error: Selected item not found." << endl;
                     } else {
-                        cout << "Error: Failed to read the selected change item from file." << endl;
+                        displayNextPage = false; // Exit loop if item is selected
                     }
                 } else {
                     cout << "Invalid selection." << endl;
@@ -867,7 +863,6 @@ changeItem changeItem::displayAndReturnChangeItemStatus (const Product productTo
 
             if (selection == "q") {
                 displayNextPage = false; // Exit loop
-                break;
             } else if (selection == "s") {
                 // Enter Change Item ID action
                 cout << "Enter Change Item ID: ";
@@ -879,7 +874,6 @@ changeItem changeItem::displayAndReturnChangeItemStatus (const Product productTo
                 file.clear(); // Clear any error flags
                 file.seekg(0, ios::beg); // Move file pointer to beginning
 
-                // Read items in file loop
                 while (file.read(reinterpret_cast<char*>(&item), sizeof(changeItem))) {
                     if (strcmp(item.getAssociatedProduct().getProductID(), productToFind.getProductID()) == 0 && item.getChangeItemID() == changeItemID) {
                         cout << "Change Item found: " << endl;
