@@ -32,12 +32,12 @@ public:
     };
 
     // Constructors
-    changeItem ();    // Default constructor
+    //----------------------
+    changeItem ();    
+    // Description: Default constructor
 
-     // Assignment operator
-    changeItem& operator=(const changeItem& other);
-
-    changeItem (int changeItemID, const char* description, const Product product, const Release releasePtr); 
+     //----------------------
+    changeItem (const char* description, const Product product, const Release releasePtr); 
     // Description: Parameterized constructor initializing changeItemID, description, associated product, and release with provided values.
     // Parameters:
     //     - changeItemID: Integer ID of the change item (input)
@@ -125,6 +125,12 @@ public:
     // Exceptions: May throw an exception if the file cannot be accessed.
 
     //----------------------
+    bool checkChangeItemID ();    
+    // Description: Method to check if changeItem exists already
+    // Returns: true if the change item is in file, false otherwise.
+    // Exceptions: May throw an exception if the file cannot be accessed.
+
+    //----------------------
     void displayRemainingReports (const Product productToFind) const;    
     // Description: Displays change items that still need to be implemented or are in progress.
     // Parameters:
@@ -132,14 +138,23 @@ public:
     // Exceptions: May throw an exception if the file cannot be accessed.
 
     //----------------------
-    changeItem displayAndReturnChangeItem (const Product productToFind);    
+    changeItem displayAndReturnChangeItem (const Product productToFind, const Release rel);    
     // Description: Displays and returns a change item based on the provided product.
     // Parameters:
     //     - productToFind: Pointer to the Product object to match against (input)
     // Returns: A changeItem object that matches the criteria.
 
+    changeItem displayAndReturnChangeItemStatus (const Product productToFind);
+    // Description: Displays change items stored in the currently managed file in batches of 5, allowing scrolling.
+    //              User can press Enter to view the next 5 items or 'q' to stop.
+    //              Allows the user to select and returns that change item.
+    // Exceptions:
+    //   May throw an exception if the file cannot be accessed.
+
     //----------------------
     changeItem::Status stringToStatus (const string &statusStr);
+    // Description: Converts the status enum to a corresponding string representation.
+    // Returns: A string representing the current status of the change item.
 
     //==================================================
 private:
@@ -150,7 +165,9 @@ private:
     Product associatedProduct;    // Pointer to associated Product object
     static std::fstream file;    // File stream for read and write operations
 
-    int generateUniqueChangeItemID(); // Generates a random change item ID in the range [0, 999999]
+    int generateUniqueChangeItemID (); 
+    // Description: Generates a unique change item ID using random number generation.
+    // Returns: A randomly generated ID in the range [0, 999999].
     
 };
 

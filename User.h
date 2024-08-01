@@ -24,7 +24,7 @@ public:
     User (); 
     // Description: Default constructor initializing a User object with default values.
 
-    User (const char* userID, const char* name, const char* phone, const char* email); 
+    User (const char* userID, const char* name, const char* phone, const char* email, const char* department); 
     // Description: Parameterized constructor initializing userID, name, phone, and email with provided values.
     // Parameters:
     //   - userID: Pointer to a character array containing the user ID (input)
@@ -57,6 +57,13 @@ public:
     // Parameters: None
     // Returns: Pointer to a constant character array containing the user email address
 
+    //----------------------
+    const char* getDepartment() const;
+    // Description: Getter for retrieving user department
+    // Parameters: None
+    // Returns: Pointer to a constant character array containing the user department
+
+
     // Setter methods
     //----------------------
     void setUserID (const char* userID); 
@@ -81,6 +88,12 @@ public:
     // Description: Setter for setting user email address
     // Parameters:
     //   - email: Pointer to a character array containing the email (input)
+
+    //----------------------
+    void setDepartment (const char* dept);
+    // Description: Setter for setting user department
+    // Parameters:
+    //   - dept: Pointer to a character array containing the user department (input)
 
     // Utility methods
     //----------------------
@@ -114,8 +127,14 @@ public:
     void closeUser ();
     // Description: Closes the file and performs any necessary cleanup.
 
+    bool checkUserIDExists ();
+    // Description: Checks if user in file
+    // Paramters: 
+    //  - userToFind: obj of user to search for in file.
+    // Returns: return true if found, or false if not in file
+
     //----------------------
-    User displayUsersFromFile() const;
+    User displayUsersFromFile () const;
     // Description: Displays users stored in the currently managed file in batches of 5, allowing scrolling.
     //              User can press Enter to view the next 5 users or 'q' to stop.
     //              Allows the user to select and returns that user.
@@ -124,10 +143,11 @@ public:
 
 //==================================================
 private:
-    char userID[9];   // Member variable for storing user ID (max length: 8 characters)
-    char name[31];    // Member variable for storing user name (max length: 30 characters)
-    char phone[13];   // Member variable for storing user phone number (max length: 12 characters)
-    char email[25];   // Member variable for storing user email address (max length: 24 characters)
+    char userID[8];       // Member variable for storing user ID (max length: 8 characters)
+    char name[30];        // Member variable for storing user name (max length: 30 characters)
+    char phone[12];       // Member variable for storing user phone number (max length: 12 characters)
+    char email[24];       // Member variable for storing user email address (max length: 24 characters)
+    char department[12];  // Membervariable for storing user department (max length: 12 characters)
     static std::fstream fileStream; // Member variable for managing file operations
 };
 

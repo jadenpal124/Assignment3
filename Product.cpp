@@ -39,6 +39,9 @@ Product::Product (const char* productID, const char* name) {
 // Copy constructor
 //----------------------
 Product::Product (const Product& other) {
+// Copy constructor creates a copy of the given Product object.
+// Parameters:
+//   - other: Reference to another Product object to copy from (input)
     strncpy(this->productID, other.productID, sizeof(this->productID) - 1);
     strncpy(this->name, other.name, sizeof(this->name) - 1);
     this->productID[sizeof(this->productID) - 1] = '\0';
@@ -48,6 +51,11 @@ Product::Product (const Product& other) {
 // Assignment operator
 //----------------------
 Product& Product::operator= (const Product& other) {
+// Assignment operator assigns the values from another Product object to this object.
+// Parameters:
+//   - other: Reference to another Product object to copy from (input)
+// Returns:
+//   - A reference to the assigned Product object (output)
     if (this != &other) {
         strncpy(this->productID, other.productID, sizeof(this->productID) - 1);
         strncpy(this->name, other.name, sizeof(this->name) - 1);
@@ -100,6 +108,7 @@ Product& Product::checkProductExists (const char* productIDToFind) {
 //   - Reference to the Product object if the product with the given Product ID exists in the file.
 // Exceptions: May throw an exception if the file specified by fileName does not exist or cannot be accessed.
     file.seekg(0, ios::beg);
+    // Loop to read items from file
     while (file.read(reinterpret_cast<char*>(this), sizeof(Product))) {
         if (strcmp(this->productID, productIDToFind) == 0) {
             return *this;
@@ -108,6 +117,7 @@ Product& Product::checkProductExists (const char* productIDToFind) {
     throw runtime_error("Product not found");
 }
 
+//----------------------
 bool Product::addProduct() {
     // Description: Creates a product and adds it to the file.
     // Returns:
@@ -150,6 +160,7 @@ Product Product::displayProductFromFile () const {
     Product selectedProduct; // To store the selected product
     bool productSelected = false; // Flag to track if a product was selected
 
+    // Loop to display items in table
     while (displayNextPage) {
         // Display header
         cout << "Product List - Select a Product:" << endl;
@@ -206,6 +217,8 @@ Product Product::displayProductFromFile () const {
                 file.seekg(0, ios::beg); // Move file pointer to beginning
                 bool found = false;
                 Product product;
+
+                // Loop to read items from file
                 while (file.read(reinterpret_cast<char*>(&product), sizeof(Product))) {
                     if (strcmp(product.getProductID(), productID.c_str()) == 0) {
                         cout << "Product found: " << product.getName() << endl;
@@ -258,6 +271,7 @@ Product Product::displayProductFromFile () const {
                 file.seekg(0, ios::beg); // Move file pointer to beginning
                 bool found = false;
                 Product product;
+                // Loop to read items from file
                 while (file.read(reinterpret_cast<char*>(&product), sizeof(Product))) {
                     if (strcmp(product.getProductID(), productID.c_str()) == 0) {
                         cout << "Product found: " << product.getName() << endl;
@@ -301,7 +315,7 @@ Product Product::displayProductFromFile () const {
 
 // Session management methods
 //----------------------
-void Product::initProduct(const char* fileName) {
+void Product::initProduct (const char* fileName) {
     // Description: Initializes the obj with default constructor and opens the specified file for operations
     // Parameters:
     //   - fileName: Pointer to a character array containing the file name (input)

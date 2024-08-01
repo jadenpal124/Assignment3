@@ -87,16 +87,31 @@ public:
     //----------------------
     void displayUsersToBeNotified (Product prod); 
     // Description: Displays a list of users who should be notified of requests that are implemented.
+    // Parameters: 
+    //  - prod: The Product object used to filter and display relevant users.
+
+
+    bool updateUser (User userToUpdate);
+    // Description: This will update the change Requests user in the change Request file, to maintain
+    //              synchronization.
+    // Paramters: 
+    //   - userToUpdate: copy of new user to update (input). 
+
+     bool updateChangeItem (changeItem changeItemToUpdate);
+    // Description: This will update the change Requests changeItem in the change Request file, to maintain
+    //              synchronization.
+    // Paramters: 
+    //   - userToUpdate: copy of updated changeItem(input). 
 
     // Session management methods
     //----------------------
-    void initChReq(const char* fileName);
+    void initChReq (const char* fileName);
     // Description: Initializes the change request by opening the specified file for operations.
     // Parameters:
     //   - fileName: Pointer to a character array containing the file name (input)
 
     //----------------------
-    void closeChReq();
+    void closeChReq ();
     // Description: Closes the file and frees any allocated resources.
 
 private:

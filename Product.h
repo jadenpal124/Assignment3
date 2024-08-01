@@ -31,10 +31,18 @@ public:
     //   - name: Pointer to a character array containing the product name (input)
 
     //----------------------
-    Product(const Product& other); // Copy constructor
+    Product(const Product& other); 
+    // Copy constructor creates a copy of the given Product object.
+    // Parameters:
+    //   - other: Reference to another Product object to copy from (input)
 
     //----------------------
-    Product& operator=(const Product& other); // Assignment operator
+    Product& operator=(const Product& other); 
+    // Assignment operator assigns the values from another Product object to this object.
+    // Parameters:
+    //   - other: Reference to another Product object to copy from (input)
+    // Returns:
+    //   - A reference to the assigned Product object (output)
 
     // Getter methods
     //----------------------

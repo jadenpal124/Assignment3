@@ -18,7 +18,6 @@
 using namespace std;
 
 //================================
-class Product; // Forward declaration of Product class
 
 class Release {
 public:
@@ -41,7 +40,14 @@ public:
     // Parameters:
     //   - other: Reference to another Release object to copy from (input)
 
-    Release& operator= (const Release& other);
+
+    //----------------------
+    Release& operator=(const Release& other); 
+    // Copy assignment operator assigns the values from another Release object to this object.
+    // Parameters:
+    //   - other: Reference to another Release object to copy from (input)
+    // Returns:
+    //   - A reference to the assigned Release object (output)
 
     // Getter methods
     //----------------------
@@ -93,7 +99,7 @@ public:
     // Exceptions: May throw an exception if the file is not open or in a good state.
 
     //----------------------
-    Release findReleaseAndReturn (const char* releaseIDToFind, const char* productIDtoFind); 
+    Release findReleaseAndReturn (const Product prod); 
     // Finds and returns the release with the given release ID and product ID.
     // Parameters:
     //   - releaseIDToFind: Pointer to a character array containing the release ID to search for (input)
@@ -111,13 +117,13 @@ public:
 
     //----------------------
     void closeRelease (); 
-    // Closes the file and releases resources.
+    // Descriptiom:  Closes the file and releases resources.
 
 private:
-    char releaseID[8];     // Member variable for storing release ID (max length: 50 characters)
+    char releaseID[9];     // Member variable for storing release ID (max length: 8 characters)
     Product product;        // Member variable for storing the associated Product object
-    char releaseDate[12];   // Member variable for storing release date (max length: 50 characters)
-    fstream file;     // File stream for input and output operations
+    char releaseDate[12];   // Member variable for storing release date (max length: 12 characters)
+    static fstream file;     // File stream for input and output operations
     string fileName;        // Store file name for accessing later
 };
 //================================

@@ -49,9 +49,9 @@ void close () {
 
 // Implementation of addProductControl
 //----------------------
-void addProductControl() {
-    // Description:
-    //   Executes 'Add Product' operation.
+void addProductControl () {
+// Description:
+//   Executes 'Add Product' operation.
 
     const int NAME_MAX_LENGTH = 30;
     const int ID_MAX_LENGTH = 8;
@@ -106,6 +106,7 @@ void addReleaseControl () {
     Product temp;
     char relID[8];
     char choiceP, choiceR;
+    Release newRelease;
 
     cin.ignore();
 
@@ -121,21 +122,38 @@ void addReleaseControl () {
     cin >> choiceP;
     cout << endl;
 
+    cin.ignore();
+
     // Validate choice
     if (choiceP != 'y' && choiceP != 'Y') {
         cout << "Operation cancelled. Returning to the menu." << endl;
         return;
     }
 
-    cout << "Enter Release ID (1-8 character Length): "; 
-    cin.ignore();
-    cin.getline(relID, 8);
+    // loop to check for valid release ID
+    while (true) {
+    cout << "Enter Release ID (1-8 character Length): ";
+    cin.getline(relID, 8); // Read up to 8 characters + 1 for null terminator
 
     // Validate Release ID length
-    if (strlen(relID) == 0) {
-        cout << "Release ID cannot be empty. Returning to the menu." << endl;
-        return;
+    size_t length = strlen(relID);
+    if (length == 0) {
+        cout << "Release ID cannot be empty. Please try again." << endl;
+    } else if (length > 8) {
+        cout << "Release ID must be 8 characters or fewer. Please try again." << endl;
+    } else {
+        // Check if the release already exists
+        if (newRelease.checkRelease(relID)) {
+            cout << "Release with ID " << relID << " already exists. Please try again." << endl;
+        } else {
+            // If the ID is valid and does not already exist, set the releaseID
+            newRelease.setReleaseID(relID);
+            break; // Exit the loop if everything is fine
+        }
     }
+}
+
+
 
     cout << "Do you want to add release " << relID << " (select y/n)? ";
     cin >> choiceR;
@@ -147,16 +165,17 @@ void addReleaseControl () {
     }
 
     // Create a Release object and set its details
-    Release newRelease;
-    newRelease.setReleaseID(relID);
     newRelease.setProduct(temp);
 
     // Optionally, set release date or other fields if needed
-    char releaseDate[11];
+    char releaseDate[12];
     cout << "Enter Release Date (YYYY-MM-DD): ";
     cin.ignore();
-    cin.getline(releaseDate, 11);
+    cin.getline(releaseDate, 12);
     newRelease.setReleaseDate(releaseDate);
+
+    cout << newRelease.getReleaseID () << endl;
+    cout << newRelease.getReleaseDate() << endl;
 
     // Add the release to the file
     if (newRelease.addRelease()) {
@@ -169,84 +188,261 @@ void addReleaseControl () {
 // Implementation of addChangeRequestControl
 //----------------------
 void addChangeRequestControl() {
-    // Description:
-    //   Executes 'Add Change Request' operation.
+// Description:
+//   Executes 'Add Change Request' operation.
 
     // Local variables for function.
+
+    //DEBUGGING:
+    changeItem testUnique;
+
     User tempUser;
     changeItem tempChangeItem;
     Release tempRelease;
     Product tempProd;
-    char date[11]; // 10 characters + 1 for null terminator
+    char date[12]; // 10 characters + 1 for null terminator
     char choice;
 
-    cin.ignore(); // Clear input buffer before getting new input
+    // Loop to Process unless want to exit
+    while (true) {
+        cin.ignore(); // Clear input buffer before getting new input
+        cout << "\nChange Request\n";
 
-    // Select a User
-    tempUser = tempUser.displayUsersFromFile();
-    cout << "Do you want to select User " << tempUser.getName() << " (Select Y/N)? ";
-    cin >> choice;
-    cin.ignore(); // Clear newline character from input buffer
-    if (choice != 'Y' && choice != 'y') {
-        tempUser = tempUser.displayUsersFromFile();
-    }
+        // Select a User, loops unless want to exit
+        while (true) {
+            tempUser = tempUser.displayUsersFromFile();
+            cout << endl;
+            // Check if no valid user was found
+            if (strlen(tempUser.getUserID()) == 0) {
+                cout << "No valid user found. Please try again or type 'q' to quit.\n";
+                cout << "Press <enter> to display more users or type 'q' to quit.\n";
+                cin.get(choice); // Read user input
+                cin.ignore(); // Clear newline character from input buffer
 
-    // Choose a product for change request
-    tempProd = tempProd.displayProductFromFile();
-    cout << "Do you want to select product " << tempProd.getName() << " (Select Y/N)? ";
-    cin >> choice;
-    cin.ignore(); // Clear newline character from input buffer
-    if (choice != 'Y' && choice != 'y') {
-        tempProd = tempProd.displayProductFromFile();
-    }
-    cout << endl;
+                if (choice == 'q' || choice == 'Q') {
+                    cout << "Returning to main menu.\n";
+                    return; // Exit function to return to the main menu
+                }
+                continue; // Continue to display more users
+            }
 
-    // Add a date of change Request
-    cout << "Enter the date, format (YYYY/MM/DD): ";
-    cin.getline(date, sizeof(date)); // Read date with size limit
-    cout << "Do you want to add the date " << date << " (Select Y/N)? ";
-    cin >> choice;
-    cin.ignore(); // Clear newline character from input buffer
-    cout << endl;
+            // Prompt for user confirmation
+            cout << "Do you want to select User " << tempUser.getName() << " (Y/N)? ";
+            cin >> choice;
+            cin.ignore(); // Clear newline character from input buffer
 
-    // Check change items for the given product or add changeItem.
-    tempChangeItem = tempChangeItem.displayAndReturnChangeItem(tempProd);
-    cout << "Do you want to add the changeItem " << tempChangeItem.getChangeItemID() << " (Select Y/N)? ";
-    cin >> choice;
-    cin.ignore(); // Clear newline character from input buffer
-    if (choice != 'Y' && choice != 'y') {
-        tempChangeItem = tempChangeItem.displayAndReturnChangeItem(tempProd);
-    }
-    cout << endl;
+            cout << endl;
 
-    // Confirm inputs then create change request object with corresponding variables
-    if (choice == 'Y' || choice == 'y') {
-        // Assuming you have a ChangeRequest class and appropriate methods
-        changeRequest changeRequest;
-        changeRequest.setChangeItem(tempChangeItem);
-        changeRequest.setUser(tempUser);
-        changeRequest.setAssociatedRelease(tempChangeItem.getAnticipatedRelease());
-        changeRequest.setDateRequested(date);
-
-        // Add Change Request to file.
-        if (changeRequest.addChangeRequest()) {
-            cout << "Change request added successfully." << endl;
-        } else {
-            cout << "Failed to add change request." << endl;
+            if (choice == 'Y' || choice == 'y') {
+                break; // Exit loop if user confirms selection
+            } else if (choice == 'q' || choice == 'Q') {
+                cout << "Returning to main menu.\n";
+                return; // Exit function to return to the main menu
+            } else {
+                cout << "Invalid choice. Please select 'Y' to confirm, 'N' to reject, or 'q' to quit.\n";
+            }
         }
-    } else {
-        cout << "Change request not added." << endl;
+
+        // Choose a product for change request, loops unless want to exit
+        while (true) {
+            tempProd = tempProd.displayProductFromFile();
+            cout << endl;
+            // Check if no valid product was found
+            if (strlen(tempProd.getProductID()) == 0) {
+                cout << "No valid product found. Please try again or type 'q' to quit.\n";
+                cout << "Press <enter> to display more products or type 'q' to quit.\n";
+                cin.get(choice); // Read user input
+                cin.ignore(); // Clear newline character from input buffer
+
+                if (choice == 'q' || choice == 'Q') {
+                    cout << "Returning to main menu.\n";
+                    return; // Exit function to return to the main menu
+                }
+                continue; // Continue to display more products
+            }
+
+            // Prompt for product confirmation
+            cout << "Do you want to select product " << tempProd.getName() << " (Y/N)? ";
+            cin >> choice;
+            cin.ignore(); // Clear newline character from input buffer
+
+            cout << endl;
+
+            if (choice == 'Y' || choice == 'y') {
+                break; // Exit loop if user confirms selection
+            } else if (choice == 'q' || choice == 'Q') {
+                cout << "Returning to main menu.\n";
+                return; // Exit function to return to the main menu
+            } else {
+                cout << "Invalid choice. Please select 'Y' to confirm, 'N' to reject, or 'q' to quit.\n";
+            }
+        }
+
+        // Choose a release of product for changeRequest, loops unless want to exit
+        while (true) {
+            tempRelease = tempRelease.findReleaseAndReturn(tempProd);
+            cout << endl;
+            // Check if no valid product was found
+            if (strlen(tempRelease.getReleaseDate()) == 0) {
+                cout << "No valid release found. Please try again or type 'q' to quit.\n";
+                cout << "Press <enter> to display more products or type 'q' to quit.\n";
+                cin.get(choice); // Read user input
+                cin.ignore(); // Clear newline character from input buffer
+
+                if (choice == 'q' || choice == 'Q') {
+                    cout << "Returning to main menu.\n";
+                    return; // Exit function to return to the main menu
+                }
+                continue; // Continue to display more products
+            }
+
+            // Prompt for product confirmation
+            cout << "Do you want to select release " << tempRelease.getReleaseID() << " (Y/N)? ";
+            cin >> choice;
+            cin.ignore(); // Clear newline character from input buffer
+
+            if (choice == 'Y' || choice == 'y') {
+                break; // Exit loop if user confirms selection
+            } else if (choice == 'q' || choice == 'Q') {
+                cout << "Returning to main menu.\n";
+                return; // Exit function to return to the main menu
+            } else {
+                cout << "Invalid choice. Please select 'Y' to confirm, 'N' to reject, or 'q' to quit.\n";
+            }
+        }
+
+        // Add a date of change request, loops unless want to exit
+        while (true) {
+            cout << "\nEnter the date, format (YYYY/MM/DD): ";
+            cin.getline(date, sizeof(date)); // Read date with size limit
+            cout << endl;
+
+            cout << "Do you want to add the date " << date << " (Y/N)? ";
+            cin >> choice;
+            cin.ignore(); // Clear newline character from input buffer
+
+            if (choice == 'Y' || choice == 'y') {
+                break; // Exit loop if user confirms date
+            } else if (choice == 'q' || choice == 'Q') {
+                cout << "Returning to main menu.\n";
+                return; // Exit function to return to the main menu
+            } else {
+                cout << "Invalid choice. Please select 'Y' to confirm or 'q' to quit.\n";
+            }
+        }
+
+        // Check change items for the given product or add changeItem
+        while (true) {
+
+            Release antRel;
+            cout << endl;
+            char releastDate[12];
+            char relID[8];
+            bool validID = true;
+
+            while (validID) {
+                cout << "Enter Anticipated Release ID (1-8 character Length): ";
+                cin.getline(relID, 8); // Read up to 8 characters + 1 for null terminator
+
+                // Validate Release ID length
+                size_t length = strlen(relID);
+                if (length == 0) {
+                    cout << "Release ID cannot be empty. Please try again." << endl;
+                } else if (length > 8) {
+                    cout << "Release ID must be 8 characters or fewer. Please try again." << endl;
+                } else {
+                    // Check if the release already exists
+                    if (antRel.checkRelease(relID)) {
+                        cout << "Release with ID " << relID << " already exists. Please try again." << endl;
+                    } else {
+                        // If the ID is valid and does not already exist, set the releaseID
+                        antRel.setReleaseID(relID);
+                        validID = false;
+                 }
+            }
+
+            cout << "Enter in an Aniticpated Release Date: ";
+            cin.getline(releastDate, 12);
+            antRel.setReleaseDate(releastDate);
+            antRel.setProduct(tempProd);
+            antRel.addRelease();
+
+
+            tempChangeItem = tempChangeItem.displayAndReturnChangeItem(tempProd, antRel);
+
+
+
+            cout << endl;
+            
+
+            // Check if no valid change item was found
+            if (tempChangeItem.getChangeItemID() == 0) {
+                cout << "No valid change item found. Please try again or type 'q' to quit.\n";
+                cout << "Press <enter> to display more change items or type 'q' to quit.\n";
+                cin.get(choice); // Read user input
+                cin.ignore(); // Clear newline character from input buffer
+
+                if (choice == 'q' || choice == 'Q') {
+                    cout << "Returning to main menu.\n";
+                    return; // Exit function to return to the main menu
+                }
+                continue; // Continue to display more change items
+            }
+
+            // Prompt for change item confirmation
+            cout << "\nDo you want to add the change item " << tempChangeItem.getChangeItemID() << " (Y/N)? ";
+            cin >> choice;
+
+            cin.ignore(); // Clear newline character from input buffer
+
+            if (choice == 'Y' || choice == 'y') {
+                break; // Exit loop if user confirms selection
+            } else if (choice == 'q' || choice == 'Q') {
+                cout << "Returning to main menu.\n";
+                return; // Exit function to return to the main menu
+            } else {
+                cout << "Invalid choice. Please select 'Y' to confirm, 'N' to reject, or 'q' to quit.\n";
+            }
+        }
+
+
+
+        // Confirm inputs and create change request object with corresponding variables
+        if (choice == 'Y' || choice == 'y') {
+            // Assuming you have a ChangeRequest class and appropriate methods
+            changeRequest cr;
+            cr.setChangeItem(tempChangeItem);
+            cr.setUser(tempUser);
+            cr.setAssociatedRelease(tempRelease);
+            cr.setDateRequested(date);
+
+            // Add Change Request to file.
+            if (cr.addChangeRequest()) {
+                cout << "Change request added successfully." << endl;
+                return; // Exit function after successful addition
+            } else {
+                cout << "Failed to add change request." << endl;
+            }
+        } else {
+            cout << "Change request not added." << endl;
+            return; // Exit function if change request is not added
+        }
+        }
     }
 }
+
 
 // Implementation of updateUserControl
 //----------------------
 void updateUserControl() {
-    // Description:
-    //   Executes 'Update User' operation.
+// Description:
+//   Executes 'Update User' operation.
     cin.ignore();
 
+    cout << "\nUpdate User";
+
     User user;
+    changeRequest req;
     
     user = user.displayUsersFromFile();
 
@@ -256,23 +452,29 @@ void updateUserControl() {
         return; // Exit the function if no valid user is selected
     }
 
-    cout << "Enter new Name (leave empty to keep current): ";
+    cout << "Enter new Name (leave empty to keep current: ";
     char name[30];
     cin.getline(name, 30);
     if (strlen(name) > 0) user.setName(name);
 
     cout << "Enter new Phone (leave empty to keep current): ";
     char phone[15];
-    cin.getline(phone, 15);
+    cin.getline(phone, 12);
     if (strlen(phone) > 0) user.setPhone(phone);
 
     cout << "Enter new Email (leave empty to keep current): ";
-    char email[30];
-    cin.getline(email, 30);
+    char email[24];
+    cin.getline(email, 24);
     if (strlen(email) > 0) user.setEmail(email);
 
-    if (user.changeUserInfo()) {
+    cout << "Enter new Department (leave empty to keep current): ";
+    char department[12];
+    cin.getline(department, 12);
+    if (strlen(department) > 0) user.setDepartment(department);
+
+    if (user.changeUserInfo() && req.updateUser(user)) {
         cout << "Successfully Updated. Returning to Update Menu" << endl;
+
     } else {
         cout << "Failed to update user. Returning to Update Menu" << endl;
     }
@@ -280,19 +482,38 @@ void updateUserControl() {
 
 // Implementation of updateChangeItemControl
 //----------------------
-void updateChangeItemControl () {
+void updateChangeItemControl() {
 // Description:
 //   Executes 'Update Single Issue' operation.
-    const char* fileName;
-    Product tempProduct;
-    changeItem tempChangeItem;
 
+    changeRequest req;
+    
+    cout << endl;
     cin.ignore();
 
-    tempProduct = tempProduct.displayProductFromFile(); // Need to make product class open and initialize files once.
+    // Display and select the product
+    Product tempProduct;
+    tempProduct = tempProduct.displayProductFromFile(); // Ensure this initializes the product file
+    
     cout << endl;
-    tempChangeItem = tempChangeItem.displayAndReturnChangeItem(tempProduct);
-    tempChangeItem.updateChangeItem(tempChangeItem);
+    
+    // Display and select the change item to be updated
+    changeItem tempChangeItem;
+    tempChangeItem = tempChangeItem.displayAndReturnChangeItemStatus(tempProduct); // Get the change item for update
+
+    if (tempChangeItem.getChangeItemID() == 0) {
+        cout << "No valid change item selected. Returning to Update Menu" << endl;
+        return;
+    }
+
+    // Perform the update
+    if (tempChangeItem.updateChangeItem(tempChangeItem)) {
+        cout << "Succefully updated Changeitem " << endl;
+    } else {
+        cout << "Failed to update change item." << endl;
+    }
+
+    
 }
 
 // Implementation of displayRemReportControl
@@ -307,6 +528,10 @@ void displayRemReportControl () {
     tempProduct = tempProduct.displayProductFromFile();
 
     tempChangeItem.displayRemainingReports(tempProduct);
+
+
+
+
 }
 
 
@@ -347,14 +572,20 @@ void getStatusControl () {
     productTemp = productTemp.displayProductFromFile();
 
     // Display change items for the selected product and return selected change item
-    changeItemTemp = changeItemTemp.displayAndReturnChangeItem(productTemp);
+    changeItemTemp = changeItemTemp.displayAndReturnChangeItemStatus(productTemp);
+
+    // if empty return to main menu
+   if (strlen(changeItemTemp.getAssociatedProduct().getProductID()) == 0) { 
+        cout << "Returning to Menu " << endl;
+        return;
+   }
 
     // Output the details of the selected change item
     cout << "Change Item ID: " << changeItemTemp.getChangeItemID() << endl;
     cout << "Description: " << changeItemTemp.getDescription() << endl;
-    cout << "Status: " << changeItemTemp.getStatus() << endl;
+    cout << "Status: " << changeItemTemp.getStatusAsString() << endl;
     cout << "Associated Product ID: " << changeItemTemp.getAssociatedProduct().getProductID() << endl;
     cout << "Associated Product Name: " << changeItemTemp.getAssociatedProduct().getName() << endl;
     cout << "Anticipated Release ID: " << changeItemTemp.getAnticipatedRelease().getReleaseID() << endl;
-    cout << "Anticipated Release Date: " << changeItemTemp.getAnticipatedRelease().getReleaseDate() << endl;
+    cout << "Anticipated Release Date: " << changeItemTemp.getAnticipatedRelease().getReleaseDate() << endl << endl;
 }
