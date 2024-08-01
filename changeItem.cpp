@@ -230,6 +230,7 @@ bool changeItem::updateChangeItem (changeItem changeItemToFind) {
             cout << "ProductID: " << temp.getAssociatedProduct().getProductID() << "\n";
             cout << "ChangeID: " << temp.getChangeItemID() << "\n";
             cout << "Anticipated ReleaseID: " << temp.getAnticipatedRelease().getReleaseID() << "\n";
+            cout << "Anticipated Release Date: " << temp.getAnticipatedRelease().getReleaseDate() << "\n";
             cout << "Status: " << temp.getStatusAsString() << "\n";  
             cout << "Description: " << temp.getDescription() << "\n\n";
 
@@ -726,17 +727,15 @@ changeItem changeItem::displayAndReturnChangeItemStatus (const Product productTo
     // Exceptions:
     //   May throw an exception if the file cannot be accessed.
 
-    // Check if file is open
     if (!file.is_open()) {
         cerr << "Error: File is not open." << endl;
         return changeItem(); // Return a default changeItem in case of error
     }
 
-    int totalMatchingItems = 0; // Total number of matching items
-    file.clear(); // Clear any error flags
-    file.seekg(0, ios::beg); // Move file pointer to beginning
+    int totalMatchingItems = 0;
+    file.clear();
+    file.seekg(0, ios::beg);
 
-    // First pass: Count total matching items
     changeItem item;
     while (file.read(reinterpret_cast<char*>(&item), sizeof(changeItem))) {
         if (strcmp(item.getAssociatedProduct().getProductID(), productToFind.getProductID()) == 0) {
@@ -744,130 +743,50 @@ changeItem changeItem::displayAndReturnChangeItemStatus (const Product productTo
         }
     }
 
-    const int numRecordsPerPage = 5; // Number of records to display per page
-    int startRecord = 0; // Starting record index
+    const int numRecordsPerPage = 5;
+    int startRecord = 0;
     bool displayNextPage = true;
-    changeItem selectedItem; // To store the selected changeItem
+    changeItem selectedItem;
 
     while (displayNextPage) {
-        // Right-justify the column headers
+        file.clear();
+        file.seekg(0, ios::beg);
+        int displayedCount = 0;
+        int recordCounter = 0;
+
         cout << "Change Items Report (Page " << (startRecord / numRecordsPerPage + 1) << ")" << endl;
         cout << setw(4) << right << "#" << " "
-            << setw(15) << right << "ProductID" << " "
-            << setw(15) << right << "ChangeID" << " "
-            << setw(24) << right << "Anticipated ReleaseID" << " "
-            << setw(10) << right << "Status" << " "
-            << "Description" << endl;
+             << setw(15) << right << "ProductID" << " "
+             << setw(15) << right << "ChangeID" << " "
+             << setw(24) << right << "Anticipated ReleaseID" << " "
+             << setw(10) << right << "Status" << " "
+             << "Description" << endl;
         cout << setw(4) << right << "---" << " "
-            << setw(15) << right << "---------------" << " "
-            << setw(15) << right << "---------------" << " "
-            << setw(24) << right << "------------------------" << " "
-            << setw(10) << right << "----------" << " "
-            << "-----------------------------" << endl;
-
-        // Display records
-        bool endOfFile = false;
-        int displayedCount = 0;
-        file.clear();
-        file.seekg(0, ios::beg); // Move file pointer to beginning
-        int recordCounter = 0; // To keep track of the record index
+             << setw(15) << right << "---------------" << " "
+             << setw(15) << right << "---------------" << " "
+             << setw(24) << right << "------------------------" << " "
+             << setw(10) << right << "----------" << " "
+             << "-----------------------------" << endl;
 
         for (int i = 0; i < numRecordsPerPage; ++i) {
             if (!file.read(reinterpret_cast<char*>(&item), sizeof(changeItem))) {
-                endOfFile = true; // End of file
                 break;
             }
 
             if (strcmp(item.getAssociatedProduct().getProductID(), productToFind.getProductID()) == 0) {
                 ++recordCounter;
                 cout << setw(4) << right << (startRecord + recordCounter) << " "
-                    << setw(15) << right << item.getAssociatedProduct().getProductID() << " "
-                    << setw(15) << right << item.getChangeItemID() << " "
-                    << setw(24) << right << item.getAnticipatedRelease().getReleaseID() << " "
-                    << setw(10) << right << item.getStatusAsString() << " "
-                    << item.getDescription() << endl;
+                     << setw(15) << right << item.getAssociatedProduct().getProductID() << " "
+                     << setw(15) << right << item.getChangeItemID() << " "
+                     << setw(24) << right << item.getAnticipatedRelease().getReleaseID() << " "
+                     << setw(10) << right << item.getStatusAsString() << " "
+                     << item.getDescription() << endl;
                 ++displayedCount;
             }
         }
 
-        // Prompt user for input
-        if (displayedCount > 0 || startRecord + numRecordsPerPage < totalMatchingItems) {
-            cout << endl;
-            cout << "Press <enter> to display the next " << numRecordsPerPage << " rows, or \"q\" to go back." << endl;
-            cout << "If you would like to select an item, type the number #." << endl;
-            cout << "If a Change Item ID is known, type \"s\" to enter it." << endl;
-
-            string selection;
-            cout << "Enter Selection: ";
-            getline(cin, selection);
-
-            // Handle user input
-            if (selection.empty()) {
-                // Default action: Display next page
-                startRecord += numRecordsPerPage;
-            } else if (selection == "q") {
-                displayNextPage = false; // Exit loop
-            } else if (selection == "s") {
-                // Enter Change Item ID action
-                cout << "Enter Change Item ID: ";
-                int changeItemID;
-                cin >> changeItemID;
-                cin.ignore(); // Ignore the newline character left in the input buffer
-
-                bool found = false;
-                file.clear(); // Clear any error flags
-                file.seekg(0, ios::beg); // Move file pointer to beginning
-                while (file.read(reinterpret_cast<char*>(&item), sizeof(changeItem))) {
-                    if (strcmp(item.getAssociatedProduct().getProductID(), productToFind.getProductID()) == 0 && item.getChangeItemID() == changeItemID) {
-                        cout << "Change Item found: " << endl;
-                        cout << "ID: " << item.getChangeItemID() << " | Description: " << item.getDescription() << endl;
-                        selectedItem = item;
-                        found = true;
-                        break;
-                    }
-                } 
-                if (!found) {
-                    cout << "Change Item ID not found." << endl;
-                } else {
-                    displayNextPage = false; // Exit loop if item is found
-                }
-            } else if (isdigit(selection[0])) {
-                // Select by number action
-                int selectedNumber = stoi(selection);
-                if (selectedNumber > 0 && selectedNumber <= displayedCount) {
-                    cout << "Change Item selected: " << selectedNumber << endl;
-
-                    // Calculate the position of the selected item
-                    int recordToRead = startRecord + selectedNumber - 1;
-                    file.clear(); // Clear any error flags
-                    file.seekg(0, ios::beg); // Move file pointer to beginning
-                    recordCounter = 0; // Reset record counter
-
-                    // Read items in file loop
-                    while (file.read(reinterpret_cast<char*>(&item), sizeof(changeItem))) {
-                        if (strcmp(item.getAssociatedProduct().getProductID(), productToFind.getProductID()) == 0) {
-                            ++recordCounter;
-                            if (recordCounter == selectedNumber) {
-                                selectedItem = item;
-                                break;
-                            }
-                        }
-                    }
-                    if (recordCounter != selectedNumber) {
-                        cout << "Error: Selected item not found." << endl;
-                    } else {
-                        displayNextPage = false; // Exit loop if item is selected
-                    }
-                } else {
-                    cout << "Invalid selection." << endl;
-                }
-            } else {
-                cout << "Invalid selection." << endl;
-            }
-        } else {
-            // End of filtered items
-            cout << "End of items reached. Press q to go back" << endl;
-            cout << "If you would like to select an item, type the number #." << endl;
+        if (displayedCount == 0 && startRecord > 0) {
+            cout << "End of items reached. Press <enter> to go back or \"s\" to select an item." << endl;
             cout << "If a Change Item ID is known, type \"s\" to enter it." << endl;
 
             string selection;
@@ -875,43 +794,103 @@ changeItem changeItem::displayAndReturnChangeItemStatus (const Product productTo
             getline(cin, selection);
 
             if (selection == "q") {
-                displayNextPage = false; // Exit loop
+                displayNextPage = false;
+                continue; // Exit the loop and return to the menu
             } else if (selection == "s") {
-                // Enter Change Item ID action
                 cout << "Enter Change Item ID: ";
                 int changeItemID;
                 cin >> changeItemID;
                 cin.ignore(); // Ignore the newline character left in the input buffer
 
                 bool found = false;
-                file.clear(); // Clear any error flags
-                file.seekg(0, ios::beg); // Move file pointer to beginning
-
+                file.clear();
+                file.seekg(0, ios::beg);
                 while (file.read(reinterpret_cast<char*>(&item), sizeof(changeItem))) {
                     if (strcmp(item.getAssociatedProduct().getProductID(), productToFind.getProductID()) == 0 && item.getChangeItemID() == changeItemID) {
-                        cout << "Change Item found: " << endl;
-                        cout << "ID: " << item.getChangeItemID() << " | Description: " << item.getDescription() << endl;
                         selectedItem = item;
                         found = true;
                         break;
                     }
-                } 
-
+                }
                 if (!found) {
                     cout << "Change Item ID not found." << endl;
                 } else {
-                    displayNextPage = false; // Exit loop if item is found
+                    displayNextPage = false; // Exit the loop after selecting the item
+                }
+            } else if (selection.empty()) {
+                displayNextPage = false; // Exit the loop and return to the menu
+            } else {
+                cout << "Invalid selection." << endl;
+            }
+        } else {
+            if (displayedCount < numRecordsPerPage) {
+                cout << "End of items reached. Press <enter> to go back or \"s\" to select an item." << endl;
+                cout << "If a Change Item ID is known, type \"s\" to enter it." << endl;
+
+                string selection;
+                cout << "Enter Selection: ";
+                getline(cin, selection);
+
+                if (selection == "q") {
+                    displayNextPage = false;
+                    continue; // Exit the loop and return to the menu
+                } else if (selection == "s") {
+                    cout << "Enter Change Item ID: ";
+                    int changeItemID;
+                    cin >> changeItemID;
+                    cin.ignore(); // Ignore the newline character left in the input buffer
+
+                    bool found = false;
+                    file.clear();
+                    file.seekg(0, ios::beg);
+                    while (file.read(reinterpret_cast<char*>(&item), sizeof(changeItem))) {
+                        if (strcmp(item.getAssociatedProduct().getProductID(), productToFind.getProductID()) == 0 && item.getChangeItemID() == changeItemID) {
+                            selectedItem = item;
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        cout << "Change Item ID not found." << endl;
+                    } else {
+                        displayNextPage = false; // Exit the loop after selecting the item
+                    }
+                } else if (isdigit(selection[0])) {
+                    int selectedNumber = stoi(selection);
+                    if (selectedNumber > 0 && selectedNumber <= displayedCount) {
+                        int recordToRead = startRecord + selectedNumber - 1;
+                        file.clear();
+                        file.seekg(0, ios::beg);
+                        recordCounter = 0;
+
+                        while (file.read(reinterpret_cast<char*>(&item), sizeof(changeItem))) {
+                            if (strcmp(item.getAssociatedProduct().getProductID(), productToFind.getProductID()) == 0) {
+                                ++recordCounter;
+                                if (recordCounter == selectedNumber) {
+                                    selectedItem = item;
+                                    break;
+                                }
+                            }
+                        }
+                        if (recordCounter != selectedNumber) {
+                            cout << "Error: Selected item not found." << endl;
+                        } else {
+                            displayNextPage = false; // Exit the loop after selecting the item
+                        }
+                    } else {
+                        cout << "Invalid selection.\n" << endl;
+                    }
+                } else {
+                    cout << "Invalid selection.\n" << endl;
                 }
             }
-        }
 
-        if (endOfFile) {
-            cout << "End of file reached." << endl;
-            displayNextPage = false;
+            if (displayedCount == 0 && startRecord + numRecordsPerPage >= totalMatchingItems) {
+                displayNextPage = false; // Exit the loop if end of items reached
+            }
         }
     }
 
-    // Return the selected changeItem
     return selectedItem;
 }
 
